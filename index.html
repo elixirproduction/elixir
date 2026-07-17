@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>elixer</title>
+    <meta name="description" content="elixer — a quiet games hub with a built-in proxy.">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%233b82f6'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='18' font-weight='700' text-anchor='middle' fill='%23ffffff'%3Ee%3C/text%3E%3C/svg%3E">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0d12;
+            --bg-1: #0e1118;
+            --panel: #12151d;
+            --panel-2: #181c26;
+            --line: #262b36;
+            --line-soft: #1c212b;
+            --text: #e7ebf2;
+            --text-2: #9aa3b2;
+            --text-3: #6b7484;
+            --text-4: #4a5160;
+            --blue: #3b82f6;
+            --blue-2: #2f6fe0;
+            --blue-hi: #5b9bf8;
+            --blue-soft: rgba(59,130,246,0.16);
+            --green: #34d399;
+            --danger: #f87171;
+            --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+            --gap: 12px;
+            --radius: 10px;
+            --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 12px 28px -18px rgba(0,0,0,0.7);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            background: var(--bg); color: var(--text);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+            min-height: 100vh; line-height: 1.55; font-size: 15px;
+        }
+        ::selection { background: rgba(59,130,246,0.35); color: #fff; }
+        a { color: inherit; text-decoration: none; }
+        button { font-family: inherit; }
+        img { display: block; }
+
+        /* ---------- top bar (vercel/render style) ---------- */
+        header {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(11,13,18,0.7);
+            backdrop-filter: saturate(180%) blur(12px);
+            -webkit-backdrop-filter: saturate(180%) blur(12px);
+            border-bottom: 1px solid var(--line-soft);
+        }
+        .bar {
+            max-width: 1600px; margin: 0 auto; height: 60px;
+            display: flex; align-items: center; gap: 28px; padding: 0 28px;
+        }
+        .logo { font-weight: 550; font-size: 1rem; letter-spacing: -0.02em; color: var(--text); }
+        nav.tabs { display: flex; gap: 4px; }
+        nav.tabs a { font-size: 0.875rem; color: var(--text-3); padding: 6px 10px; border-radius: 6px; cursor: pointer; transition: color .15s; font-weight: 400; }
+        nav.tabs a:hover { color: var(--text); }
+        nav.tabs a.active { color: var(--text); }
+        .bar-right { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+        .search { position: relative; display: flex; align-items: center; border: 1px solid var(--line-soft); background: transparent; border-radius: 7px; padding: 0 11px; height: 34px; width: 220px; transition: border-color .15s, box-shadow .15s; }
+        .search:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-soft); }
+        .search i { color: var(--text-4); font-size: 0.74rem; }
+        .search input { background: none; border: none; outline: none; color: var(--text); font-size: 0.84rem; padding: 0 8px; width: 100%; font-family: inherit; }
+        .search input::placeholder { color: var(--text-4); }
+        .search kbd { font-family: var(--mono); font-size: 0.62rem; color: var(--text-4); border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; background: var(--panel); }
+        .search-dd { position: absolute; top: 42px; left: 0; right: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; display: none; z-index: 200; box-shadow: var(--shadow); max-height: 360px; overflow-y: auto; }
+        .search-dd.show { display: block; }
+        .search-dd .item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; cursor: pointer; font-size: 0.83rem; border-bottom: 1px solid var(--line-soft); transition: background .12s; }
+        .search-dd .item:last-child { border-bottom: none; }
+        .search-dd .item:hover { background: var(--panel-2); }
+        .search-dd .item img { width: 22px; height: 22px; border-radius: 5px; object-fit: cover; }
+        .search-dd .item .kind { margin-left: auto; font-family: var(--mono); font-size: 0.6rem; color: var(--text-4); text-transform: uppercase; }
+        .search-dd .none { padding: 12px; font-size: 0.82rem; color: var(--text-4); text-align: center; }
+
+        /* ---------- layout ---------- */
+        main { max-width: 1600px; margin: 0 auto; padding: 28px 28px 80px; }
+        .view { display: none; }
+        .view.active { display: block; animation: rise .3s cubic-bezier(0.16,1,0.3,1) both; }
+        @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+        .head { margin-bottom: 20px; display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+        .head h1 { font-size: 1.4rem; font-weight: 600; letter-spacing: -0.02em; }
+        .head .count { font-family: var(--mono); font-size: 0.72rem; color: var(--text-4); }
+
+        /* ---------- home ---------- */
+        .splash { border: 1px solid var(--line-soft); border-radius: 16px; padding: 44px 40px; background: var(--panel); margin-bottom: 28px; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+        .splash h2 { font-size: 2.4rem; font-weight: 600; letter-spacing: -0.04em; line-height: 1; color: var(--text); }
+        .splash .sub { display: block; font-size: 0.95rem; font-weight: 400; margin-top: 12px; color: var(--text-3); max-width: 520px; line-height: 1.5; }
+        .splash .widgets { display: flex; gap: 36px; }
+        .splash .widgets .k { font-size: 1.3rem; font-weight: 600; color: var(--text); }
+        .splash .widgets .l { font-size: 0.58rem; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 4px; }
+        .home-search { display: flex; gap: 8px; margin-bottom: 22px; max-width: 520px; }
+        .home-search input { flex: 1; background: var(--bg-1); border: 1px solid var(--line); color: var(--text); padding: 12px 15px; border-radius: 9px; outline: none; font-size: 0.88rem; font-family: inherit; transition: border-color .15s, box-shadow .15s; }
+        .home-search input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-soft); }
+        .home-search button { background: var(--blue); color: #fff; border: none; border-radius: 9px; padding: 0 20px; font-weight: 550; cursor: pointer; font-size: 0.84rem; transition: background .15s; }
+        .home-search button:hover { background: var(--blue-2); }
+
+        /* ---------- toolbar ---------- */
+        .toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+        .seg { display: flex; border: 1px solid var(--line); border-radius: 9px; overflow: hidden; background: var(--panel); }
+        .seg button { background: none; border: none; color: var(--text-3); font-size: 0.8rem; font-weight: 500; padding: 8px 14px; cursor: pointer; border-right: 1px solid var(--line-soft); text-transform: lowercase; transition: color .15s, background .15s; }
+        .seg button:last-child { border-right: none; }
+        .seg button:hover { color: var(--text); }
+        .seg button.on { background: var(--panel-2); color: var(--text); }
+        .toolbar .spacer { margin-left: auto; }
+        select.sort { background: var(--panel); border: 1px solid var(--line); color: var(--text-2); font-size: 0.8rem; font-family: inherit; padding: 8px 12px; border-radius: 9px; outline: none; cursor: pointer; }
+        select.sort:focus { border-color: var(--blue); }
+
+        /* ---------- grid ---------- */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(108px, 1fr)); gap: var(--gap); }
+        .tile { background: var(--panel); border: 1px solid var(--line-soft); border-radius: var(--radius); padding: 9px; cursor: pointer; transition: border-color .15s, background .15s; text-align: left; color: inherit; font-family: inherit; display: block; width: 100%; }
+        .tile:hover { border-color: var(--line); background: var(--panel-2); }
+        .tile .ic { width: 100%; aspect-ratio: 1; border-radius: 8px; overflow: hidden; background: var(--bg-1); border: 1px solid var(--line-soft); margin-bottom: 8px; position: relative; display: grid; place-items: center; }
+        .tile .ic img { width: 100%; height: 100%; object-fit: cover; }
+        .tile .ic .ph { width: 100%; height: 100%; display: grid; place-items: center; font-family: var(--mono); font-weight: 600; font-size: 1.1rem; color: var(--text-3); background: var(--bg-1); }
+        .tile .ic .star { position: absolute; top: 5px; right: 5px; width: 24px; height: 24px; border-radius: 6px; background: rgba(11,13,18,0.75); border: 1px solid var(--line); color: var(--text-3); display: grid; place-items: center; font-size: 0.66rem; backdrop-filter: blur(6px); transition: color .12s, border-color .12s, background .12s; }
+        .tile .ic .star:hover { color: var(--text); border-color: var(--blue); }
+        .tile .ic .star.on { color: #fbbf24; border-color: rgba(251,191,36,0.5); background: rgba(251,191,36,0.14); }
+        .tile .nm { font-size: 0.75rem; font-weight: 500; letter-spacing: -0.01em; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .empty { grid-column: 1/-1; padding: 44px 0; text-align: center; color: var(--text-4); font-size: 0.86rem; }
+
+        /* ---------- coming soon ---------- */
+        .coming-soon { border: 1px solid var(--line-soft); border-radius: 14px; background: var(--panel); padding: 52px 32px; text-align: center; }
+        .coming-soon i { font-size: 1.6rem; color: var(--text-3); margin-bottom: 14px; }
+        .coming-soon h3 { font-size: 1.2rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 7px; }
+        .coming-soon p { color: var(--text-3); font-size: 0.86rem; }
+        .coming-soon a { color: var(--blue-hi); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+
+        /* ---------- proxy ---------- */
+        .full-btn { background: var(--panel-2); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 7px 13px; font-size: 0.78rem; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: color .15s, border-color .15s, background .15s; }
+        .full-btn:hover { color: #fff; border-color: var(--blue); background: var(--blue-soft); }
+        .proxy-frame { height: 78vh; background: #000; border: 1px solid var(--line-soft); border-radius: 14px; overflow: hidden; }
+        .proxy-frame iframe { width: 100%; height: 100%; border: none; display: block; }
+
+        /* ---------- settings ---------- */
+        .settings { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+        .card-box { border: 1px solid var(--line-soft); border-radius: 14px; background: var(--panel); padding: 18px; transition: border-color .15s; }
+        .card-box:hover { border-color: var(--line); }
+        .card-box h3 { font-size: 0.86rem; font-weight: 600; display: flex; align-items: center; gap: 9px; margin-bottom: 4px; text-transform: lowercase; }
+        .card-box h3 .ico { color: var(--blue-hi); font-size: 0.82rem; width: 18px; text-align: center; }
+        .card-box > p { color: var(--text-3); font-size: 0.78rem; margin-bottom: 12px; }
+        .row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; border-top: 1px solid var(--line-soft); font-size: 0.82rem; color: var(--text-2); }
+        .row:first-of-type { border-top: none; }
+        .row .lbl { display: flex; align-items: center; gap: 9px; }
+        .btn { background: var(--blue); color: #fff; border: none; border-radius: 9px; padding: 9px 15px; font-size: 0.8rem; font-weight: 550; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: background .15s; }
+        .btn:hover { background: var(--blue-2); }
+        .btn.ghost { background: var(--panel-2); color: var(--text); border: 1px solid var(--line); }
+        .btn.ghost:hover { border-color: var(--blue); }
+        .field { width: 100%; background: var(--bg-1); border: 1px solid var(--line); color: var(--text); padding: 9px 12px; border-radius: 9px; outline: none; font-size: 0.8rem; font-family: inherit; margin-top: 9px; transition: border-color .15s, box-shadow .15s; }
+        .field:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-soft); }
+        .field.mono { font-family: var(--mono); font-size: 0.76rem; }
+        input[type="checkbox"] { accent-color: var(--blue); width: 16px; height: 16px; cursor: pointer; }
+        .cloak-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(88px, 1fr)); gap: 7px; margin-top: 4px; }
+        .cloak-opt { display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 9px 4px; border: 1px solid var(--line-soft); border-radius: 9px; cursor: pointer; transition: border-color .14s, background .14s; }
+        .cloak-opt:hover { border-color: var(--blue); background: var(--panel-2); }
+        .cloak-opt.on { border-color: var(--blue); background: var(--blue-soft); }
+        .cloak-opt img { width: 20px; height: 20px; border-radius: 5px; object-fit: cover; }
+        .cloak-opt span { font-size: 0.62rem; color: var(--text-3); }
+        .wisp-list .wisp { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-top: 1px solid var(--line-soft); font-size: 0.8rem; }
+        .wisp-list .wisp:first-child { border-top: none; }
+        .wisp-list .wisp.on { color: var(--text); } .wisp-list .wisp.on::before { content: "● "; color: var(--green); }
+        .wisp-list .wisp button { background: none; border: none; color: var(--text-4); cursor: pointer; font-size: 0.74rem; }
+        .wisp-list .wisp button:hover { color: var(--danger); }
+
+        /* ---------- game modal (play overlay) ---------- */
+        .modal { position: fixed; inset: 0; z-index: 300; display: none; opacity: 0; background: rgba(4,6,10,0.88); backdrop-filter: blur(10px); transition: opacity .2s ease; align-items: center; justify-content: center; padding: 0; }
+        .modal.show { display: flex; opacity: 1; }
+        .modal .win { width: 100%; height: 100%; max-width: none; background: #000; border: none; border-radius: 0; overflow: hidden; display: flex; flex-direction: column; transform: scale(1.01); transition: transform .25s cubic-bezier(0.16,1,0.3,1); }
+        .modal.show .win { transform: scale(1); }
+        .modal .top { height: 52px; display: flex; align-items: center; gap: 12px; padding: 0 16px; border-bottom: 1px solid var(--line-soft); background: var(--panel); }
+        .modal .top .t { font-size: 0.85rem; font-weight: 550; }
+        .modal .top .acts { margin-left: auto; display: flex; gap: 8px; }
+        .modal .top .acts button { background: var(--panel-2); border: 1px solid var(--line); color: var(--text-2); width: 36px; height: 36px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; transition: color .14s, border-color .14s; }
+        .modal .top .acts button:hover { color: #fff; border-color: var(--blue); background: var(--blue-soft); }
+        .modal .top .acts button.x:hover { color: #fff; border-color: var(--danger); background: rgba(248,113,113,0.16); }
+        .modal iframe { width: 100%; height: 100%; border: none; display: block; background: #000; }
+
+        /* ---------- toast ---------- */
+        .toasts { position: fixed; bottom: 18px; right: 18px; z-index: 500; display: flex; flex-direction: column; gap: 8px; }
+        .toast { background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--blue); border-radius: 9px; padding: 11px 14px; font-size: 0.8rem; color: var(--text); min-width: 220px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 9px; animation: tin .28s cubic-bezier(0.16,1,0.3,1) both; }
+        .toast.good { border-left-color: var(--green); } .toast.warn { border-left-color: #fbbf24; } .toast.err { border-left-color: var(--danger); }
+        .toast i { font-size: 0.82rem; } .toast.good i { color: var(--green); } .toast.warn i { color: #fbbf24; } .toast.err i { color: var(--danger); }
+        .toast.out { animation: tout .25s ease both; }
+        @keyframes tin { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: none; } }
+        @keyframes tout { to { opacity: 0; transform: translateX(20px); } }
+
+        /* ---------- footer ---------- */
+        footer { max-width: 1600px; margin: 0 auto; padding: 22px 28px 40px; border-top: 1px solid var(--line-soft); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 0.76rem; color: var(--text-4); }
+        footer .links { display: flex; gap: 16px; } footer .links a { cursor: pointer; } footer .links a:hover { color: var(--blue-hi); }
+
+        /* ---------- consent gate ---------- */
+        .gate { position: fixed; inset: 0; z-index: 400; display: none; align-items: center; justify-content: center; padding: 24px; background: var(--bg); }
+        .gate.show { display: flex; animation: rise .35s cubic-bezier(0.16,1,0.3,1) both; }
+        .gate-card { width: 100%; max-width: 420px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 32px 30px; box-shadow: var(--shadow); }
+        .gate-logo { font-size: 1.35rem; font-weight: 600; letter-spacing: -0.03em; margin-bottom: 6px; }
+        .gate-sub { font-size: 0.85rem; color: var(--text-3); margin-bottom: 22px; line-height: 1.5; }
+        .gate-docs { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+        .doc-btn { display: flex; align-items: center; justify-content: space-between; width: 100%; background: var(--bg-1); border: 1px solid var(--line); color: var(--text); padding: 13px 15px; border-radius: 8px; cursor: pointer; font-size: 0.86rem; font-family: inherit; transition: border-color .15s, background .15s; }
+        .doc-btn:hover { border-color: var(--blue); background: var(--panel-2); }
+        .doc-btn span { font-weight: 500; }
+        .doc-btn i { color: var(--text-3); font-size: 0.72rem; }
+        .gate-agree { display: flex; align-items: flex-start; gap: 10px; text-align: left; font-size: 0.8rem; color: var(--text-2); margin-bottom: 16px; cursor: pointer; line-height: 1.45; }
+        .gate-agree input { margin-top: 2px; flex: none; accent-color: var(--blue); }
+        .gate-agree span { user-select: none; }
+        .gate-enter { width: 100%; background: var(--blue); color: #fff; border: none; border-radius: 8px; padding: 12px; font-weight: 550; font-size: 0.9rem; cursor: pointer; font-family: inherit; transition: background .15s, opacity .15s; }
+        .gate-enter:hover:not(:disabled) { background: var(--blue-2); }
+        .gate-enter:disabled { background: var(--bg-1); color: var(--text-4); border: 1px solid var(--line); opacity: 1; cursor: not-allowed; }
+
+        /* ---------- document modal ---------- */
+        .docmodal { position: fixed; inset: 0; z-index: 500; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(4,6,10,0.85); backdrop-filter: blur(10px); }
+        .docmodal.show { display: flex; animation: rise .3s cubic-bezier(0.16,1,0.3,1) both; }
+        .doc-win { width: 100%; max-width: 720px; max-height: 82vh; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; display: flex; flex-direction: column; overflow: hidden; box-shadow: var(--shadow); }
+        .doc-win .top { height: 52px; display: flex; align-items: center; gap: 12px; padding: 0 16px; border-bottom: 1px solid var(--line-soft); background: var(--panel); }
+        .doc-win .top .t { font-size: 0.9rem; font-weight: 600; text-transform: lowercase; }
+        .doc-win .top .x { margin-left: auto; background: var(--panel-2); border: 1px solid var(--line); color: var(--text-2); width: 34px; height: 34px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; transition: color .14s, border-color .14s; }
+        .doc-win .top .x:hover { color: #fff; border-color: var(--blue); background: var(--blue-soft); }
+        .doc-body { padding: 26px 30px; overflow-y: auto; font-size: 0.86rem; line-height: 1.7; color: var(--text-2); }
+        .doc-body h4 { color: var(--text); font-size: 0.95rem; font-weight: 600; margin: 20px 0 8px; letter-spacing: -0.01em; }
+        .doc-body h4:first-child { margin-top: 0; }
+        .doc-body p { margin-bottom: 10px; }
+        .doc-body a { color: var(--blue-hi); text-decoration: underline; text-underline-offset: 2px; }
+
+        @media (max-width: 720px) { nav.tabs { display: none; } .search { width: 150px; } .splash { flex-direction: column; align-items: flex-start; } }
+        @media (max-width: 480px) { .grid { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 10px; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="bar">
+            <div class="logo">elixer</div>
+            <nav class="tabs">
+                <a class="active" data-view="games">games</a>
+                <a data-view="apps">apps</a>
+                <a data-view="proxy">proxy</a>
+                <a data-view="settings">settings</a>
+            </nav>
+            <div class="bar-right">
+                <div class="search">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="q" placeholder="search…" autocomplete="off">
+                    <kbd>/</kbd>
+                    <div class="search-dd" id="dd"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- GAMES -->
+        <section class="view active" data-view="games">
+            <div class="splash">
+                <div>
+                    <h2>elixer</h2>
+                    <p class="sub">a games hub with a built-in proxy. pick a game to play, or open the proxy to run anything.</p>
+                </div>
+                <div class="widgets">
+                    <div><div class="k" id="clk">--:--</div><div class="l">local time</div></div>
+                    <div><div class="k" id="bat">--</div><div class="l">battery</div></div>
+                </div>
+            </div>
+            <div class="head"><h1>games</h1></div>
+            <div class="toolbar">
+                <div class="seg" id="cats">
+                    <button class="on" data-cat="all">all</button>
+                    <button data-cat="fav">favorites</button>
+                </div>
+                <span class="spacer"></span>
+                <select class="sort" id="sort">
+                    <option value="az">name a–z</option>
+                    <option value="za">name z–a</option>
+                </select>
+            </div>
+            <div class="grid" id="gameGrid"></div>
+        </section>
+
+        <!-- APPS -->
+        <section class="view" data-view="apps">
+            <div class="head"><h1>apps</h1></div>
+            <div class="coming-soon">
+                <i class="fas fa-wrench"></i>
+                <h3>apps coming soon</h3>
+                <p>use the <a onclick="go('proxy')">proxy</a> for now — it runs anything in-browser.</p>
+            </div>
+        </section>
+
+        <!-- PROXY -->
+        <section class="view" data-view="proxy">
+            <div class="head"><h1>proxy</h1><span class="count" id="wispStatus">connecting…</span><button class="full-btn" onclick="proxyFs()" title="fullscreen"><i class="fas fa-expand"></i> fullscreen</button></div>
+            <div class="proxy-frame" id="proxyFrameWrap" style="height:78vh;"><iframe id="proxyFrame" src="reactive/index.html"></iframe></div>
+        </section>
+
+        <!-- SETTINGS -->
+        <section class="view" data-view="settings">
+            <div class="head"><h1>settings</h1></div>
+            <div class="settings">
+                <div class="card-box">
+                    <h3><i class="ico fas fa-arrow-up-right-from-square"></i> blank tab</h3>
+                    <p>open elixer inside an about:blank tab — the address bar just shows about:blank, so it won't show up in your history.</p>
+                    <button class="btn" onclick="enableAboutBlank()">open blank tab</button>
+                </div>
+                <div class="card-box">
+                    <h3><i class="ico fas fa-mask"></i> tab cloak</h3>
+                    <p>disguise this tab's title and icon. saved locally.</p>
+                    <div class="cloak-grid" id="cloakGrid"></div>
+                    <button class="btn ghost" style="width:100%;margin-top:9px;" onclick="resetCloak()">reset</button>
+                </div>
+                <div class="card-box">
+                    <h3><i class="ico fas fa-blob"></i> blob cloak</h3>
+                    <p>wrap the site in a blob: url for extra stealth.</p>
+                    <button class="btn ghost" id="blobBtn" onclick="toggleBlob()">enable</button>
+                </div>
+                <div class="card-box">
+                    <h3><i class="ico fas fa-server"></i> wisp server</h3>
+                    <p>pick the proxy transport server.</p>
+                    <div class="wisp-list" id="wispList"></div>
+                    <input type="text" class="field mono" id="wispInput" placeholder="wss://your-wisp/wisp/">
+                    <button class="btn ghost" style="width:100%;margin-top:9px;" onclick="addWisp()">add server</button>
+                </div>
+                <div class="card-box">
+                    <h3><i class="ico fas fa-bolt"></i> panic key</h3>
+                    <div class="row"><span class="lbl"><i class="fas fa-keyboard"></i> bound key</span><button class="btn ghost" id="panicBtn" onclick="bindPanic()">click to bind</button></div>
+                    <input type="text" class="field mono" id="panicUrl" value="https://classroom.google.com/h" placeholder="redirect url">
+                </div>
+                <div class="card-box">
+                    <h3><i class="ico fas fa-database"></i> local data</h3>
+                    <p>wipe all cookies, cached data, and saved settings on this device, then reload.</p>
+                    <button class="btn ghost" onclick="clearData()">clear everything</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div>© <span id="yr"></span> elixer. built quiet.</div>
+        <div class="links"><a onclick="openDoc('terms')">terms of service</a><a onclick="openDoc('privacy')">privacy policy</a><a onclick="go('games')">games</a><a onclick="go('proxy')">proxy</a><a onclick="go('settings')">settings</a></div>
+    </footer>
+
+    <!-- consent gate -->
+    <div class="gate" id="gate">
+        <div class="gate-card">
+            <div class="gate-logo">elixer</div>
+            <p class="gate-sub">read the docs, then you're in.</p>
+            <div class="gate-docs">
+                <button class="doc-btn" onclick="openDoc('terms')"><span>terms of service</span><i class="fas fa-chevron-right"></i></button>
+                <button class="doc-btn" onclick="openDoc('privacy')"><span>privacy policy</span><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <label class="gate-agree"><input type="checkbox" id="agreeBox"><span>i've read and agree to the terms of service and privacy policy.</span></label>
+            <button class="gate-enter" id="enterBtn" disabled>enter site</button>
+        </div>
+    </div>
+
+    <!-- document modal -->
+    <div class="docmodal" id="docmodal">
+        <div class="doc-win">
+            <div class="top"><div class="t" id="docTitle">—</div><button class="x" onclick="closeDoc()"><i class="fas fa-xmark"></i></button></div>
+            <div class="doc-body" id="docBody"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="gmodal">
+        <div class="win">
+            <div class="top">
+                <div class="t" id="gTitle">—</div>
+                <div class="acts">
+                    <button onclick="toggleFs()" title="fullscreen"><i class="fas fa-expand"></i></button>
+                    <button class="x" onclick="closeGame()" title="close"><i class="fas fa-xmark"></i></button>
+                </div>
+            </div>
+            <iframe id="gFrame" src="" allow="autoplay; fullscreen"></iframe>
+        </div>
+    </div>
+
+    <div class="toasts" id="toasts"></div>
+
+    <script src="g/load/gamesData.js"></script>
+    <script src="n/gamesData.js"></script>
+    <script>
+        const LS_FAV = 'elixer_fav';
+        const getFav = () => { try { return JSON.parse(localStorage.getItem(LS_FAV)) || []; } catch { return []; } };
+        const setFav = a => localStorage.setItem(LS_FAV, JSON.stringify(a));
+
+        function toast(msg, kind = '') {
+            const w = document.getElementById('toasts');
+            const el = document.createElement('div');
+            el.className = 'toast ' + kind;
+            const ic = kind === 'good' ? 'fa-circle-check' : kind === 'warn' ? 'fa-triangle-exclamation' : kind === 'err' ? 'fa-circle-xmark' : 'fa-circle-info';
+            el.innerHTML = `<i class="fas ${ic}"></i><span>${msg}</span>`;
+            w.appendChild(el);
+            setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 250); }, 2400);
+        }
+
+        /* ---- navigation ---- */
+        function go(view) {
+            document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.dataset.view === view));
+            document.querySelectorAll('nav.tabs a').forEach(a => a.classList.toggle('active', a.dataset.view === view));
+            document.getElementById('q').value = '';
+            document.getElementById('dd').classList.remove('show');
+            if (view === 'games') renderGames();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        document.querySelectorAll('nav.tabs a').forEach(a => a.addEventListener('click', () => go(a.dataset.view)));
+
+        /* ---- normalize osmium data ---- */
+        const INLINE_GAMES = Array.isArray(window.games) ? window.games.filter(g => g.app !== true) : [];
+        const NO_IMAGE_GAMES = Array.isArray(window.more) ? window.more : [];
+        const ALL_GAMES = [
+            ...INLINE_GAMES.map(g => ({ title: g.name || 'game', img: g.img ? (g.img.startsWith('/') ? g.img : '/' + g.img.replace(/^\/+/,'')) : '', url: g.iframe || '', id: g.identifier || (g.name||'g').toLowerCase().replace(/\s+/g,'-'), pinned: g.pin === true })),
+            ...NO_IMAGE_GAMES.map(g => ({ title: g.name || 'game', img: g.img ? (g.img.startsWith('/') ? g.img : '/' + g.img.replace(/^\/+/,'')) : '', url: g.iframe || '', id: g.identifier || (g.name||'g').toLowerCase().replace(/\s+/g,'-'), pinned: false }))
+        ];
+        const DYNAMIC_APPS = Array.isArray(window.games) ? window.games.filter(g => g.app === true).map(g => ({ title: g.name || 'app', img: g.img ? (g.img.startsWith('/') ? g.img : '/' + g.img.replace(/^\/+/,'')) : '', url: g.iframe || g.iframe2 || '' })) : [];
+
+        function initial(url) {
+            if (!url) return 'about:blank';
+            if (/^(https?:|about:|blob:|data:)/i.test(url)) return url;
+            return url.replace(/^\/+/, '');
+        }
+
+        /* ---- render games ---- */
+        let curCat = 'all', curSort = 'az';
+        function renderGames() {
+            const fav = getFav();
+            let list = ALL_GAMES.slice();
+            if (curCat === 'fav') list = list.filter(g => fav.includes(g.url));
+            list.sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || (curSort === 'az' ? a.title.localeCompare(b.title) : b.title.localeCompare(a.title)));
+            const grid = document.getElementById('gameGrid');
+            if (!list.length) { grid.innerHTML = `<div class="empty">${curCat==='fav'?'no favorites yet — tap the star on a game.':'nothing here.'}</div>`; return; }
+            grid.innerHTML = list.map(g => {
+                const on = fav.includes(g.url);
+                const ph = (g.title[0] || 'G').toUpperCase();
+                const img = g.img ? `<img src="${g.img}" loading="lazy" onerror="this.remove();const p=this.parentNode&&this.parentNode.querySelector('.ph');if(p)p.style.display='grid'"><div class="ph" style="display:none">${ph}</div>` : `<div class="ph">${ph}</div>`;
+                return `<button class="tile" onclick="play('${g.url.replace(/'/g,"\\'")}','${(g.title||'').replace(/'/g,"\\'")}')">
+                    <div class="ic">${img}<div class="star ${on?'on':''}" onclick="event.stopPropagation();fav('${g.url.replace(/'/g,"\\'")}',this)"><i class="fa${on?'s':'r'} fa-star"></i></div></div>
+                    <div class="nm">${g.title}</div>
+                </button>`;
+            }).join('');
+        }
+        function renderApps() { /* apps coming soon */ }
+        function fav(url, el) {
+            let f = getFav();
+            const on = f.includes(url);
+            f = on ? f.filter(x => x !== url) : [...f, url];
+            setFav(f);
+            el.classList.toggle('on', !on);
+            el.querySelector('i').className = !on ? 'fas fa-star' : 'far fa-star';
+            toast(on ? 'removed from favorites' : 'saved to favorites', on ? 'warn' : 'good');
+            if (curCat === 'fav') renderGames();
+        }
+
+        /* ---- game modal ---- */
+        function play(url, title) {
+            url = initial(url);
+            document.getElementById('gTitle').textContent = title || 'game';
+            document.getElementById('gFrame').src = url;
+            const m = document.getElementById('gmodal');
+            m.classList.add('show'); document.body.style.overflow = 'hidden';
+        }
+        function closeGame() {
+            const m = document.getElementById('gmodal');
+            m.classList.remove('show'); document.getElementById('gFrame').src = '';
+            document.body.style.overflow = '';
+        }
+        function toggleFs() { const f = document.getElementById('gFrame'); if (f.requestFullscreen) f.requestFullscreen(); else if (f.webkitRequestFullscreen) f.webkitRequestFullscreen(); }
+        document.getElementById('gmodal').addEventListener('click', e => { if (e.target.id === 'gmodal') closeGame(); });
+
+        /* ---- search ---- */
+        const q = document.getElementById('q'), dd = document.getElementById('dd');
+        q.addEventListener('input', () => {
+            const v = q.value.toLowerCase().trim();
+            if (!v) { dd.classList.remove('show'); return; }
+            const all = [...ALL_GAMES, ...DYNAMIC_APPS];
+            const hit = all.filter(g => (g.title || '').toLowerCase().includes(v)).slice(0, 10);
+            if (!hit.length) { dd.innerHTML = `<div class="none">no matches</div>`; dd.classList.add('show'); return; }
+            dd.innerHTML = hit.map(g => `<div class="item" onclick="play('${g.url.replace(/'/g,"\\'")}','${(g.title||'').replace(/'/g,"\\'")}');dd.classList.remove('show');q.value=''">
+                ${g.img ? `<img src="${g.img}" onerror="this.style.visibility='hidden'">` : `<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E">`}
+                <span>${g.title}</span><span class="kind">${DYNAMIC_APPS.includes(g)?'app':'game'}</span>
+            </div>`).join('');
+            dd.classList.add('show');
+        });
+        document.addEventListener('click', e => { if (!e.target.closest('.search')) dd.classList.remove('show'); });
+        document.addEventListener('keydown', e => {
+            if (e.key === '/' && document.activeElement !== q) { e.preventDefault(); q.focus(); }
+            if (e.key === 'Escape') { dd.classList.remove('show'); if (document.getElementById('gmodal').classList.contains('show')) closeGame(); }
+        });
+
+        /* ---- filters ---- */
+        document.getElementById('cats').addEventListener('click', e => {
+            const b = e.target.closest('button'); if (!b) return;
+            document.querySelectorAll('#cats button').forEach(x => x.classList.remove('on'));
+            b.classList.add('on'); curCat = b.dataset.cat; renderGames();
+        });
+        document.getElementById('sort').addEventListener('change', e => { curSort = e.target.value; renderGames(); });
+
+        /* ---- proxy ---- */
+        const proxyWrap = document.getElementById('proxyFrameWrap');
+        const proxyFrame = document.getElementById('proxyFrame');
+        function proxySend(type, val) { try { proxyFrame.contentWindow.postMessage({ type, url: val }, '*'); } catch {} }
+        function proxyFs() {
+            const el = proxyWrap || proxyFrame;
+            if (el.requestFullscreen) el.requestFullscreen();
+            else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+        }
+        // show active wisp
+        (function renderWispStatus(){
+            const el = document.getElementById('wispStatus');
+            if (!el) return;
+            const u = localStorage.getItem('proxServer') || DEFAULT_WISP;
+            el.textContent = 'wisp: ' + u.replace(/^wss?:\/\//,'').replace(/\/$/,'');
+            el.title = u;
+        })();
+
+        /* ---- cloak ---- */
+        const CLOAKS = {
+            google: { t: 'Google', i: 'assets/google.ico' },
+            classroom: { t: 'Google Classroom', i: 'assets/classroom.ico' },
+            drive: { t: 'Google Drive', i: 'assets/drive.png' },
+            gmail: { t: 'Gmail', i: 'assets/gmail.ico' },
+            ixl: { t: 'IXL', i: 'assets/ixl.png' },
+            meet: { t: 'Google Meet', i: 'assets/meet.png' },
+            docs: { t: 'Google Docs', i: 'assets/docs.ico' },
+            sheets: { t: 'Google Sheets', i: 'assets/sheets.ico' },
+            slides: { t: 'Google Slides', i: 'assets/slides.ico' },
+        };
+        function setFavicon(href) { let l = document.querySelector("link[rel~='icon']"); if (!l) { l = document.createElement('link'); l.rel = 'icon'; document.head.appendChild(l); } l.href = href; }
+        function applyCloak(key) {
+            const p = CLOAKS[key]; if (!p) return;
+            document.title = p.t; setFavicon(p.i);
+            localStorage.setItem('tabCloak', JSON.stringify({ key, title: p.t, icon: p.i }));
+            renderCloak(); toast('cloaked as ' + p.t, 'good');
+        }
+        function resetCloak() {
+            localStorage.removeItem('tabCloak'); document.title = 'elixer';
+            setFavicon("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%233b82f6'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='18' font-weight='700' text-anchor='middle' fill='%23ffffff'%3Ee%3C/text%3E%3C/svg%3E");
+            renderCloak(); toast('cloak reset', 'warn');
+        }
+        function renderCloak() {
+            const saved = JSON.parse(localStorage.getItem('tabCloak') || '{}');
+            document.getElementById('cloakGrid').innerHTML = Object.entries(CLOAKS).map(([k,v]) =>
+                `<div class="cloak-opt ${saved.key===k?'on':''}" onclick="applyCloak('${k}')"><img src="${v.i}" onerror="this.style.visibility='hidden'"><span>${v.t}</span></div>`
+            ).join('');
+        }
+
+        /* ---- about:blank + blob ---- */
+        function enableAboutBlank() {
+            const w = window.open('about:blank', '_blank');
+            if (!w) return toast('pop-ups blocked', 'err');
+            const page = '<!doctype html><html><head><meta charset="utf-8"><title>elixer</title><style>html,body{margin:0;height:100%}iframe{width:100%;height:100%;border:0}</style></head><body><iframe src="' + location.href + '"></iframe></body></html>';
+            const pageUrl = URL.createObjectURL(new Blob([page], { type: 'text/html' }));
+            const shell = '<!doctype html><html><head><meta charset="utf-8"><title>elixer</title><style>html,body{margin:0;height:100%}iframe{width:100%;height:100%;border:0;display:block}</style></head><body><iframe src="' + pageUrl + '"></iframe></body></html>';
+            const shellUrl = URL.createObjectURL(new Blob([shell], { type: 'text/html' }));
+            const doc = w.document;
+            doc.open();
+            doc.write('<title>elixer</title><style>html,body{margin:0;height:100%}iframe{width:100%;height:100%;border:0;display:block}</style><iframe src="' + shellUrl + '"></iframe>');
+            doc.close();
+            toast('opened in blank tab', 'good');
+        }
+        function toggleBlob() {
+            const on = localStorage.getItem('blobCloakEnabled') === 'true';
+            if (on) { localStorage.setItem('blobCloakEnabled', 'false'); toast('blob cloak disabled', 'warn'); }
+            else {
+                localStorage.setItem('blobCloakEnabled', 'true');
+                try {
+                    const html = `<!doctype html><html><head><meta charset="utf-8"><title>...</title><style>html,body{margin:0;height:100%;}iframe{width:100%;height:100%;border:0;}</style></head><body><iframe src="${location.href}" allow="fullscreen"></iframe></body></html>`;
+                    const blob = new Blob([html], { type: 'text/html' });
+                    location.replace(URL.createObjectURL(blob));
+                } catch { toast('blob cloak failed', 'err'); }
+            }
+        }
+        if (window.top === window.self && localStorage.getItem('blobCloakEnabled') === 'true') {
+            try {
+                const html = `<!doctype html><html><head><meta charset="utf-8"><title>...</title><style>html,body{margin:0;height:100%;}iframe{width:100%;height:100%;border:0;}</style></head><body><iframe src="${location.href}" allow="fullscreen"></iframe></body></html>`;
+                const blob = new Blob([html], { type: 'text/html' });
+                location.replace(URL.createObjectURL(blob));
+            } catch {}
+        }
+
+        /* ---- wisp ---- */
+        const DEFAULT_WISP = 'wss://wisp.mercurywork.shop/wisp/';
+        const WISP_SERVERS = [
+            'wss://wisp.mercurywork.shop/wisp/',
+            'wss://anura.pro/wisp/',
+            'wss://wisp.rhw.one/wisp/',
+            'wss://wisp.sanitarium.tech/wisp/'
+        ];
+        function getWisps() { try { return JSON.parse(localStorage.getItem('customWisps') || '[]'); } catch { return []; } }
+        function curWisp() { return localStorage.getItem('proxServer') || DEFAULT_WISP; }
+        (function sanitizeWisp() {
+            const stored = localStorage.getItem('proxServer');
+            const known = [...WISP_SERVERS, ...getWisps()];
+            if (stored && !known.includes(stored)) { localStorage.setItem('proxServer', DEFAULT_WISP); }
+        })();
+        function setWisp(url) { localStorage.setItem('proxServer', url); renderWisp(); }
+        function addWisp() {
+            const v = document.getElementById('wispInput').value.trim();
+            if (!v) return;
+            const list = getWisps(); if (!list.includes(v)) list.push(v);
+            localStorage.setItem('customWisps', JSON.stringify(list));
+            setWisp(v); toast('server added', 'good');
+        }
+        function renderWisp() {
+            const cur = curWisp();
+            const all = [...WISP_SERVERS, ...getWisps()];
+            const seen = new Set(); const uniq = all.filter(u => u && !seen.has(u) && seen.add(u));
+            document.getElementById('wispList').innerHTML = uniq.map(u =>
+                `<div class="wisp ${u===cur?'on':''}"><span>${u}</span>${u!==DEFAULT_WISP ? `<button onclick="removeWisp('${u}')">remove</button>`:''}</div>`
+            ).join('');
+        }
+        function removeWisp(u) {
+            localStorage.setItem('customWisps', JSON.stringify(getWisps().filter(x => x !== u)));
+            if (curWisp() === u) setWisp(DEFAULT_WISP); else renderWisp();
+        }
+
+        /* ---- panic ---- */
+        let binding = false;
+        function bindPanic() { binding = true; document.getElementById('panicBtn').textContent = 'press a key…'; }
+        document.addEventListener('keydown', e => {
+            if (binding) {
+                e.preventDefault();
+                const url = document.getElementById('panicUrl').value || 'https://google.com';
+                localStorage.setItem('elixer_panic', JSON.stringify({ key: e.key, url }));
+                document.getElementById('panicBtn').textContent = e.key === ' ' ? 'space' : e.key;
+                binding = false; toast('panic key set', 'good'); return;
+            }
+            const p = JSON.parse(localStorage.getItem('elixer_panic') || '{}');
+            if (e.key === p.key && p.url) window.location.href = p.url;
+        });
+        function clearData() {
+            try { localStorage.clear(); } catch (e) {}
+            try { sessionStorage.clear(); } catch (e) {}
+            try {
+                if (window.caches && caches.keys) caches.keys().then(ks => ks.forEach(k => caches.delete(k)));
+            } catch (e) {}
+            try {
+                if (document.cookie) document.cookie.split(';').forEach(c => {
+                    const n = c.split('=')[0].trim();
+                    document.cookie = n + '=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+                });
+            } catch (e) {}
+            if (navigator.serviceWorker) { navigator.serviceWorker.getRegistrations().then(rs => rs.forEach(r => r.unregister())); }
+            toast('all local data cleared', 'warn');
+            setTimeout(() => location.reload(true), 600);
+        }
+
+        /* ---- clock + battery ---- */
+        function tickClock() {
+            const d = new Date();
+            let h = d.getHours();
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12; if (h === 0) h = 12;
+            const m = String(d.getMinutes()).padStart(2, '0');
+            const s = String(d.getSeconds()).padStart(2, '0');
+            const el = document.getElementById('clk'); if (el) el.textContent = h + ':' + m + ':' + s + ' ' + ampm;
+        }
+        tickClock(); setInterval(tickClock, 1000);
+        if (navigator.getBattery) {
+            navigator.getBattery().then(b => {
+                const upd = () => { const e = document.getElementById('bat'); if (e) e.textContent = Math.round(b.level * 100) + (b.charging ? '⚡' : '%'); };
+                upd(); b.addEventListener('levelchange', upd); b.addEventListener('chargingchange', upd);
+            }).catch(() => { const e = document.getElementById('bat'); if (e) e.textContent = 'n/a'; });
+        } else { const e = document.getElementById('bat'); if (e) e.textContent = 'n/a'; }
+
+        /* ---- boot ---- */
+        document.getElementById('yr').textContent = new Date().getFullYear();
+        const savedPanic = JSON.parse(localStorage.getItem('elixer_panic') || '{}');
+        if (savedPanic.key) document.getElementById('panicBtn').textContent = savedPanic.key === ' ' ? 'space' : savedPanic.key;
+        if (savedPanic.url) document.getElementById('panicUrl').value = savedPanic.url;
+        const savedCloak = JSON.parse(localStorage.getItem('tabCloak') || '{}');
+        if (savedCloak.t) { document.title = savedCloak.t; setFavicon(savedCloak.i); }
+        document.getElementById('blobBtn').textContent = localStorage.getItem('blobCloakEnabled') === 'true' ? 'disable' : 'enable';
+        renderGames(); renderApps(); renderCloak(); renderWisp();
+
+        /* ---- terms / privacy ---- */
+        const DOCS = {
+            terms: {
+                title: 'terms of service',
+                html: `<h4>1. acceptance</h4><p>by using elixer you agree to these terms. if you do not agree, do not use the site.</p>
+                <h4>2. use of the proxy</h4><p>the built-in proxy is provided for general browsing. you are responsible for what you access through it. do not use it for anything illegal in your jurisdiction.</p>
+                <h4>3. games</h4><p>games are loaded through third-party embed frames. elixer does not host the games and is not affiliated with their owners.</p>
+                <h4>4. school and institutional use</h4><p>elixer is a personal project and is not affiliated with, endorsed by, or operated by any school, employer, or institution. if you use this site on a network, device, or account that belongs to a school or employer, you alone are responsible for following that organization's rules. the creators of elixer are not responsible for any disciplinary action, suspension, termination, or other consequences that a school, employer, or any third party may take against you as a result of your use of this site. use it at your own risk.</p>
+                <h4>5. no warranty</h4><p>elixer is provided "as is" with no warranties of any kind. we are not liable for any damages or consequences arising from use of the site.</p>
+                <h4>6. changes</h4><p>we may update these terms at any time. continued use after changes means you accept the new terms.</p>`
+            },
+            privacy: {
+                title: 'privacy policy',
+                html: `<h4>1. what we store</h4><p>elixer runs entirely in your browser. we do not operate a server that collects your data. anything saved (favorites, cloak settings, proxy server choice, panic key) is kept in your device's local storage only.</p>
+                <h4>2. proxy traffic</h4><p>when you use the proxy, requests are routed through a third-party wisp transport server you select. those operators may log connection metadata. we do not control and are not responsible for third-party servers.</p>
+                <h4>3. cookies</h4><p>we use a single local flag to remember that you accepted these policies, so you are not asked again. no tracking cookies are set.</p>
+                <h4>4. children</h4><p>elixer is not directed at children under 13. if you are under 13, do not use the proxy or enter personal information.</p>
+                <h4>5. contact</h4><p>this is a personal project with no commercial operator. use at your own discretion.</p>`
+            }
+        };
+        function openDoc(kind) {
+            const d = DOCS[kind]; if (!d) return;
+            document.getElementById('docTitle').textContent = d.title;
+            document.getElementById('docBody').innerHTML = d.html;
+            document.getElementById('docmodal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeDoc() {
+            document.getElementById('docmodal').classList.remove('show');
+            document.body.style.overflow = (document.getElementById('gate').classList.contains('show') ? 'hidden' : '');
+        }
+        document.getElementById('docmodal').addEventListener('click', e => { if (e.target.id === 'docmodal') closeDoc(); });
+
+        /* ---- consent gate ---- */
+        const AGREE_KEY = 'elixer_agreed';
+        const gate = document.getElementById('gate');
+        const enterBtn = document.getElementById('enterBtn');
+        const agreeBox = document.getElementById('agreeBox');
+        function tryEnter() { gate.classList.remove('show'); document.body.style.overflow = ''; }
+        if (localStorage.getItem(AGREE_KEY) === '1') {
+            gate.classList.remove('show');
+        } else {
+            gate.classList.add('show');
+            document.body.style.overflow = 'hidden';
+            enterBtn.disabled = !agreeBox.checked;
+            agreeBox.addEventListener('change', () => { enterBtn.disabled = !agreeBox.checked; });
+            const nudge = () => { if (enterBtn.disabled) toast('check the box to continue', 'warn'); };
+            enterBtn.addEventListener('mouseenter', nudge);
+            enterBtn.addEventListener('click', () => {
+                if (!agreeBox.checked) { nudge(); return; }
+                localStorage.setItem(AGREE_KEY, '1');
+                tryEnter();
+            });
+        }
+    </script>
+</body>
+</html>
