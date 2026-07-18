@@ -229,9 +229,91 @@
 
         @media (max-width: 720px) { nav.tabs { display: none; } .search { width: 150px; } .splash { flex-direction: column; align-items: flex-start; } }
         @media (max-width: 480px) { .grid { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 10px; } }
+
+        /* ---------- admin ---------- */
+        nav.tabs a.admin-tab { display: none; color: #ff3b5c; font-weight: 600; text-shadow: 0 0 8px rgba(255,59,92,.8), 0 0 18px rgba(255,59,92,.45); }
+        body.admin-on nav.tabs a.admin-tab { display: inline-flex; }
+
+        /* red theme is opt-in via the admin menu toggle */
+        body.admin-red {
+            --blue: #ff2d4f; --blue-2: #ff5572; --blue-hi: #ff7d92; --blue-soft: rgba(255,45,79,.16);
+            --bg: #140a0d; --bg-1: #1b0d11; --panel: #1f0f14; --panel-2: #281219;
+            --line: #3a1a22; --line-soft: #2a141b;
+            --text-2: #c9a7af; --text-3: #9a7079; --text-4: #6e4b52;
+            background:
+                radial-gradient(1200px 600px at 80% -10%, rgba(255,45,79,.10), transparent 60%),
+                radial-gradient(900px 500px at -10% 110%, rgba(255,45,79,.08), transparent 55%),
+                var(--bg);
+        }
+        body.admin-red header {
+            background: linear-gradient(180deg, rgba(40,12,18,.92), rgba(20,10,13,.82));
+            border-bottom: 1px solid rgba(255,45,79,.4);
+            backdrop-filter: saturate(180%) blur(12px);
+        }
+        body.admin-red .logo { color: #ff3b5c; text-shadow: 0 0 12px rgba(255,59,92,.55); }
+        body.admin-red .card-box { border-color: rgba(255,45,79,.22); }
+        body.admin-red nav.tabs a.active { color: #ff8aa0; }
+        body.admin-red .gate-logo { color: #ff3b5c; }
+
+        /* extra-dark appearance toggle */
+        body.extra-dark { --bg: #050608; --bg-1: #080a0e; --panel: #0a0c11; --panel-2: #0f131a; --line: #1a1f29; --line-soft: #12161d; }
+        body.extra-dark:not(.admin-red) { background: var(--bg); }
+        .ann-bar.pinned { box-shadow: 0 6px 24px rgba(255,45,79,.5); }
+        .ann-bar.pinned::after { content: ''; }
+
+        .admin-panel .field { width: 100%; }
+        .admin-stat { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--line-soft); font-size: .85rem; }
+        .admin-stat:last-child { border-bottom: 0; }
+        .switch { position: relative; width: 44px; height: 24px; flex: none; }
+        .switch input { display: none; }
+        .switch .sl { position: absolute; inset: 0; background: var(--bg-1); border: 1px solid var(--line); border-radius: 999px; transition: .15s; cursor: pointer; }
+        .switch .sl::before { content: ""; position: absolute; width: 18px; height: 18px; left: 2px; top: 2px; background: var(--text-3); border-radius: 50%; transition: .15s; }
+        .switch input:checked + .sl { background: var(--blue); border-color: var(--blue); }
+        .switch input:checked + .sl::before { transform: translateX(20px); background: #fff; }
+        .ann-list { display: flex; flex-direction: column; gap: 8px; max-height: 220px; overflow-y: auto; margin-top: 8px; }
+        .ann-item { display: flex; gap: 8px; align-items: flex-start; background: var(--bg-1); border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px; font-size: .8rem; }
+        .ann-item .msg { flex: 1; line-height: 1.4; }
+        .ann-item .when { color: var(--text-4); font-size: .7rem; margin-top: 3px; }
+        .ann-item button { background: transparent; border: 0; color: var(--text-3); cursor: pointer; font-size: .8rem; }
+        .ann-item button:hover { color: var(--blue); }
+        .admin-badge { display: inline-flex; align-items: center; gap: 6px; font-size: .7rem; color: #ff3b5c; border: 1px solid rgba(255,59,92,.4); border-radius: 999px; padding: 2px 9px; margin-left: 8px; text-shadow: 0 0 8px rgba(255,59,92,.6); }
+
+        /* ---------- dev-only overlay (neutral dark glass, not red) ---------- */
+        .devonly { position: fixed; inset: 0; z-index: 900; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(6,8,12,.92); backdrop-filter: blur(8px); }
+        .devonly.show { display: flex; animation: rise .3s both; }
+        .devonly-card { width: 100%; max-width: 420px; background: linear-gradient(180deg, #161a22, #11141b); border: 1px solid var(--line); border-radius: 16px; padding: 32px 30px; text-align: center; box-shadow: 0 24px 60px rgba(0,0,0,.55); }
+        .devonly-card .tag { display: inline-block; color: var(--text-2); font-size: .68rem; letter-spacing: .24em; text-transform: uppercase; background: var(--bg-1); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; margin-bottom: 14px; }
+        .devonly-card h2 { margin: 4px 0 8px; font-size: 1.25rem; font-weight: 600; }
+        .devonly-card p { color: var(--text-3); font-size: .84rem; line-height: 1.55; margin-bottom: 20px; }
+        .devonly-card input { width: 100%; margin-bottom: 10px; }
+        .devonly-card .err { color: #ff6b81; font-size: .78rem; min-height: 18px; margin-bottom: 6px; }
+
+        /* ---------- in-game announcement bar ---------- */
+        .g-ann { display: none; align-items: center; gap: 8px; background: linear-gradient(90deg, rgba(255,45,79,.94), rgba(200,30,55,.9)); color: #fff; padding: 8px 14px; font-size: .8rem; font-weight: 500; }
+        .g-ann.show { display: flex; }
+        .g-ann .dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px rgba(255,255,255,.8); flex: none; }
+
+        /* ---------- announcement banner (polished, auto-closes) ---------- */
+        .ann-bar { display: none; align-items: center; gap: 11px; background: linear-gradient(90deg, rgba(255,45,79,.95), rgba(210,30,55,.92)); color: #fff; padding: 10px 14px 10px 16px; font-size: .84rem; font-weight: 500; box-shadow: 0 6px 24px rgba(255,45,79,.3); position: sticky; top: 0; z-index: 120; }
+        .ann-bar.show { display: flex; animation: rise .25s both; }
+        .ann-bar .dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px rgba(255,255,255,.85); flex: none; animation: pulse 1.4s infinite; }
+        .ann-bar .txt { flex: 1; line-height: 1.4; }
+        .ann-bar .ann-x { background: rgba(255,255,255,.16); border: 0; color: #fff; cursor: pointer; width: 26px; height: 26px; border-radius: 7px; display: grid; place-items: center; transition: background .15s; }
+        .ann-bar .ann-x:hover { background: rgba(255,255,255,.3); }
+        .ann-bar.ann-ok { background: linear-gradient(90deg, rgba(52,211,153,.95), rgba(16,185,129,.92)); }
+        .ann-bar.ann-warn { background: linear-gradient(90deg, rgba(255,174,59,.95), rgba(245,140,20,.92)); }
+        .ann-bar.ann-err { background: linear-gradient(90deg, rgba(248,113,113,.95), rgba(220,60,60,.92)); }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
     </style>
 </head>
 <body>
+
+    <!-- live announcement banner -->
+    <div class="ann-bar" id="annBar">
+        <span class="dot"></span>
+        <span class="txt" id="annBarTxt"></span>
+        <button class="ann-x" onclick="document.getElementById('annBar').classList.remove('show')" title="dismiss"><i class="fas fa-xmark"></i></button>
+    </div>
 
     <header>
         <div class="bar">
@@ -241,6 +323,7 @@
                 <a data-view="apps">apps</a>
                 <a data-view="proxy">proxy</a>
                 <a data-view="settings">settings</a>
+                <a class="admin-tab" data-view="admin">admin page</a>
             </nav>
             <div class="bar-right">
                 <div class="search">
@@ -334,12 +417,145 @@
                     <p>wipe all cookies, cached data, and saved settings on this device, then reload.</p>
                     <button class="btn ghost" onclick="clearData()">clear everything</button>
                 </div>
+                <div class="card-box">
+                    <h3><i class="ico fas fa-lock"></i> admin access</h3>
+                    <p>enter the admin password (set in <code>.env</code>) to unlock the admin page on this device.</p>
+                    <input type="password" class="field" id="adminPass" placeholder="admin password">
+                    <button class="btn" style="width:100%;margin-top:9px;" onclick="adminLogin()">unlock admin</button>
+                    <div id="adminStatus" style="font-size:.78rem;margin-top:8px;color:var(--text-3)"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ADMIN -->
+        <section class="view admin-panel" data-view="admin">
+            <div class="head"><h1>admin page<span class="admin-badge"><i class="fas fa-shield-halved"></i> owner</span></h1></div>
+            <div class="settings">
+                <div class="card-box">
+                    <h3><i class="ico fas fa-toggle-on"></i> site state</h3>
+                    <div class="admin-stat"><span>dev-only mode (blocks everyone)</span>
+                        <label class="switch"><input type="checkbox" id="devOnlyToggle" onchange="adminSet('devOnly', this.checked)"><span class="sl"></span></label></div>
+                    <div class="admin-stat"><span>total games loaded</span><span id="gameCount">—</span></div>
+                    <div class="admin-stat"><span>favorites on this device</span><span id="favCount">—</span></div>
+                    <div class="admin-stat"><span>server uptime</span><span id="uptime">—</span></div>
+                    <div class="admin-stat"><span>red admin theme</span>
+                        <label class="switch"><input type="checkbox" id="redThemeToggle" onchange="adminSetRedTheme(this.checked)"><span class="sl"></span></label></div>
+                    <button class="btn ghost" style="width:100%;margin-top:12px;" onclick="adminRescan()">rescan game folders</button>
+                </div>
+                <div class="card-box">
+                    <h3><i class="ico fas fa-comment-dots"></i> dev-only message</h3>
+                    <p>shown on the dev-only screen to visitors. leave blank for default.</p>
+                    <input type="text" class="field" id="motdInput" placeholder="e.g. back at 5pm">
+                    <button class="btn" style="width:100%;margin-top:9px;" onclick="adminSetMotd()">save message</button>
+                </div>
+                <div class="card-box">
+                    <h3><i class="ico fas fa-palette"></i> site branding</h3>
+                    <p>change the site name shown in the tab and top-left logo for everyone.</p>
+                    <input type="text" class="field" id="titleInput" placeholder="elixer">
+                    <button class="btn" style="width:100%;margin-top:9px;" onclick="adminSetTitle()">save name</button>
+                </div>
+                <div class="card-box">
+                    <h3><i class="ico fas fa-bolt"></i> push to everyone</h3>
+                    <p>force every visitor's page to reload instantly (e.g. after adding games).</p>
+                    <button class="btn" style="width:100%;margin-top:6px;" onclick="adminForceReload()">force reload all clients</button>
+                </div>
+                <div class="card-box">
+                    <h3><i class="ico fas fa-screwdriver-wrench"></i> tools & moderation</h3>
+                    <p>site-wide actions pushed to every visitor.</p>
+                    <button class="btn ghost" style="width:100%;margin-top:6px;" onclick="adminBroadcastFav()">reset all favorites + notify</button>
+                    <button class="btn ghost" style="width:100%;margin-top:8px;" onclick="adminGetState()">export server state (json)</button>
+                    <button class="btn ghost" style="width:100%;margin-top:8px;" onclick="adminRescan()">rescan games from folders</button>
+                </div>
+                <div class="card-box">
+                    <h3><i class="ico fas fa-code"></i> footer message</h3>
+                    <p>custom line shown in the page footer for everyone.</p>
+                    <input type="text" class="field" id="footerInput" placeholder="built quiet.">
+                    <button class="btn" style="width:100%;margin-top:9px;" onclick="adminSetFooter()">save footer</button>
+                </div>
+                <div class="card-box">
+                    <h3><i class="ico fas fa-bullhorn"></i> announcements</h3>
+                    <p>post a live message — it shows as a banner + toast on every visitor's screen instantly (and inside open games).</p>
+                    <input type="text" class="field" id="annInput" placeholder="type an announcement…">
+                    <div style="display:flex;gap:8px;margin-top:8px">
+                        <select class="field mono" id="annColor" style="flex:1">
+                            <option value="good">tone: success</option>
+                            <option value="warn">tone: warning</option>
+                            <option value="err">tone: alert</option>
+                        </select>
+                        <select class="field mono" id="annDur" style="flex:1" title="how long the banner stays">
+                            <option value="5">5s</option>
+                            <option value="10">10s</option>
+                            <option value="30">30s</option>
+                            <option value="0">pinned</option>
+                        </select>
+                    </div>
+                    <label style="display:flex;align-items:center;gap:8px;font-size:.78rem;color:var(--text-3);margin-top:8px;cursor:pointer">
+                        <input type="checkbox" id="annSticky"> keep as pinned banner (stays until cleared)
+                    </label>
+                    <button class="btn" style="width:100%;margin-top:9px;" onclick="adminAnnounce()">broadcast</button>
+                    <button class="btn ghost" style="width:100%;margin-top:8px;" onclick="adminClearAnnounce()">clear all</button>
+                    <div class="ann-list" id="annList"></div>
+                </div>
+                <div class="card-box">
+                    <h3><i class="ico fas fa-gamepad"></i> game management</h3>
+                    <p>search every game. launch it, open in a new tab, copy its link, or favorite it.</p>
+                    <input type="text" class="field" id="adminGameSearch" placeholder="search games…" oninput="adminGameList()">
+                    <div id="adminGameResults" style="max-height:320px;overflow-y:auto;margin-top:8px;font-size:.8rem"></div>
+                </div>
+                <div class="card-box">
+                    <h3><i class="ico fas fa-wand-magic-sparkles"></i> appearance</h3>
+                    <p>extra toggles for the look & feel.</p>
+                    <div class="admin-stat"><span>extra-dark mode</span>
+                        <label class="switch"><input type="checkbox" id="darkToggle" onchange="adminSetDark(this.checked)"><span class="sl"></span></label></div>
+                </div>
+                <div class="card-box">
+                    <h3><i class="ico fas fa-users"></i> visitor actions</h3>
+                    <p>push changes to every visitor at once.</p>
+                    <button class="btn ghost" style="width:100%;margin-top:6px;" onclick="adminBroadcastFav()">reset all favorites + notify</button>
+                    <button class="btn ghost" style="width:100%;margin-top:8px;" onclick="adminResetVisitors()">kick all visitors (force reload)</button>
+                    <button class="btn ghost" style="width:100%;margin-top:8px;" onclick="adminPreviewAnnounce()">preview announcement (this device)</button>
+                    <button class="btn ghost" style="width:100%;margin-top:8px;" onclick="chime('good');chime('warn');chime('err')">test chime sounds</button>
+                </div>
+                <div class="card-box">
+                    <h3><i class="ico fas fa-chart-line"></i> live status</h3>
+                    <div class="admin-stat"><span>total games</span><span id="gameCount2">—</span></div>
+                    <div class="admin-stat"><span>favorites (this device)</span><span id="favCount2">—</span></div>
+                    <div class="admin-stat"><span>dev-only active</span><span id="devState2">—</span></div>
+                    <div class="admin-stat"><span>pinned announcements</span><span id="pinCount2">—</span></div>
+                    <div class="admin-stat"><span>server uptime</span><span id="uptime2">—</span></div>
+                </div>
+                <div class="card-box">
+                    <h3><i class="ico fas fa-sliders"></i> announcement defaults</h3>
+                    <p>default tone + duration applied to new broadcasts.</p>
+                    <div style="display:flex;gap:8px;margin-top:4px">
+                        <select class="field mono" id="annColorDefault" style="flex:1" onchange="saveAnnDefault()">
+                            <option value="good">tone: success</option>
+                            <option value="warn">tone: warning</option>
+                            <option value="err">tone: alert</option>
+                        </select>
+                        <select class="field mono" id="annDurDefault" style="flex:1" onchange="saveAnnDefault()">
+                            <option value="5">5s</option>
+                            <option value="10">10s</option>
+                            <option value="30">30s</option>
+                            <option value="0">pinned</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card-box">
+                    <h3><i class="ico fas fa-key"></i> access</h3>
+                    <div class="admin-stat"><span>admin password (.env)</span><span>••••••••</span></div>
+                    <div class="admin-stat"><span>dev bypass password (.env)</span><span>••••••••</span></div>
+                    <div class="admin-stat"><span>session</span><span style="color:#ff6b81">unlocked</span></div>
+                    <button class="btn ghost" style="width:100%;margin-top:10px;" onclick="adminGetState()">export server state</button>
+                    <button class="btn ghost" style="width:100%;margin-top:8px;" onclick="adminImportState()">import server state</button>
+                    <button class="btn ghost" style="width:100%;margin-top:8px;" onclick="adminLock()">lock admin (this device)</button>
+                </div>
             </div>
         </section>
     </main>
 
     <footer>
-        <div>© <span id="yr"></span> elixer. built quiet.</div>
+        <div>© <span id="yr"></span> elixer. <span id="footerMsg">built quiet.</span></div>
         <div class="links"><a onclick="openDoc('terms')">terms of service</a><a onclick="openDoc('privacy')">privacy policy</a><a onclick="go('games')">games</a><a onclick="go('proxy')">proxy</a><a onclick="go('settings')">settings</a></div>
     </footer>
 
@@ -354,6 +570,47 @@
             </div>
             <label class="gate-agree"><input type="checkbox" id="agreeBox"><span>i've read and agree to the terms of service and privacy policy.</span></label>
             <button class="gate-enter" id="enterBtn" disabled>enter site</button>
+        </div>
+    </div>
+
+    <!-- consent gate: runs standalone so it always shows on first boot (independent of other scripts) -->
+    <script>
+      (function () {
+        var AGREE_KEY = 'elixer_agreed';
+        var gate = document.getElementById('gate');
+        var enterBtn = document.getElementById('enterBtn');
+        var agreeBox = document.getElementById('agreeBox');
+        if (!gate) return;
+        if (localStorage.getItem(AGREE_KEY) === '1') {
+          gate.style.display = 'none';
+          gate.classList.remove('show');
+          document.body.style.overflow = '';
+          return;
+        }
+        gate.classList.add('show');
+        gate.style.display = '';
+        document.body.style.overflow = 'hidden';
+        if (enterBtn && agreeBox) {
+          enterBtn.disabled = !agreeBox.checked;
+          agreeBox.addEventListener('change', function () { enterBtn.disabled = !agreeBox.checked; });
+          enterBtn.addEventListener('click', function () {
+            if (!agreeBox.checked) { if (window.toast) toast('check the box to continue', 'warn'); return; }
+            try { localStorage.setItem(AGREE_KEY, '1'); } catch (e) {}
+            location.reload();
+          });
+        }
+      })();
+    </script>
+
+    <!-- dev-only overlay -->
+    <div class="devonly" id="devOnly">
+        <div class="devonly-card">
+            <h2>elixer is in dev-only mode</h2>
+            <p id="devMotd" style="display:none"></p>
+            <p>we'll be back shortly. thanks for your patience. if you're the owner, enter the dev bypass password to continue.</p>
+            <input type="password" class="field" id="devBypass" placeholder="dev bypass password">
+            <div class="err" id="devErr"></div>
+            <button class="btn" style="width:100%" onclick="devBypassSubmit()">enter</button>
         </div>
     </div>
 
@@ -374,14 +631,15 @@
                     <button class="x" onclick="closeGame()" title="close"><i class="fas fa-xmark"></i></button>
                 </div>
             </div>
+            <div class="g-ann" id="gAnnBar"></div>
             <iframe id="gFrame" src="" allow="autoplay; fullscreen"></iframe>
         </div>
     </div>
 
     <div class="toasts" id="toasts"></div>
 
-    <script src="g/load/gamesData.js"></script>
-    <script src="n/gamesData.js"></script>
+    <script src="data/games.js"></script>
+    <script src="data/more.js"></script>
     <script>
         const LS_FAV = 'elixer_fav';
         const getFav = () => { try { return JSON.parse(localStorage.getItem(LS_FAV)) || []; } catch { return []; } };
@@ -404,6 +662,7 @@
             document.getElementById('q').value = '';
             document.getElementById('dd').classList.remove('show');
             if (view === 'games') renderGames();
+            if (view === 'admin') renderAdmin();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         document.querySelectorAll('nav.tabs a').forEach(a => a.addEventListener('click', () => go(a.dataset.view)));
@@ -467,7 +726,7 @@
             m.classList.remove('show'); document.getElementById('gFrame').src = '';
             document.body.style.overflow = '';
         }
-        function toggleFs() { const f = document.getElementById('gFrame'); if (f.requestFullscreen) f.requestFullscreen(); else if (f.webkitRequestFullscreen) f.webkitRequestFullscreen(); }
+        function toggleFs() { const w = document.querySelector('#gmodal .win'); if (w && w.requestFullscreen) w.requestFullscreen(); else if (w && w.webkitRequestFullscreen) w.webkitRequestFullscreen(); }
         document.getElementById('gmodal').addEventListener('click', e => { if (e.target.id === 'gmodal') closeGame(); });
 
         /* ---- search ---- */
@@ -709,27 +968,415 @@
         }
         document.getElementById('docmodal').addEventListener('click', e => { if (e.target.id === 'docmodal') closeDoc(); });
 
-        /* ---- consent gate ---- */
-        const AGREE_KEY = 'elixer_agreed';
-        const gate = document.getElementById('gate');
-        const enterBtn = document.getElementById('enterBtn');
-        const agreeBox = document.getElementById('agreeBox');
-        function tryEnter() { gate.classList.remove('show'); document.body.style.overflow = ''; }
-        if (localStorage.getItem(AGREE_KEY) === '1') {
-            gate.classList.remove('show');
-        } else {
-            gate.classList.add('show');
-            document.body.style.overflow = 'hidden';
-            enterBtn.disabled = !agreeBox.checked;
-            agreeBox.addEventListener('change', () => { enterBtn.disabled = !agreeBox.checked; });
-            const nudge = () => { if (enterBtn.disabled) toast('check the box to continue', 'warn'); };
-            enterBtn.addEventListener('mouseenter', nudge);
-            enterBtn.addEventListener('click', () => {
-                if (!agreeBox.checked) { nudge(); return; }
-                localStorage.setItem(AGREE_KEY, '1');
-                tryEnter();
+        /* ---- admin + dev-only (live) ---- */
+        const ADMIN_KEY = 'elixer_admin';
+        const DEVBYPASS_KEY = 'elixer_devbypass';
+        let ADMIN_STATE = { devOnly: false, maintenance: false, announcements: [] };
+        let ADMIN_SESSION_PASS = '';   // kept in memory so actions don't re-prompt
+        let lastAnnounceTs = 0;
+
+        function setCookie(k, v, days) { try { const d = new Date(); d.setTime(d.getTime() + (days||30)*864e5); document.cookie = k + '=' + encodeURIComponent(v) + ';path=/;expires=' + d.toUTCString(); } catch (e) {} }
+        function getCookie(k) { try { const m = document.cookie.match(new RegExp('(?:^|; )' + k + '=([^;]*)')); return m ? decodeURIComponent(m[1]) : null; } catch (e) { return null; } }
+        function isAdmin() { return ADMIN_SESSION_PASS !== '' || localStorage.getItem(ADMIN_KEY) === '1' || getCookie(ADMIN_KEY) === '1'; }
+        function isDevBypassed() { return ADMIN_SESSION_PASS !== '' || localStorage.getItem(DEVBYPASS_KEY) === '1' || getCookie(DEVBYPASS_KEY) === '1'; }
+
+        function applyAdminTheme() {
+            if (isAdmin()) document.body.classList.add('admin-on');
+            else document.body.classList.remove('admin-on');
+            // red theme: follows server default unless this device overrode it
+            const override = localStorage.getItem('elixer_redtheme');
+            const want = (override === null) ? (ADMIN_STATE.redTheme !== false) : (override === '1');
+            document.body.classList.toggle('admin-red', isAdmin() && want);
+        }
+        function setRedTheme(on) {
+            try { localStorage.setItem('elixer_redtheme', on ? '1' : '0'); } catch (e) {}
+            document.body.classList.toggle('admin-red', isAdmin() && on);
+        }
+
+        function adminApi(path, opts) {
+            return fetch(path, opts).then(r => r.json()).catch(() => null);
+        }
+
+        function adminLogin() {
+            const p = document.getElementById('adminPass').value;
+            if (!p) return;
+            adminApi('/api/admin?pass=' + encodeURIComponent(p)).then(res => {
+                const st = document.getElementById('adminStatus');
+                if (res && res.devOnly !== undefined) {
+                    ADMIN_SESSION_PASS = p;
+                    try { localStorage.setItem(ADMIN_KEY, '1'); } catch (e) {}
+                    setCookie(ADMIN_KEY, '1', 30);
+                    setCookie(DEVBYPASS_KEY, '1', 30); // admins are always exempt from dev-only
+                    applyAdminTheme();
+                    toast('admin unlocked', 'good');
+                    st.textContent = 'unlocked — open "admin page" in the top bar.';
+                    go('admin'); renderAdmin();
+                } else {
+                    st.textContent = 'wrong password.';
+                    toast('wrong admin password', 'err');
+                }
             });
         }
+        function adminLock() {
+            ADMIN_SESSION_PASS = '';
+            try { localStorage.removeItem(ADMIN_KEY); localStorage.removeItem(DEVBYPASS_KEY); } catch (e) {}
+            setCookie(ADMIN_KEY, '', -1); setCookie(DEVBYPASS_KEY, '', -1);
+            applyAdminTheme();
+            toast('admin locked on this device', 'warn');
+            go('games');
+        }
+        function needPass() {
+            if (ADMIN_SESSION_PASS) return ADMIN_SESSION_PASS;
+            if (!isAdmin()) return null;
+            const p = prompt('re-enter admin password to confirm:');
+            if (p !== null) ADMIN_SESSION_PASS = p; // remember for this session
+            return p;
+        }
+        function adminSet(key, val) {
+            if (!isAdmin()) return;
+            const p = needPass(); if (!p) return;
+            adminApi('/api/admin?pass=' + encodeURIComponent(p) + '&' + key + '=' + (val ? '1' : '0')).then(res => {
+                if (res && res.devOnly !== undefined) { ADMIN_STATE = res; toast((val ? '' : 'un') + key + ' updated', 'good'); }
+                else { toast('update failed', 'err'); }
+                renderAdmin();
+            });
+        }
+        function saveAnnDefault() {
+            try {
+                localStorage.setItem('elixer_ann_tone', document.getElementById('annColorDefault').value);
+                localStorage.setItem('elixer_ann_dur', document.getElementById('annDurDefault').value);
+            } catch (e) {}
+            toast('announcement defaults saved', 'good');
+        }
+        function loadAnnDefault() {
+            try {
+                const t = localStorage.getItem('elixer_ann_tone');
+                const d = localStorage.getItem('elixer_ann_dur');
+                if (t) document.getElementById('annColor').value = t;
+                if (d) document.getElementById('annDur').value = d;
+            } catch (e) {}
+        }
+        function adminAnnounce() {
+            const v = document.getElementById('annInput').value.trim();
+            if (!v) return;
+            const color = document.getElementById('annColor').value;
+            const dur = document.getElementById('annDur').value;
+            const sticky = document.getElementById('annSticky').checked ? '1' : '';
+            const p = needPass(); if (p === null) return;
+            adminApi('/api/admin?pass=' + encodeURIComponent(p) + '&announce=' + encodeURIComponent(v) + '&announceColor=' + encodeURIComponent(color) + '&annDur=' + encodeURIComponent(dur) + (sticky ? '&annSticky=1' : '')).then(res => {
+                if (res && res.devOnly !== undefined) { ADMIN_STATE = res; document.getElementById('annInput').value = ''; document.getElementById('annSticky').checked = false; toast('announcement sent', 'good'); renderAdmin(); }
+            });
+        }
+        function adminClearAnnounce() {
+            const p = needPass(); if (p === null) return;
+            adminApi('/api/admin?pass=' + encodeURIComponent(p) + '&clearAnnounce=1').then(res => {
+                if (res) { ADMIN_STATE = res; toast('announcements cleared', 'good'); renderAdmin(); }
+            });
+        }
+        function adminSetDark(on) {
+            const p = needPass(); if (p === null) { renderAdmin(); return; }
+            adminApi('/api/admin?pass=' + encodeURIComponent(p) + '&dark=' + (on ? '1' : '0')).then(res => {
+                if (res) { ADMIN_STATE = res; setDark(on); toast('extra-dark ' + (on ? 'on' : 'off'), 'good'); }
+            });
+        }
+        function setDark(on) { document.body.classList.toggle('extra-dark', on); }
+        function adminPreviewAnnounce() {
+            const v = document.getElementById('annInput').value.trim();
+            const color = document.getElementById('annColor').value;
+            if (!v) { toast('type something first', 'warn'); return; }
+            pushAnnouncement({ msg: v, color: color, dur: parseInt(document.getElementById('annDur').value || '5', 10), sticky: document.getElementById('annSticky').checked });
+        }
+        function adminResetVisitors() {
+            const p = needPass(); if (p === null) return;
+            if (!confirm('force every visitor to reload? this disconnects all open games.')) return;
+            adminApi('/api/admin?pass=' + encodeURIComponent(p) + '&reload=1').then(res => { if (res) toast('all clients kicked', 'good'); });
+        }
+        function adminGameList() {
+            const q = (document.getElementById('adminGameSearch').value || '').toLowerCase().trim();
+            const all = [...(window.games || []), ...(window.more || [])];
+            const box = document.getElementById('adminGameResults');
+            if (!q) { box.innerHTML = '<div style="color:var(--text-4);padding:8px">type to search ' + all.length + ' games.</div>'; return; }
+            const favs = getFav();
+            const hits = all.filter(g => (g.name || '').toLowerCase().includes(q)
+                || (g.identifier || '').toLowerCase().includes(q)).slice(0, 40);
+            if (!hits.length) { box.innerHTML = '<div style="color:var(--text-4);padding:8px">no matches.</div>'; return; }
+            box.innerHTML = hits.map(g => {
+                const url = g.iframe || '';
+                const safe = url.replace(/'/g, "\\'");
+                const nm = (g.name || g.identifier || 'untitled').replace(/'/g, "\\'");
+                const on = favs.includes(url);
+                return `<div style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-bottom:1px solid var(--line-soft)">
+                    <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1" title="${nm}">${nm}</span>
+                    <button class="btn ghost" style="padding:3px 7px;font-size:.72rem" title="launch" onclick="play('${safe}','${nm}')"><i class="fas fa-play"></i></button>
+                    <button class="btn ghost" style="padding:3px 7px;font-size:.72rem" title="open in new tab" onclick="window.open('${safe}','_blank')"><i class="fas fa-external-link-alt"></i></button>
+                    <button class="btn ghost" style="padding:3px 7px;font-size:.72rem" title="copy link" onclick="copyLink('${safe}')"><i class="fas fa-link"></i></button>
+                    <button class="btn ghost ${on ? 'on' : ''}" id="af_${g.identifier}" style="padding:3px 7px;font-size:.72rem" title="favorite" onclick="adminFav('${safe}',this)"><i class="fa${on ? 's' : 'r'} fa-star"></i></button>
+                </div>`;
+            }).join('');
+        }
+        function adminFav(url, el) {
+            const f = getFav();
+            const on = f.includes(url);
+            const nf = on ? f.filter(x => x !== url) : [...f, url];
+            setFav(nf);
+            el.classList.toggle('on', !on);
+            el.querySelector('i').className = !on ? 'fas fa-star' : 'far fa-star';
+            toast(on ? 'removed from favorites' : 'saved to favorites', on ? 'warn' : 'good');
+        }
+        function copyLink(url) {
+            const full = location.origin + '/' + (url || '').replace(/^\/+/, '');
+            navigator.clipboard.writeText(full).then(() => toast('link copied', 'good')).catch(() => toast('copy failed', 'err'));
+        }
+        function adminRemoveAnnounce(i) {
+            const p = needPass(); if (p === null) return;
+            adminApi('/api/admin?pass=' + encodeURIComponent(p), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ pass: p, removeAnnounce: i }) }).then(res => {
+                if (res) { ADMIN_STATE = res; renderAdmin(); }
+            });
+        }
+        function adminRescan() {
+            const p = needPass(); if (p === null) return;
+            adminApi('/api/admin?pass=' + encodeURIComponent(p)).then(() => {});
+            toast('rescanning game folders…', 'good');
+            setTimeout(() => location.reload(), 600);
+        }
+        function adminBroadcastFav() {
+            const p = needPass(); if (p === null) return;
+            const msg = 'favorites were reset by the admin.';
+            adminApi('/api/admin?pass=' + encodeURIComponent(p) + '&announce=' + encodeURIComponent(msg)).then(res => {
+                if (res) { try { localStorage.removeItem('elixer_fav'); } catch (e) {} ADMIN_STATE = res; toast('favorites reset + announced', 'good'); renderAdmin(); }
+            });
+        }
+        function adminGetState() {
+            const p = needPass(); if (p === null) return;
+            adminApi('/api/admin?pass=' + encodeURIComponent(p)).then(res => {
+                if (!res) return;
+                const blob = JSON.stringify(res, null, 2);
+                const url = URL.createObjectURL(new Blob([blob], { type: 'application/json' }));
+                const a = document.createElement('a'); a.href = url; a.download = 'elixer-state.json'; a.click();
+                URL.revokeObjectURL(url);
+                toast('state exported', 'good');
+            });
+        }
+        function adminSetMotd() {
+            const v = document.getElementById('motdInput').value;
+            const p = needPass(); if (p === null) return;
+            adminApi('/api/admin?pass=' + encodeURIComponent(p) + '&motd=' + encodeURIComponent(v)).then(res => {
+                if (res) { ADMIN_STATE = res; toast('dev message saved', 'good'); renderAdmin(); }
+            });
+        }
+        function adminSetTitle() {
+            const v = document.getElementById('titleInput').value.trim();
+            if (!v) return;
+            const p = needPass(); if (p === null) return;
+            adminApi('/api/admin?pass=' + encodeURIComponent(p) + '&title=' + encodeURIComponent(v)).then(res => {
+                if (res) { ADMIN_STATE = res; toast('site name updated', 'good'); renderAdmin(); }
+            });
+        }
+        function adminForceReload() {
+            const p = needPass(); if (p === null) return;
+            adminApi('/api/admin?pass=' + encodeURIComponent(p) + '&reload=1').then(res => {
+                if (res) { toast('reload pushed to all clients', 'good'); }
+            });
+        }
+        function adminSetRedTheme(on) {
+            const p = needPass(); if (p === null) { renderAdmin(); return; }
+            adminApi('/api/admin?pass=' + encodeURIComponent(p) + '&redTheme=' + (on ? '1' : '0')).then(res => {
+                if (res) { ADMIN_STATE = res; setRedTheme(on); toast('red theme ' + (on ? 'on' : 'off'), 'good'); }
+            });
+        }
+        function adminSetFooter() {
+            const v = document.getElementById('footerInput').value;
+            const p = needPass(); if (p === null) return;
+            adminApi('/api/admin?pass=' + encodeURIComponent(p) + '&footer=' + encodeURIComponent(v)).then(res => {
+                if (res) { ADMIN_STATE = res; toast('footer updated', 'good'); renderAdmin(); }
+            });
+        }
+        function adminImportState() {
+            const p = needPass(); if (p === null) return;
+            const txt = prompt('paste server state JSON:');
+            if (!txt) return;
+            try {
+                const obj = JSON.parse(txt);
+            } catch (e) { toast('invalid json', 'err'); return; }
+            adminApi('/api/admin?pass=' + encodeURIComponent(p), {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(Object.assign({ pass: p }, JSON.parse(txt)))
+            }).then(res => { if (res) { ADMIN_STATE = res; toast('state imported', 'good'); renderAdmin(); } });
+        }
+        function fmtUptime(sec) {
+            const d = Math.floor(sec / 86400);
+            const h = Math.floor((sec % 86400) / 3600);
+            const m = Math.floor((sec % 3600) / 60);
+            const s = Math.floor(sec % 60);
+            return (d ? d + 'd ' : '') + h + 'h ' + m + 'm ' + s + 's';
+        }
+        setInterval(() => {
+            if (isAdmin() && ADMIN_STATE.started) {
+                document.getElementById('uptime').textContent = fmtUptime(Math.max(0, Math.floor(Date.now() / 1000) - ADMIN_STATE.started));
+            }
+        }, 1000);
+        function renderAdmin() {
+            if (!isAdmin()) return;
+            document.getElementById('devOnlyToggle').checked = !!ADMIN_STATE.devOnly;
+            const all = [...(Array.isArray(window.games) ? window.games : []), ...(Array.isArray(window.more) ? window.more : [])];
+            document.getElementById('gameCount').textContent = all.length;
+            const fav = (function(){ try { return JSON.parse(localStorage.getItem('elixer_fav') || '[]'); } catch { return []; } })();
+            document.getElementById('favCount').textContent = fav.length;
+            document.getElementById('motdInput').value = ADMIN_STATE.motd || '';
+            document.getElementById('titleInput').value = ADMIN_STATE.title || 'elixer';
+            document.getElementById('footerInput').value = ADMIN_STATE.footer || '';
+            const rt = document.getElementById('redThemeToggle');
+            if (rt) rt.checked = ADMIN_STATE.redTheme !== false;
+            const dt = document.getElementById('darkToggle');
+            if (dt) dt.checked = !!ADMIN_STATE.dark;
+            if (ADMIN_STATE.started) {
+                document.getElementById('uptime').textContent = fmtUptime(Math.max(0, Math.floor(Date.now() / 1000) - ADMIN_STATE.started));
+                const u2 = document.getElementById('uptime2'); if (u2) u2.textContent = fmtUptime(Math.max(0, Math.floor(Date.now() / 1000) - ADMIN_STATE.started));
+            }
+            // live status card
+            const g2 = document.getElementById('gameCount2'); if (g2) g2.textContent = all.length;
+            const f2 = document.getElementById('favCount2'); if (f2) f2.textContent = fav.length;
+            const ds = document.getElementById('devState2'); if (ds) { ds.textContent = ADMIN_STATE.devOnly ? 'yes' : 'no'; ds.style.color = ADMIN_STATE.devOnly ? '#ff6b81' : 'var(--text-2)'; }
+            const pc = document.getElementById('pinCount2'); if (pc) pc.textContent = (ADMIN_STATE.announcements || []).filter(a => a.sticky).length;
+            // announcement defaults
+            const cd = document.getElementById('annColorDefault'); if (cd) cd.value = localStorage.getItem('elixer_ann_tone') || 'good';
+            const dd = document.getElementById('annDurDefault'); if (dd) dd.value = localStorage.getItem('elixer_ann_dur') || '5';
+            loadAnnDefault();
+            const list = document.getElementById('annList');
+            const anns = ADMIN_STATE.announcements || [];
+            list.innerHTML = anns.length ? anns.map((a, i) =>
+                `<div class="ann-item"><div class="msg">${a.msg.replace(/</g,'&lt;')}<div class="when">${new Date(a.t * 1000).toLocaleString()}${a.sticky ? ' · pinned' : ''}</div></div><button onclick="adminRemoveAnnounce(${i})" title="remove"><i class="fas fa-trash"></i></button></div>`
+            ).join('') : `<div class="empty" style="color:var(--text-4);font-size:.8rem;padding:6px 0">no announcements yet.</div>`;
+        }
+
+        /* ---- dev-only overlay + announcements (realtime) ---- */
+        function devBypassSubmit() {
+            const v = document.getElementById('devBypass').value;
+            const err = document.getElementById('devErr');
+            fetch('/api/admin?checkBypass=1&bypass=' + encodeURIComponent(v)).then(r => r.json()).then(res => {
+                if (res && res.ok) {
+                    ADMIN_SESSION_PASS = ADMIN_SESSION_PASS || '';
+                    try { localStorage.setItem(DEVBYPASS_KEY, '1'); } catch (e) {}
+                    setCookie(DEVBYPASS_KEY, '1', 30);
+                    document.getElementById('devOnly').classList.remove('show');
+                    document.body.style.overflow = '';
+                    toast('dev-only bypassed', 'good');
+                } else {
+                    err.textContent = 'incorrect bypass password.';
+                }
+            }).catch(() => { err.textContent = 'could not reach server.'; });
+        }
+        function showDevOnly() {
+            if (isDevBypassed()) return;
+            // if any element is fullscreen (e.g. a game), exit it so the overlay shows
+            if (document.fullscreenElement) { try { document.exitFullscreen(); } catch (e) {} }
+            else if (document.webkitFullscreenElement) { try { document.webkitExitFullscreen(); } catch (e) {} }
+            const d = document.getElementById('devOnly');
+            d.classList.add('show');
+            const m = document.getElementById('gmodal');
+            if (m) m.classList.remove('show');
+            document.body.style.overflow = 'hidden';
+        }
+        function hideDevOnly() {
+            document.getElementById('devOnly').classList.remove('show');
+            if (!isDevBypassed()) document.body.style.overflow = '';
+        }
+        let _chimeCtx = null;
+        function chime(tone) {
+            try {
+                _chimeCtx = _chimeCtx || new (window.AudioContext || window.webkitAudioContext)();
+                const ctx = _chimeCtx;
+                if (ctx.state === 'suspended') ctx.resume();
+                const notes = tone === 'err' ? [440, 330] : tone === 'warn' ? [520, 660] : [660, 880];
+                const now = ctx.currentTime;
+                notes.forEach((f, i) => {
+                    const o = ctx.createOscillator();
+                    const g = ctx.createGain();
+                    o.type = 'sine';
+                    o.frequency.value = f;
+                    const t = now + i * 0.12;
+                    g.gain.setValueAtTime(0.0001, t);
+                    g.gain.exponentialRampToValueAtTime(0.06, t + 0.02);
+                    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+                    o.connect(g).connect(ctx.destination);
+                    o.start(t);
+                    o.stop(t + 0.2);
+                });
+            } catch (e) {}
+        }
+        function pushAnnouncement(a) {
+            const msg = (typeof a === 'string') ? a : a.msg;
+            const color = (a && a.color) || (ADMIN_STATE && ADMIN_STATE.announceColor) || 'good';
+            const dur = (a && a.dur) || 5;
+            const sticky = (a && a.sticky);
+            chime(color);
+            toast('📢 ' + msg, color);
+            const bar = document.getElementById('annBar');
+            document.getElementById('annBarTxt').textContent = msg;
+            bar.classList.remove('ann-ok', 'ann-warn', 'ann-err');
+            bar.classList.add('ann-' + (color === 'good' ? 'ok' : color === 'warn' ? 'warn' : 'err'));
+            bar.classList.add('show');
+            bar.classList.toggle('pinned', !!sticky);
+            clearTimeout(bar._t);
+            if (!sticky && dur > 0) bar._t = setTimeout(() => bar.classList.remove('show'), dur * 1000);
+            const gbar = document.getElementById('gAnnBar');
+            if (gbar) { gbar.textContent = msg; gbar.classList.add('show'); gbar.classList.toggle('pinned', !!sticky); clearTimeout(gbar._t); if (!sticky && dur > 0) gbar._t = setTimeout(() => gbar.classList.remove('show'), dur * 1000); }
+        }
+        let lastReload = 0;
+        function applyState(s) {
+            ADMIN_STATE = s;
+            applyAdminTheme();
+            // apply site title live
+            if (s.title && s.title !== document.title && !document.querySelector("link[rel~='icon']")) {
+                // only override if not cloaked
+            }
+            if (s.title) {
+                const cloak = JSON.parse(localStorage.getItem('tabCloak') || '{}');
+                if (!cloak.t) document.title = s.title;
+                const logo = document.querySelector('header .logo'); if (logo && !cloak.t) logo.textContent = s.title;
+            }
+            if (typeof s.footer === 'string') {
+                const f = document.getElementById('footerMsg');
+                if (f) f.textContent = s.footer || 'built quiet.';
+            }
+            if (typeof s.dark === 'boolean') {
+                document.body.classList.toggle('extra-dark', s.dark);
+            }
+            if (isAdmin()) renderAdmin();
+            // dev-only message of the day
+            const motd = document.getElementById('devMotd');
+            if (motd) {
+                if (s.motd) { motd.textContent = s.motd; motd.style.display = 'block'; }
+                else motd.style.display = 'none';
+            }
+            // force reload signal
+            if (s.reloadSignal && lastReload && s.reloadSignal !== lastReload) {
+                toast('admin pushed a reload', 'warn');
+                setTimeout(() => location.reload(), 600);
+            }
+            if (s.reloadSignal) lastReload = s.reloadSignal;
+            const anns = s.announcements || [];
+            const latest = anns[0];
+            if (latest && latest.t > lastAnnounceTs) {
+                lastAnnounceTs = latest.t;
+                pushAnnouncement({ msg: latest.msg, color: s.announceColor, dur: latest.dur, sticky: latest.sticky });
+            }
+            if (s.devOnly) showDevOnly(); else hideDevOnly();
+        }
+        function pollState() {
+            adminApi('/api/state').then(res => { if (res) applyState(res); });
+        }
+        // realtime via SSE, with polling fallback
+        pollState();
+        try {
+            const es = new EventSource('/api/stream');
+            es.onmessage = e => { try { applyState(JSON.parse(e.data)); } catch (_) {} };
+            es.onerror = () => { setInterval(pollState, 3000); };
+        } catch (_) {
+            setInterval(pollState, 3000);
+        }
+
+        /* ---- consent gate (handled by standalone script near the gate markup) ---- */
     </script>
 </body>
 </html>

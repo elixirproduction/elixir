@@ -1,0 +1,7 @@
+.env
+admin.json
+__pycache__/
+*.pyc
+# bulk game HTML files are added locally (not tracked); generated data lives in data/
+g/
+n/
