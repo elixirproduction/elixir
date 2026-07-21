@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """elixer server: static host + live admin state + auto games data generation."""
-import os, re, json, http.server, socketserver, urllib.parse, threading, time, functools, queue
+import os, re, json, http.server, socketserver, urllib.parse, threading, time, functools, queue, shutil
 
 def _bv(v):
     """coerce a value (from query string or json) to bool, ignoring None."""
@@ -41,7 +41,7 @@ def load_state():
             with open(STATE_PATH, encoding="utf-8") as f:
                 s = json.load(f)
             s.setdefault("motd", "")
-            s.setdefault("started", int(time.time()))
+            s["started"] = int(time.time())
             return s
         except Exception:
             pass
@@ -251,9 +251,9 @@ def parse_gamesdata(path):
     if not os.path.exists(path):
         return []
     txt = open(path, encoding="utf-8", errors="ignore").read()
-    # find the array assigned to `let games = [ ... ]`; avoid the '[' that may
-    # appear inside the leading comment block.
-    m = re.search(r"let\s+\w+\s*=\s*\[", txt)
+    # find the array assigned to `let games = [ ... ]` or `window.games = [ ... ]`;
+    # avoid the '[' that may appear inside the leading comment block.
+    m = re.search(r"(?:let|window\.)\s*\w+\s*=\s*\[", txt)
     if not m:
         return []
     start = txt.find("[", m.end() - 1)
@@ -332,7 +332,7 @@ def gen_games():
     # as our local n/ + g/ game files). Fall back to filename recovery.
     merged = []
     osmium_dir = os.environ.get("OSMIUM_DIR")
-    candidates = []
+    candidates = [ROOT]
     if osmium_dir:
         candidates.append(osmium_dir)
     candidates += [
@@ -340,8 +340,14 @@ def gen_games():
         os.path.join(ROOT, "..", "Osmium-main"),
         os.path.join(ROOT, "Osmium-main"),
     ]
-    src_n = next((os.path.join(d, "n", "gamesData.js") for d in candidates if os.path.exists(os.path.join(d, "n", "gamesData.js"))), None)
-    src_g = next((os.path.join(d, "g", "load", "gamesData.js") for d in candidates if os.path.exists(os.path.join(d, "g", "load", "gamesData.js"))), None)
+    # local n/gamesData.js (or n/gamesDataList.js for VPS self-containment)
+    src_n = next((os.path.join(d, "n", "gamesDataList.js") for d in candidates if os.path.exists(os.path.join(d, "n", "gamesDataList.js"))), None)
+    if not src_n:
+        src_n = next((os.path.join(d, "n", "gamesData.js") for d in candidates if os.path.exists(os.path.join(d, "n", "gamesData.js"))), None)
+    # local g/load/gamesDataList.js (Osmium-sourced, VPS-ready) + legacy gamesData.js
+    src_g = next((os.path.join(d, "g", "load", "gamesDataList.js") for d in candidates if os.path.exists(os.path.join(d, "g", "load", "gamesDataList.js"))), None)
+    if not src_g:
+        src_g = next((os.path.join(d, "g", "load", "gamesData.js") for d in candidates if os.path.exists(os.path.join(d, "g", "load", "gamesData.js"))), None)
     if src_n:
         bulk += parse_gamesdata(src_n)
         print(f"[games] loaded names from {src_n}")
@@ -378,6 +384,19 @@ def gen_games():
         merged.append({"name": title_from(f), "img": "", "iframe": "n/" + f, "identifier": slug(f)})
     for f in local_g.values():
         merged.append({"name": title_from(f), "img": "", "iframe": "g/" + f, "identifier": slug(f)})
+    # g/load/ subdirectory games (discovered even without any gamesData.js)
+    seen_ids = {g["identifier"] for g in merged}
+    g_load_dir = os.path.join(ROOT, "g", "load")
+    if os.path.isdir(g_load_dir):
+        for entry in sorted(os.listdir(g_load_dir)):
+            entry_path = os.path.join(g_load_dir, entry)
+            if os.path.isdir(entry_path):
+                ident = slug(entry)
+                if ident not in seen_ids:
+                    index = os.path.join(entry_path, "index.html")
+                    if os.path.isfile(index):
+                        merged.append({"name": title_from(entry), "img": "", "iframe": "g/load/" + entry + "/index.html", "identifier": ident})
+                        seen_ids.add(ident)
     # de-dup by identifier
     seen = set(); final = []
     for g in merged:
@@ -569,7 +588,52 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         except Exception:
             pass
 
+def sync_local_files():
+    """Copy game HTML files from Osmium source if they don't exist locally."""
+    candidates = [
+        os.environ.get("OSMIUM_DIR"),
+        os.path.join(ROOT, "..", "..", "Osmium-main"),
+        os.path.join(ROOT, "..", "Osmium-main"),
+        os.path.join(ROOT, "Osmium-main"),
+    ]
+    osmium_root = next((d for d in candidates if d and os.path.isdir(d)), None)
+    if not osmium_root:
+        print("[sync] Osmium source not found, skipping file sync")
+        return
+
+    copied = 0
+    # sync n/ HTML files
+    src_n = os.path.join(osmium_root, "n")
+    dst_n = os.path.join(ROOT, "n")
+    if os.path.isdir(src_n):
+        os.makedirs(dst_n, exist_ok=True)
+        for entry in os.listdir(src_n):
+            if not entry.lower().endswith(".html"):
+                continue
+            dst_path = os.path.join(dst_n, entry)
+            if not os.path.exists(dst_path):
+                shutil.copy2(os.path.join(src_n, entry), dst_path)
+                copied += 1
+                print(f"[sync] copied n/{entry}")
+    # sync g/load/ subdirectories
+    src_load = os.path.join(osmium_root, "g", "load")
+    dst_load = os.path.join(ROOT, "g", "load")
+    if os.path.isdir(src_load):
+        os.makedirs(dst_load, exist_ok=True)
+        for entry in os.listdir(src_load):
+            src_path = os.path.join(src_load, entry)
+            dst_path = os.path.join(dst_load, entry)
+            if os.path.isdir(src_path) and not os.path.exists(dst_path):
+                shutil.copytree(src_path, dst_path)
+                copied += 1
+                print(f"[sync] copied g/load/{entry}")
+    if copied:
+        print(f"[sync] synced {copied} game file(s) from Osmium")
+    else:
+        print("[sync] all game files already up to date")
+
 def main():
+    sync_local_files()
     gen_games()
     threading.Thread(target=watch_games, daemon=True).start()
     port = int(os.environ.get("PORT", "80"))
