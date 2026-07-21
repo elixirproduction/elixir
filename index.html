@@ -5,29 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>elixer</title>
     <meta name="description" content="elixer — a quiet games hub with a built-in proxy.">
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%233b82f6'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='18' font-weight='700' text-anchor='middle' fill='%23ffffff'%3Ee%3C/text%3E%3C/svg%3E">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%236e6e6e'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='18' font-weight='700' text-anchor='middle' fill='%23ffffff'%3Ee%3C/text%3E%3C/svg%3E">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0b0d12;
-            --bg-1: #0e1118;
-            --panel: #12151d;
-            --panel-2: #181c26;
-            --line: #262b36;
-            --line-soft: #1c212b;
-            --text: #e7ebf2;
-            --text-2: #9aa3b2;
-            --text-3: #6b7484;
-            --text-4: #4a5160;
-            --blue: #3b82f6;
-            --blue-2: #2f6fe0;
-            --blue-hi: #5b9bf8;
-            --blue-soft: rgba(59,130,246,0.16);
-            --green: #34d399;
-            --danger: #f87171;
+            --bg: #0a0a0a;
+            --bg-1: #111111;
+            --panel: #171717;
+            --panel-2: #1f1f1f;
+            --line: #2a2a2a;
+            --line-soft: #202020;
+            --text: #dedede;
+            --text-2: #999999;
+            --text-3: #666666;
+            --text-4: #444444;
+            --blue: #6e6e6e;
+            --blue-2: #5a5a5a;
+            --blue-hi: #888888;
+            --blue-soft: rgba(255,255,255,0.06);
+            --green: #4a7a5a;
+            --danger: #7a4a4a;
             --mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace;
             --gap: 12px;
             --radius: 10px;
@@ -42,7 +43,7 @@
             -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
             min-height: 100vh; line-height: 1.55; font-size: 15px;
         }
-        ::selection { background: rgba(59,130,246,0.35); color: #fff; }
+        ::selection { background: rgba(255,255,255,0.1); color: #fff; }
         a { color: inherit; text-decoration: none; }
         button { font-family: inherit; }
         img { display: block; }
@@ -50,7 +51,7 @@
         /* ---------- top bar (vercel/render style) ---------- */
         header {
             position: sticky; top: 0; z-index: 100;
-            background: rgba(11,13,18,0.7);
+            background: rgba(10,10,10,0.7);
             backdrop-filter: saturate(180%) blur(12px);
             -webkit-backdrop-filter: saturate(180%) blur(12px);
             border-bottom: 1px solid var(--line-soft);
@@ -59,7 +60,7 @@
             max-width: 1600px; margin: 0 auto; height: 60px;
             display: flex; align-items: center; gap: 28px; padding: 0 28px;
         }
-        .logo { font-weight: 550; font-size: 1rem; letter-spacing: -0.02em; color: var(--text); }
+        .logo { display: flex; align-items: center; gap: 6px; }
         nav.tabs { display: flex; gap: 4px; }
         nav.tabs a { font-size: 0.875rem; color: var(--text-3); padding: 6px 10px; border-radius: 6px; cursor: pointer; transition: color .15s; font-weight: 400; }
         nav.tabs a:hover { color: var(--text); }
@@ -120,7 +121,7 @@
         .tile .ic { width: 100%; aspect-ratio: 1; border-radius: 8px; overflow: hidden; background: var(--bg-1); border: 1px solid var(--line-soft); margin-bottom: 8px; position: relative; display: grid; place-items: center; }
         .tile .ic img { width: 100%; height: 100%; object-fit: cover; }
         .tile .ic .ph { width: 100%; height: 100%; display: grid; place-items: center; font-family: var(--mono); font-weight: 600; font-size: 1.1rem; color: var(--text-3); background: var(--bg-1); }
-        .tile .ic .star { position: absolute; top: 5px; right: 5px; width: 24px; height: 24px; border-radius: 6px; background: rgba(11,13,18,0.75); border: 1px solid var(--line); color: var(--text-3); display: grid; place-items: center; font-size: 0.66rem; backdrop-filter: blur(6px); transition: color .12s, border-color .12s, background .12s; }
+        .tile .ic .star { position: absolute; top: 5px; right: 5px; width: 24px; height: 24px; border-radius: 6px; background: rgba(10,10,10,0.75); border: 1px solid var(--line); color: var(--text-3); display: grid; place-items: center; font-size: 0.66rem; backdrop-filter: blur(6px); transition: color .12s, border-color .12s, background .12s; }
         .tile .ic .star:hover { color: var(--text); border-color: var(--blue); }
         .tile .ic .star.on { color: #fbbf24; border-color: rgba(251,191,36,0.5); background: rgba(251,191,36,0.14); }
         .tile .nm { font-size: 0.75rem; font-weight: 500; letter-spacing: -0.01em; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
@@ -170,7 +171,7 @@
         .wisp-list .wisp button:hover { color: var(--danger); }
 
         /* ---------- game modal (play overlay) ---------- */
-        .modal { position: fixed; inset: 0; z-index: 300; display: none; opacity: 0; background: rgba(4,6,10,0.88); backdrop-filter: blur(10px); transition: opacity .2s ease; align-items: center; justify-content: center; padding: 0; }
+        .modal { position: fixed; inset: 0; z-index: 300; display: none; opacity: 0; background: rgba(10,10,10,0.88); backdrop-filter: blur(10px); transition: opacity .2s ease; align-items: center; justify-content: center; padding: 0; }
         .modal.show { display: flex; opacity: 1; }
         .modal .win { width: 100%; height: 100%; max-width: none; background: #000; border: none; border-radius: 0; overflow: hidden; display: flex; flex-direction: column; transform: scale(1.01); transition: transform .25s cubic-bezier(0.16,1,0.3,1); }
         .modal.show .win { transform: scale(1); }
@@ -214,7 +215,7 @@
         .gate-enter:disabled { background: var(--bg-1); color: var(--text-4); border: 1px solid var(--line); opacity: 1; cursor: not-allowed; }
 
         /* ---------- document modal ---------- */
-        .docmodal { position: fixed; inset: 0; z-index: 500; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(4,6,10,0.85); backdrop-filter: blur(10px); }
+        .docmodal { position: fixed; inset: 0; z-index: 500; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(10,10,10,0.85); backdrop-filter: blur(10px); }
         .docmodal.show { display: flex; animation: rise .3s cubic-bezier(0.16,1,0.3,1) both; }
         .doc-win { width: 100%; max-width: 720px; max-height: 82vh; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; display: flex; flex-direction: column; overflow: hidden; box-shadow: var(--shadow); }
         .doc-win .top { height: 52px; display: flex; align-items: center; gap: 12px; padding: 0 16px; border-bottom: 1px solid var(--line-soft); background: var(--panel); }
@@ -231,34 +232,28 @@
         @media (max-width: 480px) { .grid { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 10px; } }
 
         /* ---------- admin ---------- */
-        nav.tabs a.admin-tab { display: none; color: #ff3b5c; font-weight: 600; text-shadow: 0 0 8px rgba(255,59,92,.8), 0 0 18px rgba(255,59,92,.45); }
+        nav.tabs a.admin-tab { display: none; color: var(--blue); font-weight: 600; }
         body.admin-on nav.tabs a.admin-tab { display: inline-flex; }
 
         /* red theme is opt-in via the admin menu toggle */
         body.admin-red {
-            --blue: #ff2d4f; --blue-2: #ff5572; --blue-hi: #ff7d92; --blue-soft: rgba(255,45,79,.16);
-            --bg: #140a0d; --bg-1: #1b0d11; --panel: #1f0f14; --panel-2: #281219;
-            --line: #3a1a22; --line-soft: #2a141b;
-            --text-2: #c9a7af; --text-3: #9a7079; --text-4: #6e4b52;
-            background:
-                radial-gradient(1200px 600px at 80% -10%, rgba(255,45,79,.10), transparent 60%),
-                radial-gradient(900px 500px at -10% 110%, rgba(255,45,79,.08), transparent 55%),
-                var(--bg);
+            --blue: #c0c0c0; --blue-2: #a0a0a0; --blue-hi: #d0d0d0; --blue-soft: rgba(255,255,255,.08);
+            --bg: #0a0a0a; --bg-1: #111111; --panel: #171717; --panel-2: #1f1f1f;
+            --line: #333333; --line-soft: #252525;
+            background: var(--bg);
         }
         body.admin-red header {
-            background: linear-gradient(180deg, rgba(40,12,18,.92), rgba(20,10,13,.82));
-            border-bottom: 1px solid rgba(255,45,79,.4);
+            background: var(--bg);
+            border-bottom: 1px solid var(--line-soft);
             backdrop-filter: saturate(180%) blur(12px);
         }
-        body.admin-red .logo { color: #ff3b5c; text-shadow: 0 0 12px rgba(255,59,92,.55); }
-        body.admin-red .card-box { border-color: rgba(255,45,79,.22); }
-        body.admin-red nav.tabs a.active { color: #ff8aa0; }
-        body.admin-red .gate-logo { color: #ff3b5c; }
+        body.admin-red .card-box { border-color: var(--line-soft); }
+        body.admin-red nav.tabs a.active { color: var(--text); }
 
         /* extra-dark appearance toggle */
-        body.extra-dark { --bg: #050608; --bg-1: #080a0e; --panel: #0a0c11; --panel-2: #0f131a; --line: #1a1f29; --line-soft: #12161d; }
+        body.extra-dark { --bg: #050505; --bg-1: #080808; --panel: #0a0a0a; --panel-2: #0f0f0f; --line: #181818; --line-soft: #101010; }
         body.extra-dark:not(.admin-red) { background: var(--bg); }
-        .ann-bar.pinned { box-shadow: 0 6px 24px rgba(255,45,79,.5); }
+        .ann-bar.pinned { box-shadow: var(--shadow); }
         .ann-bar.pinned::after { content: ''; }
 
         .admin-panel .field { width: 100%; }
@@ -276,12 +271,12 @@
         .ann-item .when { color: var(--text-4); font-size: .7rem; margin-top: 3px; }
         .ann-item button { background: transparent; border: 0; color: var(--text-3); cursor: pointer; font-size: .8rem; }
         .ann-item button:hover { color: var(--blue); }
-        .admin-badge { display: inline-flex; align-items: center; gap: 6px; font-size: .7rem; color: #ff3b5c; border: 1px solid rgba(255,59,92,.4); border-radius: 999px; padding: 2px 9px; margin-left: 8px; text-shadow: 0 0 8px rgba(255,59,92,.6); }
+        .admin-badge { display: inline-flex; align-items: center; gap: 6px; font-size: .7rem; color: var(--blue); border: 1px solid var(--line); border-radius: 999px; padding: 2px 9px; margin-left: 8px; }
 
         /* ---------- dev-only overlay (neutral dark glass, not red) ---------- */
-        .devonly { position: fixed; inset: 0; z-index: 900; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(6,8,12,.92); backdrop-filter: blur(8px); }
+        .devonly { position: fixed; inset: 0; z-index: 900; display: none; align-items: center; justify-content: center; padding: 24px; background: rgba(10,10,10,.92); backdrop-filter: blur(8px); }
         .devonly.show { display: flex; animation: rise .3s both; }
-        .devonly-card { width: 100%; max-width: 420px; background: linear-gradient(180deg, #161a22, #11141b); border: 1px solid var(--line); border-radius: 16px; padding: 32px 30px; text-align: center; box-shadow: 0 24px 60px rgba(0,0,0,.55); }
+        .devonly-card { width: 100%; max-width: 420px; background: linear-gradient(180deg, #1a1a1a, #141414); border: 1px solid var(--line); border-radius: 16px; padding: 32px 30px; text-align: center; box-shadow: 0 24px 60px rgba(0,0,0,.55); }
         .devonly-card .tag { display: inline-block; color: var(--text-2); font-size: .68rem; letter-spacing: .24em; text-transform: uppercase; background: var(--bg-1); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; margin-bottom: 14px; }
         .devonly-card h2 { margin: 4px 0 8px; font-size: 1.25rem; font-weight: 600; }
         .devonly-card p { color: var(--text-3); font-size: .84rem; line-height: 1.55; margin-bottom: 20px; }
@@ -289,20 +284,20 @@
         .devonly-card .err { color: #ff6b81; font-size: .78rem; min-height: 18px; margin-bottom: 6px; }
 
         /* ---------- in-game announcement bar ---------- */
-        .g-ann { display: none; align-items: center; gap: 8px; background: linear-gradient(90deg, rgba(255,45,79,.94), rgba(200,30,55,.9)); color: #fff; padding: 8px 14px; font-size: .8rem; font-weight: 500; }
+        .g-ann { display: none; align-items: center; gap: 8px; background: var(--panel-2); border: 1px solid var(--line); color: var(--text); padding: 8px 14px; font-size: .8rem; font-weight: 500; }
         .g-ann.show { display: flex; }
-        .g-ann .dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px rgba(255,255,255,.8); flex: none; }
+        .g-ann .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-3); flex: none; }
 
         /* ---------- announcement banner (polished, auto-closes) ---------- */
-        .ann-bar { display: none; align-items: center; gap: 11px; background: linear-gradient(90deg, rgba(255,45,79,.95), rgba(210,30,55,.92)); color: #fff; padding: 10px 14px 10px 16px; font-size: .84rem; font-weight: 500; box-shadow: 0 6px 24px rgba(255,45,79,.3); position: sticky; top: 0; z-index: 120; }
+        .ann-bar { display: none; align-items: center; gap: 11px; background: var(--panel-2); border: 1px solid var(--line); color: var(--text); padding: 10px 14px 10px 16px; font-size: .84rem; font-weight: 500; position: sticky; top: 0; z-index: 120; }
         .ann-bar.show { display: flex; animation: rise .25s both; }
-        .ann-bar .dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; box-shadow: 0 0 10px rgba(255,255,255,.85); flex: none; animation: pulse 1.4s infinite; }
+        .ann-bar .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-3); flex: none; animation: pulse 1.4s infinite; }
         .ann-bar .txt { flex: 1; line-height: 1.4; }
-        .ann-bar .ann-x { background: rgba(255,255,255,.16); border: 0; color: #fff; cursor: pointer; width: 26px; height: 26px; border-radius: 7px; display: grid; place-items: center; transition: background .15s; }
-        .ann-bar .ann-x:hover { background: rgba(255,255,255,.3); }
-        .ann-bar.ann-ok { background: linear-gradient(90deg, rgba(52,211,153,.95), rgba(16,185,129,.92)); }
-        .ann-bar.ann-warn { background: linear-gradient(90deg, rgba(255,174,59,.95), rgba(245,140,20,.92)); }
-        .ann-bar.ann-err { background: linear-gradient(90deg, rgba(248,113,113,.95), rgba(220,60,60,.92)); }
+        .ann-bar .ann-x { background: var(--bg-1); border: 0; color: var(--text-3); cursor: pointer; width: 26px; height: 26px; border-radius: 7px; display: grid; place-items: center; transition: background .15s; }
+        .ann-bar .ann-x:hover { background: var(--panel); }
+        .ann-bar.ann-ok { background: var(--green); }
+        .ann-bar.ann-warn { background: var(--text-3); }
+        .ann-bar.ann-err { background: var(--danger); }
         @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
     </style>
 </head>
@@ -317,7 +312,7 @@
 
     <header>
         <div class="bar">
-            <div class="logo">elixer</div>
+            <div class="logo"><svg width="76" height="20" viewBox="0 0 76 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="20" rx="5" fill="#6e6e6e"/><text x="10" y="14" text-anchor="middle" fill="#fff" font-family="'JetBrains Mono',monospace" font-size="11" font-weight="700">e</text><text x="26" y="15" fill="currentColor" font-family="'Inter',system-ui,-apple-system,sans-serif" font-size="13" font-weight="550" letter-spacing="-0.3">elixer</text></svg></div>
             <nav class="tabs">
                 <a class="active" data-view="games">games</a>
                 <a data-view="apps">apps</a>
@@ -562,7 +557,7 @@
     <!-- consent gate -->
     <div class="gate" id="gate">
         <div class="gate-card">
-            <div class="gate-logo">elixer</div>
+            <div class="gate-logo"><svg width="80" height="22" viewBox="0 0 80 22" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="22" height="22" rx="6" fill="#6e6e6e"/><text x="11" y="15" text-anchor="middle" fill="#fff" font-family="'JetBrains Mono',monospace" font-size="12" font-weight="700">e</text><text x="28" y="16" fill="currentColor" font-family="'Inter',system-ui,-apple-system,sans-serif" font-size="14" font-weight="600" letter-spacing="-0.3">elixer</text></svg></div>
             <p class="gate-sub">read the docs, then you're in.</p>
             <div class="gate-docs">
                 <button class="doc-btn" onclick="openDoc('terms')"><span>terms of service</span><i class="fas fa-chevron-right"></i></button>
@@ -639,7 +634,6 @@
     <div class="toasts" id="toasts"></div>
 
     <script src="data/games.js"></script>
-    <script src="data/more.js"></script>
     <script>
         const LS_FAV = 'elixer_fav';
         const getFav = () => { try { return JSON.parse(localStorage.getItem(LS_FAV)) || []; } catch { return []; } };
@@ -667,14 +661,24 @@
         }
         document.querySelectorAll('nav.tabs a').forEach(a => a.addEventListener('click', () => go(a.dataset.view)));
 
-        /* ---- normalize osmium data ---- */
-        const INLINE_GAMES = Array.isArray(window.games) ? window.games.filter(g => g.app !== true) : [];
-        const NO_IMAGE_GAMES = Array.isArray(window.more) ? window.more : [];
-        const ALL_GAMES = [
-            ...INLINE_GAMES.map(g => ({ title: g.name || 'game', img: g.img ? (g.img.startsWith('/') ? g.img : '/' + g.img.replace(/^\/+/,'')) : '', url: g.iframe || '', id: g.identifier || (g.name||'g').toLowerCase().replace(/\s+/g,'-'), pinned: g.pin === true })),
-            ...NO_IMAGE_GAMES.map(g => ({ title: g.name || 'game', img: g.img ? (g.img.startsWith('/') ? g.img : '/' + g.img.replace(/^\/+/,'')) : '', url: g.iframe || '', id: g.identifier || (g.name||'g').toLowerCase().replace(/\s+/g,'-'), pinned: false }))
-        ];
-        const DYNAMIC_APPS = Array.isArray(window.games) ? window.games.filter(g => g.app === true).map(g => ({ title: g.name || 'app', img: g.img ? (g.img.startsWith('/') ? g.img : '/' + g.img.replace(/^\/+/,'')) : '', url: g.iframe || g.iframe2 || '' })) : [];
+        /* ---- normalize game data ---- */
+        function mapGame(g) { return { title: g.name || 'game', img: g.img ? (g.img.startsWith('/') ? g.img : '/' + g.img.replace(/^\/+/,'')) : '', url: g.iframe || '', id: g.identifier || (g.name||'g').toLowerCase().replace(/\s+/g,'-'), pinned: g.pin === true }; }
+        var ALL_GAMES = Array.isArray(window.games) ? window.games.filter(g => g.app !== true).map(mapGame) : [];
+        var DYNAMIC_APPS = Array.isArray(window.games) ? window.games.filter(g => g.app === true).map(g => ({ title: g.name || 'app', img: g.img ? (g.img.startsWith('/') ? g.img : '/' + g.img.replace(/^\/+/,'')) : '', url: g.iframe || g.iframe2 || '' })) : [];
+
+        /* ---- lazy-load full game list ---- */
+        if (document.querySelector('script[src*="more.js"]') === null) {
+            var ms = document.createElement('script');
+            ms.src = 'data/more.js';
+            ms.onload = function() {
+                if (Array.isArray(window.more)) {
+                    ALL_GAMES.push.apply(ALL_GAMES, window.more.map(mapGame));
+                    if (document.querySelector('.view[data-view=games].active')) renderGames();
+                    if (document.querySelector('.view[data-view=admin].active')) renderAdmin();
+                }
+            };
+            document.head.appendChild(ms);
+        }
 
         function initial(url) {
             if (!url) return 'about:blank';
@@ -796,7 +800,7 @@
         }
         function resetCloak() {
             localStorage.removeItem('tabCloak'); document.title = 'elixer';
-            setFavicon("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%233b82f6'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='18' font-weight='700' text-anchor='middle' fill='%23ffffff'%3Ee%3C/text%3E%3C/svg%3E");
+            setFavicon("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%236e6e6e'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='18' font-weight='700' text-anchor='middle' fill='%23ffffff'%3Ee%3C/text%3E%3C/svg%3E");
             renderCloak(); toast('cloak reset', 'warn');
         }
         function renderCloak() {

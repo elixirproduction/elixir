@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """elixer server: static host + live admin state + auto games data generation."""
-import os, re, json, http.server, socketserver, urllib.parse, threading, time, functools, queue, shutil
+import os, re, json, http.server, socketserver, urllib.parse, threading, time, functools, queue
 
 def _bv(v):
     """coerce a value (from query string or json) to bool, ignoring None."""
@@ -261,6 +261,8 @@ def parse_gamesdata(path):
     if start < 0 or end < 0 or end < start:
         return []
     body = txt[start:end + 1]
+    # convert unquoted JS keys to valid JSON (e.g. { name: "foo" } -> { "name": "foo" })
+    body = re.sub(r"(\{|\,)\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*:", r'\1 "\2" :', body)
     # tolerate trailing commas (Osmium files aren't strict JSON)
     body = re.sub(r",\s*([}\]])", r"\1", body)
     try:
@@ -322,111 +324,24 @@ NAME_FIXES = {
     "HoleBattle": "Hole Battle",
 }
 
-def gen_games():
-    os.makedirs(DATA_DIR, exist_ok=True)
-    # curated data/games.js is written by hand -> do not overwrite it.
-    if not os.path.exists(GAMES_JS):
-        print("[games] data/games.js missing (create it with the curated games list)")
-    bulk = []
-    # Prefer correct names from the Osmium gamesData sources (same identifiers
-    # as our local n/ + g/ game files). Fall back to filename recovery.
-    merged = []
-    osmium_dir = os.environ.get("OSMIUM_DIR")
-    candidates = [ROOT]
-    if osmium_dir:
-        candidates.append(osmium_dir)
-    candidates += [
-        os.path.join(ROOT, "..", "..", "Osmium-main"),
-        os.path.join(ROOT, "..", "Osmium-main"),
-        os.path.join(ROOT, "Osmium-main"),
-    ]
-    # local n/gamesData.js (or n/gamesDataList.js for VPS self-containment)
-    src_n = next((os.path.join(d, "n", "gamesDataList.js") for d in candidates if os.path.exists(os.path.join(d, "n", "gamesDataList.js"))), None)
-    if not src_n:
-        src_n = next((os.path.join(d, "n", "gamesData.js") for d in candidates if os.path.exists(os.path.join(d, "n", "gamesData.js"))), None)
-    # local g/load/gamesDataList.js (Osmium-sourced, VPS-ready) + legacy gamesData.js
-    src_g = next((os.path.join(d, "g", "load", "gamesDataList.js") for d in candidates if os.path.exists(os.path.join(d, "g", "load", "gamesDataList.js"))), None)
-    if not src_g:
-        src_g = next((os.path.join(d, "g", "load", "gamesData.js") for d in candidates if os.path.exists(os.path.join(d, "g", "load", "gamesData.js"))), None)
-    if src_n:
-        bulk += parse_gamesdata(src_n)
-        print(f"[games] loaded names from {src_n}")
-    if src_g:
-        bulk += parse_gamesdata(src_g)
-        print(f"[games] loaded names from {src_g}")
-    local_n = {}
-    if os.path.isdir(os.path.join(ROOT, "n")):
-        local_n = {slug(f): f for f in os.listdir(os.path.join(ROOT, "n")) if f.lower().endswith(".html")}
-    local_g = {}
-    if os.path.isdir(os.path.join(ROOT, "g")):
-        local_g = {slug(f): f for f in os.listdir(os.path.join(ROOT, "g")) if f.lower().endswith(".html")}
-    for g in bulk:
-        key = slug(g["identifier"])
-        # n/ folder first
-        f = local_n.pop(key, None)
-        if f:
-            g["iframe"] = "n/" + f
-            merged.append(g)
-            continue
-        # g/ folder
-        f = local_g.pop(key, None)
-        if f:
-            g["iframe"] = "g/" + f
-            merged.append(g)
-            continue
-        # keep entry with its original (Osmium) iframe if it points locally
-        iframe = g.get("iframe", "")
-        if iframe and (iframe.startswith("/n/") or iframe.startswith("/g/") or iframe.startswith("n/") or iframe.startswith("g/")):
-            g["iframe"] = iframe.lstrip("/")
-            merged.append(g)
-    # any remaining local files with no Osmium match -> recover name
-    for f in local_n.values():
-        merged.append({"name": title_from(f), "img": "", "iframe": "n/" + f, "identifier": slug(f)})
-    for f in local_g.values():
-        merged.append({"name": title_from(f), "img": "", "iframe": "g/" + f, "identifier": slug(f)})
-    # g/load/ subdirectory games (discovered even without any gamesData.js)
-    seen_ids = {g["identifier"] for g in merged}
-    g_load_dir = os.path.join(ROOT, "g", "load")
-    if os.path.isdir(g_load_dir):
-        for entry in sorted(os.listdir(g_load_dir)):
-            entry_path = os.path.join(g_load_dir, entry)
-            if os.path.isdir(entry_path):
-                ident = slug(entry)
-                if ident not in seen_ids:
-                    index = os.path.join(entry_path, "index.html")
-                    if os.path.isfile(index):
-                        merged.append({"name": title_from(entry), "img": "", "iframe": "g/load/" + entry + "/index.html", "identifier": ident})
-                        seen_ids.add(ident)
-    # de-dup by identifier
-    seen = set(); final = []
-    for g in merged:
-        if g["identifier"] in seen:
-            continue
-        seen.add(g["identifier"]); final.append(g)
-    with open(MORE_JS, "w", encoding="utf-8") as out:
-        out.write("window.more = " + json.dumps(final, indent=2) + ";\n")
-    print(f"[games] regenerated data/more.js with {len(final)} entries")
+GAMES_JSON = os.path.join(ROOT, "games.json")
 
-def watch_games():
-    """Poll game folders every few seconds; regenerate if file count changes."""
-    seen = {}
-    def snap():
-        snaps = {}
-        for d in ("games", "g", "n"):
-            p = os.path.join(ROOT, d)
-            try:
-                snaps[d] = sorted(os.listdir(p))
-            except FileNotFoundError:
-                snaps[d] = []
-        return snaps
-    last = snap()
-    while True:
-        time.sleep(4)
-        cur = snap()
-        if cur != last:
-            last = cur
-            print("[games] change detected, regenerating...")
-            gen_games()
+def load_games():
+    if not os.path.exists(GAMES_JSON):
+        print("[games] games.json missing, run 'manage_games.py sync'")
+        return []
+    with open(GAMES_JSON, encoding="utf-8") as f:
+        return json.load(f)
+
+def regen_data():
+    """Generate data/more.js from games.json (exclude curated entries to avoid dupes)."""
+    curated_ids = {g.get("identifier") for g in parse_gamesdata(GAMES_JS)}
+    all_games = load_games()
+    more = [g for g in all_games if g.get("identifier") not in curated_ids]
+    os.makedirs(DATA_DIR, exist_ok=True)
+    with open(MORE_JS, "w", encoding="utf-8") as out:
+        out.write("window.more = " + json.dumps(more, indent=2) + ";\n")
+    print(f"[games] data/more.js: {len(more)} entries (curated: {len(curated_ids)})")
 
 # ----------------------------------------------------------------------------
 # HTTP handler
@@ -482,6 +397,9 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             return
         if u.path == "/api/stream":
             self.serve_sse()
+            return
+        if u.path == "/api/games":
+            self.json_reply(200, load_games())
             return
         if u.path == "/api/admin" and u.query:
             q = urllib.parse.parse_qs(u.query)
@@ -588,54 +506,8 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         except Exception:
             pass
 
-def sync_local_files():
-    """Copy game HTML files from Osmium source if they don't exist locally."""
-    candidates = [
-        os.environ.get("OSMIUM_DIR"),
-        os.path.join(ROOT, "..", "..", "Osmium-main"),
-        os.path.join(ROOT, "..", "Osmium-main"),
-        os.path.join(ROOT, "Osmium-main"),
-    ]
-    osmium_root = next((d for d in candidates if d and os.path.isdir(d)), None)
-    if not osmium_root:
-        print("[sync] Osmium source not found, skipping file sync")
-        return
-
-    copied = 0
-    # sync n/ HTML files
-    src_n = os.path.join(osmium_root, "n")
-    dst_n = os.path.join(ROOT, "n")
-    if os.path.isdir(src_n):
-        os.makedirs(dst_n, exist_ok=True)
-        for entry in os.listdir(src_n):
-            if not entry.lower().endswith(".html"):
-                continue
-            dst_path = os.path.join(dst_n, entry)
-            if not os.path.exists(dst_path):
-                shutil.copy2(os.path.join(src_n, entry), dst_path)
-                copied += 1
-                print(f"[sync] copied n/{entry}")
-    # sync g/load/ subdirectories
-    src_load = os.path.join(osmium_root, "g", "load")
-    dst_load = os.path.join(ROOT, "g", "load")
-    if os.path.isdir(src_load):
-        os.makedirs(dst_load, exist_ok=True)
-        for entry in os.listdir(src_load):
-            src_path = os.path.join(src_load, entry)
-            dst_path = os.path.join(dst_load, entry)
-            if os.path.isdir(src_path) and not os.path.exists(dst_path):
-                shutil.copytree(src_path, dst_path)
-                copied += 1
-                print(f"[sync] copied g/load/{entry}")
-    if copied:
-        print(f"[sync] synced {copied} game file(s) from Osmium")
-    else:
-        print("[sync] all game files already up to date")
-
 def main():
-    sync_local_files()
-    gen_games()
-    threading.Thread(target=watch_games, daemon=True).start()
+    regen_data()
     port = int(os.environ.get("PORT", "80"))
     socketserver.TCPServer.allow_reuse_address = True
     with socketserver.ThreadingTCPServer(("", port), Handler) as httpd:
