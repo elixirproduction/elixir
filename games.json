@@ -1,5 +1,21 @@
 [
   {
+    "name": "sonic robo blast 2",
+    "img": "/",
+    "iframe": "games/srb2/index.html",
+    "identifier": "srb2",
+    "pin": true,
+    "cat": "featured"
+  },
+  {
+    "name": "sonic robo blast 2 kart",
+    "img": "/",
+    "iframe": "games/srb2kart/index.html",
+    "identifier": "srb2",
+    "pin": true,
+    "cat": "featured"
+  },
+  {
     "name": "brotato",
     "img": "/images/brotato.png",
     "iframe": "games/brotato.html",
@@ -9,16 +25,16 @@
   },
   {
     "name": "celeste",
-    "img": "/images/celeste.png",
-    "iframe": "games/celeste.html",
+    "img": "/",
+    "iframe": "games/celeste/index.html",
     "identifier": "celeste",
     "pin": true,
     "cat": "featured"
   },
   {
     "name": "deltarune",
-    "img": "/images/deltarune.png",
-    "iframe": "games/deltarune.html",
+    "img": "",
+    "iframe": "games/deltarune/index.html",
     "identifier": "deltarune",
     "pin": true,
     "cat": "featured"
@@ -26,14 +42,14 @@
   {
     "name": "drive mad",
     "img": "/images/drivemad.png",
-    "iframe": "games/drivemad.html",
+    "iframe": "games/drivemad/index.html",
     "identifier": "drivemad",
     "cat": "racing"
   },
   {
-    "name": "fnaf 1",
-    "img": "/images/fnaf1.png",
-    "iframe": "games/fnaf1.html",
+    "name": "fnaf",
+    "img": "",
+    "iframe": "games/fnaf/index.html",
     "identifier": "fnaf1",
     "cat": "horror"
   },
@@ -68,21 +84,14 @@
   {
     "name": "geometry dash",
     "img": "/images/gd.png",
-    "iframe": "games/gd.html",
+    "iframe": "games/gd/index.html",
     "identifier": "gd",
-    "cat": "platformer"
-  },
-  {
-    "name": "geometry dash lite",
-    "img": "/images/gdlite.png",
-    "iframe": "games/gdlite.html",
-    "identifier": "gdlite",
     "cat": "platformer"
   },
   {
     "name": "pizza tower",
     "img": "/images/pizzatower.png",
-    "iframe": "games/pizzatower.html",
+    "iframe": "games/pizzatower/index.html",
     "identifier": "pizzatower",
     "pin": true,
     "cat": "platformer"
@@ -90,7 +99,7 @@
   {
     "name": "retro bowl",
     "img": "/images/retrobowl.png",
-    "iframe": "games/retrobowl.html",
+    "iframe": "games/retrobowl/index.html",
     "identifier": "retrobowl",
     "cat": "sports"
   },
@@ -104,47 +113,31 @@
   {
     "name": "sonic cd",
     "img": "/images/soniccd.png",
-    "iframe": "games/soniccd.html",
+    "iframe": "games/soniccd/index.html",
     "identifier": "soniccd",
     "cat": "platformer"
   },
   {
     "name": "sonic mania",
     "img": "/images/sonicmania.png",
-    "iframe": "games/sonicmania.html",
+    "iframe": "games/sonicmania/index.html",
     "identifier": "sonicmania",
     "cat": "platformer"
   },
   {
     "name": "superhot",
     "img": "/images/superhot.png",
-    "iframe": "games/superhot.html",
+    "iframe": "games/superhot/index.html",
     "identifier": "superhot",
     "cat": "shooter"
   },
   {
     "name": "undertale",
     "img": "/images/undertale.png",
-    "iframe": "games/undertale.html",
+    "iframe": "games/undertale/index.html",
     "identifier": "undertale",
     "pin": true,
     "cat": "rpg"
-  },
-  {
-    "name": "cloudmoon",
-    "img": "/images/cloudmoon.png",
-    "iframe": "apps/cloudmoon.html",
-    "identifier": "cloudmoon",
-    "app": true,
-    "cat": "app"
-  },
-  {
-    "name": "tiktok",
-    "img": "/images/tiktok.png",
-    "iframe": "apps/tiktok.html",
-    "identifier": "tiktok",
-    "app": true,
-    "cat": "app"
   },
   {
     "name": "stickman hook",
