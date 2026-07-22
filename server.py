@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """elixer server: static host + live admin state + auto games data generation."""
-import os, re, json, http.server, socketserver, urllib.parse, threading, time, functools, queue
+import os, re, json, http.server, socketserver, urllib.parse, threading, time, functools, queue, hashlib, secrets
 
 def _bv(v):
     """coerce a value (from query string or json) to bool, ignoring None."""
@@ -30,6 +30,7 @@ STATE_PATH = os.path.join(ROOT, "admin.json")
 DATA_DIR = os.path.join(ROOT, "data")
 GAMES_JS = os.path.join(DATA_DIR, "games.js")
 MORE_JS = os.path.join(DATA_DIR, "more.js")
+USERS_PATH = os.path.join(ROOT, "users.json")
 
 # ----------------------------------------------------------------------------
 # runtime state (dev-only mode + announcements). Lives in admin.json so the
@@ -67,6 +68,48 @@ def broadcast_state():
                 dead.append(q)
         for q in dead:
             SSE_CLIENTS.remove(q)
+
+def load_users():
+    if os.path.exists(USERS_PATH):
+        try:
+            with open(USERS_PATH, encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {"users": {}, "sessions": {}}
+
+def save_users(data):
+    with open(USERS_PATH, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
+
+USERS_LOCK = threading.Lock()
+
+def hash_password(pw):
+    return hashlib.sha256(pw.encode("utf-8")).hexdigest()
+
+def make_session(username):
+    with USERS_LOCK:
+        data = load_users()
+        token = secrets.token_hex(32)
+        data["sessions"][token] = username
+        save_users(data)
+    return token
+
+def get_session_user(headers):
+    cookie = headers.get("Cookie", "")
+    for part in cookie.split(";"):
+        part = part.strip()
+        if part.startswith("elixer_session="):
+            token = part.split("=", 1)[1]
+            data = load_users()
+            return data["sessions"].get(token)
+    return None
+
+def clear_session(token):
+    with USERS_LOCK:
+        data = load_users()
+        data["sessions"].pop(token, None)
+        save_users(data)
 
 # ----------------------------------------------------------------------------
 # games data auto-generation
@@ -425,6 +468,20 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 reloadSignal=("reload" in q and 1) or None,
             ))
             return
+        if u.path == "/api/user":
+            user = get_session_user(self.headers)
+            self.json_reply(200, {"user": user})
+            return
+        if u.path == "/api/user/data":
+            user = get_session_user(self.headers)
+            if not user:
+                self.json_reply(401, {"error": "not logged in"})
+                return
+            with USERS_LOCK:
+                data = load_users()
+                ud = data["users"].get(user, {}).get("data", {})
+            self.json_reply(200, {"data": ud})
+            return
         super().do_GET()
 
     def serve_sse(self):
@@ -456,12 +513,79 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
     def do_POST(self):
         u = urllib.parse.urlparse(self.path)
+        length = int(self.headers.get("Content-Length", 0))
+        try:
+            body = json.loads(self.rfile.read(length) or b"{}")
+        except Exception:
+            body = {}
+        
+        if u.path == "/api/register":
+            username = (body.get("username") or "").strip()
+            password = body.get("password") or ""
+            if len(username) < 3 or len(username) > 24:
+                self.json_reply(400, {"error": "username must be 3-24 characters"})
+                return
+            if len(password) < 4:
+                self.json_reply(400, {"error": "password must be at least 4 characters"})
+                return
+            with USERS_LOCK:
+                data = load_users()
+                if username in data["users"]:
+                    self.json_reply(409, {"error": "username taken"})
+                    return
+                data["users"][username] = {"password": hash_password(password), "data": {}}
+                save_users(data)
+            token = make_session(username)
+            self.json_reply_with_cookie(200, {"ok": True, "user": username}, "elixer_session", token)
+            return
+
+        if u.path == "/api/login":
+            username = (body.get("username") or "").strip()
+            password = body.get("password") or ""
+            with USERS_LOCK:
+                data = load_users()
+                user = data["users"].get(username)
+            if not user or user["password"] != hash_password(password):
+                self.json_reply(401, {"error": "invalid username or password"})
+                return
+            token = make_session(username)
+            self.json_reply_with_cookie(200, {"ok": True, "user": username}, "elixer_session", token)
+            return
+
+        if u.path == "/api/logout":
+            cookie = self.headers.get("Cookie", "")
+            for part in cookie.split(";"):
+                part = part.strip()
+                if part.startswith("elixer_session="):
+                    token = part.split("=", 1)[1]
+                    clear_session(token)
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
+            self.send_header("Set-Cookie", "elixer_session=; Path=/; Max-Age=0; SameSite=Lax; HttpOnly")
+            self.end_headers()
+            self.wfile.write(json.dumps({"ok": True}).encode())
+            return
+
+        if u.path == "/api/user/data":
+            user = get_session_user(self.headers)
+            if not user:
+                self.json_reply(401, {"error": "not logged in"})
+                return
+            ud = body.get("data", {})
+            with USERS_LOCK:
+                data = load_users()
+                if user not in data["users"]:
+                    self.json_reply(404, {"error": "user not found"})
+                    return
+                if not isinstance(data["users"][user].get("data"), dict):
+                    data["users"][user]["data"] = {}
+                data["users"][user]["data"].update(ud)
+                save_users(data)
+            self.json_reply(200, {"ok": True})
+            return
+
+        # original admin POST handler
         if u.path == "/api/admin":
-            try:
-                length = int(self.headers.get("Content-Length", 0))
-                body = json.loads(self.rfile.read(length) or b"{}")
-            except Exception:
-                body = {}
             if body.get("pass") != ADMIN_PASS:
                 self.json_reply(403, {"error": "bad password"})
                 return
@@ -490,6 +614,17 @@ class Handler(http.server.SimpleHTTPRequestHandler):
         self.send_header("Content-Length", str(len(data)))
         self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Cache-Control", "no-store")
+        self.end_headers()
+        self.wfile.write(data)
+
+    def json_reply_with_cookie(self, code, obj, cookie_name, cookie_value, max_age=86400*365):
+        data = json.dumps(obj).encode("utf-8")
+        self.send_response(code)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(data)))
+        self.send_header("Access-Control-Allow-Origin", "*")
+        self.send_header("Cache-Control", "no-store")
+        self.send_header("Set-Cookie", f"{cookie_name}={cookie_value}; Path=/; Max-Age={max_age}; SameSite=Lax; HttpOnly")
         self.end_headers()
         self.wfile.write(data)
 

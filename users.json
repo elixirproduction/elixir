@@ -1,0 +1,31 @@
+{
+  "users": {
+    "anas1": {
+      "password": "13b2091281f85f9e76c5e833ca620fc48cf8a7813a946ef8ecd45bcde4f42c7f",
+      "data": {
+        "elixer_agreed": "1",
+        "elixer_fav": "[]",
+        "elixer_bg": "",
+        "tabCloak": "{}",
+        "elixer_panic": "{}",
+        "proxServer": "wss://wisp.mercurywork.shop/wisp/",
+        "customWisps": "[]",
+        "com.martinmagni.drivemad/data/sandbox/db.bak": "eAHtlrtuGzEQRf9lawWYGb7V8dkkcBoHKYIggGxYDpCHATt2YejfM9xZLrRxmnQp3OjqXFKzl0NS0vP0OO3tbvr5fdojy/0sx6tp/zyZBl5HSLmCTQ6he4eHecLhetrr3cSznyf237CFIiSiRLSIEbFdTvwUruG8tgHImxMbxwMX6vrEOllIuoZMxebqk8ns8dhf0nS3hqahRNdCDi367rJ9vOE3k0XXskuYTQWlwLHHYxabc8n1MrpkXxYXvOmhnANvdeXViEvQtG4qknfZz+W7myqp0BwE55oedSGEQCXXgsmkzGueXQJlGymiFB15bo+4MSsfDVbQimJbXARXFCInLL7BmIsE6FssRA6iCuKaRtZDMtE7zLyOxa2odY7BkS610lLBFPSuJuuLJQ9qJAOknHSIVVMreslgWnVeZQfOkFZq6U5vvonKgCeEonh3xW2qUsJmQmxarX3QGkMpDqllbcfcvqPK2NBIR1764rbG+0wZvc25Oj4g3bWoay4+Ae+1521dXCjUjOIhghDXfUOHGLBgMZlMGnWj9egJXOO8OtTFbcFmUOhcNGTTOEIp1FRVtTbk1HD0LPOc4mOGZnJOS9dTvLx8V798uHh78f7jRffYPF73N7vpadp/4kP34vSy+W3aw26643N/2s3Et+GMaENqQ3zNzshsiC/uGbkN+Q2FDaGEoYGSZkWJs6LkWVECrSiJVpRIK0qmFSXUipKKTp+533zCttf7vG1qfGJDknOQxBwkKQdJyEGScZBEHCQJB0lANQd88U1zHnBd0oYk4CAJOEgCDpKAgyTgIAk4SAIOkoCD/rt97Y27mTv1ddr/eXt2fS4n/sFDDMcZ7vgWdZGhO75aLL/m18e5afxDBf05rwVfC/5rQT6NV/Jdfc3KY9cPi96L3C4y7KsH0VvRw5P4hzvRG35c/9NgfTBEp99h1ka6",
+        "_tsid": "18006c51-3b5a-4519-adcb-31dab1e2c876",
+        "startup-time": "1784690344998",
+        "com.martinmagni.drivemad/data/sandbox/db": "eAHtlrtuGzEQRf9lawWYGb7V8dkkcBoHKYIggGxYDpCHATt2YejfM9xZLrRxmnQp3OjqXFKzl0NS0vP0OO3tbvr5fdojy/0sx6tp/zyZBl5HSLmCTQ6he4eHecLhetrr3cSznyf237CFIiSiRLSIEbFdTvwUruG8tgEo+BMbxwMX6vrEOllIuoZMxebqk8ns8dhf0nS3hqahRNdCDi367rJ9vOE3k0XXskuYTQWlwLHHYxabc8n1MrpkXxYXvOmhnANvdeXViEvQtG4qknfZz+W7myqp0BwE55oedSGEQCXXgsmkzGueXQJlGymiFB15bo+4MSsfDVbQimJbXARXFCInLL7BmIsE6FssRA6iCuKaRtZDMtE7zLyOxa2odY7BkS610lLBFPSuJuuLJQ9qJAOknHSIVVMreslgWnVeZQfOkFZq6U5vvonKgCeEonh3xW2qUsJmQmxarX3QGkMpDqllbcfcvqPK2NBIR1764rbG+0wZvc25Oj4g3bWoay4+Ae+1521dXCjUjOIhghDXfUOHGLBgMZlMGnWj9egJXOO8OtTFbcFmUOhcNGTTOEIp1FRVtTbk1HD0LPOc4mOGZnJOS9dTvLx8V798uHh78f7jRffYPF73N7vpadp/4kP34vSy+W3aw26643N/2s3Et+GMaENqQ3zNzshsiC/uGbkN+Q2FDaGEoYGSZkWJs6LkWVECrSiJVpRIK0qmFSXUipKKTp+533zCttf7vG1qfGJDknOQxBwkKQdJyEGScZBEHCQJB0lANQd88U1zHnBd0oYk4CAJOEgCDpKAgyTgIAk4SAIOkoCD/rt97Y27mTv1ddr/eXt2fS4n/sFDDMcZ7vgWdZGhO75aLL/m18e5afxDBf05rwVfC/5rQT6NV/Jdfc3KY9cPi96L3C4y7KsH0VvRw5P4hzvRG35c/9NgfTBEp9+FB0a+",
+        "com.martinmagni.drivemad/version": "{\"version\":1}",
+        "bare-mux-path": "/reactive/bareworker.js",
+        "com.martinmagni.drivemad/data/sandbox/db.lod": "eAHtlrtuGzEQRf9lawUYDh9DquOzSeA0DlIEQQDZsBwgDwN27MLQv2e4s1xo4zTpUrjR1bmkZu8OydU+T4/T3u2mn9+nvWK5n+V4Ne2fJ9vAmwgpV3CJFHTv8DBPOFxPe9xNPPt5Yv8NW0oERXSXExfk6eSN84GsO7FxPPBvuj6xTg6SqSFjcbn6ZDN7PPaXC3e3hmagRGohhxZ9d9k+3vCXySlqmZLKtoLWQOzxmFONKFEvY0r2ZXHB2x6KCLwzlYOLi9CMaTqip+zn8t1NFXVoBIGomVEXQghYci0q2ZTt4iJo11AjpkjouRPixqx9tKqC0Rjb4iqgopXihMU3GHMVgvItFkSCqIO4tqHzkGz0pDLfx+JWZUyOgdCUWnGpYIvyVJPzxaEHPZKBwpxMiNVgK2bJYFslrzMBWTRaL93pzbdRW/CooGheSHGbrphUsyE2o9c+GKNCKaSwZePG3L6i2rrQ0ES+9cVtjdcZs/Iu50pOXKdMzcUn4LX2vKyLCwWb1TyEEOK6boqUCqqoYjPaNOpG55VHoMZ5TaiL24LLoBVRtOjS2EIp1FR1dS7k1NToWeY5xccMzeaclq6neHn5rn75cPH24v3Hi+6xebzuX3bT07T/xJvuxe5l89u0h910x/v+tJuJT8MZ8ak5I70hsyG7IT6jZ0Qb8hsKG1ISBgdKmhUlzoqSZ0UJtKIkWlEirSiZVpRQK0oqPH3mfvMO2x7v87bp8YsNSc5BEnOQpBwkIQdJxkEScZAkHCQB9RzwxZPmPOB6SxuSgIMk4CAJOEgCDpKAgyTgIAk4SAIO+u/WtTfuZu7U12n/5+nZ9bmc+AcPMRxnuONT1EWG7vhosfyaPx/npvF/EvTrvBZ8LfivBXk3Xsmz+pqVx64fFr0XuV1k2Ff8ZtP1VvTwJP7hTvSGL9dfGvhNxiKefgPmmEMM"
+      }
+    }
+  },
+  "sessions": {
+    "7585e6732ccadab3f01eb624455652e318d3c78a170da1391d8ad471fb04a022": "logintest",
+    "a1703340d0df3123330d227513df0b77ea28347dc1057e1459f374fff20dcd7b": "logintest",
+    "a57560b95688a0226ade2cb71da88a1a60e9b470fdef1ec0fe0be76329c573f7": "anas1",
+    "942281af16b47d37eaea7d117bb4e3d7a98c2b1f4c5b166c756ea22d613edac6": "anas1",
+    "29beeda8b053f2886fc13222f5aad32f5d0110f2eefc74ad5be86cc4e5b8b5a0": "anas1",
+    "cd1b1f278d994f2e44d882b4c1ce67e58269b9fb226901ce4f1101ec6bf0425a": "anas1"
+  }
+}

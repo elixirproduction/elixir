@@ -16,13 +16,6 @@
     "cat": "featured"
   },
   {
-    "name": "comments",
-    "img": "/images/comments.png",
-    "iframe": "games/comments.html",
-    "identifier": "comments",
-    "cat": "featured"
-  },
-  {
     "name": "deltarune",
     "img": "/images/deltarune.png",
     "iframe": "games/deltarune.html",

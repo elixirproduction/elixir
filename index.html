@@ -164,11 +164,14 @@
         .cloak-opt.on { border-color: var(--blue); background: var(--blue-soft); }
         .cloak-opt img { width: 20px; height: 20px; border-radius: 5px; object-fit: cover; }
         .cloak-opt span { font-size: 0.62rem; color: var(--text-3); }
-        .wisp-list .wisp { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-top: 1px solid var(--line-soft); font-size: 0.8rem; }
-        .wisp-list .wisp:first-child { border-top: none; }
-        .wisp-list .wisp.on { color: var(--text); } .wisp-list .wisp.on::before { content: "● "; color: var(--green); }
-        .wisp-list .wisp button { background: none; border: none; color: var(--text-4); cursor: pointer; font-size: 0.74rem; }
-        .wisp-list .wisp button:hover { color: var(--danger); }
+        .wisp-list { display: flex; flex-direction: column; gap: 4px; }
+        .wisp-list .wisp { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border: 1px solid var(--line-soft); border-radius: 8px; font-size: 0.8rem; cursor: pointer; transition: border-color .14s, background .14s; }
+        .wisp-list .wisp:hover { border-color: var(--blue); background: var(--blue-soft); }
+        .wisp-list .wisp.on { color: var(--text); border-color: var(--green); background: rgba(74,122,90,0.1); }
+        .wisp-list .wisp.on::before { content: "> "; color: var(--green); }
+        .wisp-list .wisp span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--mono); font-size: 0.72rem; }
+        .wisp-list .wisp button { background: var(--panel-2); border: 1px solid var(--line); color: var(--text-4); cursor: pointer; font-size: 0.7rem; border-radius: 6px; padding: 3px 8px; transition: color .14s, border-color .14s; flex: none; }
+        .wisp-list .wisp button:hover { color: var(--danger); border-color: var(--danger); }
 
         /* ---------- game modal (play overlay) ---------- */
         .modal { position: fixed; inset: 0; z-index: 300; display: none; opacity: 0; background: rgba(10,10,10,0.88); backdrop-filter: blur(10px); transition: opacity .2s ease; align-items: center; justify-content: center; padding: 0; }
@@ -228,6 +231,23 @@
         .doc-body p { margin-bottom: 10px; }
         .doc-body a { color: var(--blue-hi); text-decoration: underline; text-underline-offset: 2px; }
 
+        /* ---------- auth gate ---------- */
+        .auth-gate { position: fixed; inset: 0; z-index: 450; display: none; align-items: center; justify-content: center; padding: 24px; background: var(--bg); }
+        .auth-gate.show { display: flex; animation: rise .35s cubic-bezier(0.16,1,0.3,1) both; }
+        .auth-gate-card { width: 100%; max-width: 400px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 28px 26px; box-shadow: var(--shadow); }
+        .auth-gate-card h2 { font-size: 1.15rem; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 4px; }
+        .auth-gate-card .sub { font-size: .82rem; color: var(--text-3); margin-bottom: 16px; }
+        .auth-tabs { display: flex; gap: 0; margin-bottom: 16px; background: var(--bg-1); border-radius: 8px; padding: 3px; }
+        .auth-tabs button { flex: 1; background: none; border: none; color: var(--text-3); padding: 8px; border-radius: 6px; cursor: pointer; font-size: .82rem; font-weight: 500; font-family: inherit; transition: .12s; }
+        .auth-tabs button.on { background: var(--panel-2); color: var(--text); }
+        .auth-gate-card .field { width: 100%; background: var(--bg-1); border: 1px solid var(--line); color: var(--text); padding: 10px 12px; border-radius: 8px; outline: none; font-size: .84rem; font-family: inherit; margin-bottom: 10px; transition: border-color .15s, box-shadow .15s; }
+        .auth-gate-card .field:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-soft); }
+        .auth-gate-card .btn { width: 100%; background: var(--blue); color: #fff; border: none; border-radius: 8px; padding: 11px; font-weight: 550; font-size: .85rem; cursor: pointer; font-family: inherit; transition: background .15s; }
+        .auth-gate-card .btn:hover { background: var(--blue-2); }
+        .auth-gate-card .err { color: #ff6b81; font-size: .78rem; min-height: 20px; margin-bottom: 6px; }
+        .auth-gate-card .skip { display: block; text-align: center; font-size: .78rem; color: var(--text-4); margin-top: 12px; cursor: pointer; }
+        .auth-gate-card .skip:hover { color: var(--text-3); }
+
         @media (max-width: 720px) { nav.tabs { display: none; } .search { width: 150px; } .splash { flex-direction: column; align-items: flex-start; } }
         @media (max-width: 480px) { .grid { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 10px; } }
 
@@ -253,6 +273,42 @@
         /* extra-dark appearance toggle */
         body.extra-dark { --bg: #050505; --bg-1: #080808; --panel: #0a0a0a; --panel-2: #0f0f0f; --line: #181818; --line-soft: #101010; }
         body.extra-dark:not(.admin-red) { background: var(--bg); }
+
+        /* ---------- custom background (blurred) ---------- */
+        body.has-bg {
+            background: none;
+        }
+        body.has-bg::before {
+            content: ''; position: fixed; inset: 0; z-index: -1;
+            background: var(--custom-bg) center/cover no-repeat fixed;
+            filter: blur(4px) brightness(0.55) saturate(0.9);
+        }
+        body.has-bg header { background: rgba(10,10,10,0.4); }
+        body.has-bg .splash { background: rgba(23,23,23,0.45); backdrop-filter: blur(12px); border-color: rgba(32,32,32,0.3); }
+        body.has-bg .card-box { background: rgba(23,23,23,0.4); backdrop-filter: blur(14px); border-color: rgba(32,32,32,0.3); }
+        body.has-bg .tile { background: rgba(23,23,23,0.35); backdrop-filter: blur(10px); border-color: rgba(32,32,32,0.25); }
+        body.has-bg .tile:hover { background: rgba(31,31,31,0.55); backdrop-filter: blur(10px); border-color: rgba(42,42,42,0.4); }
+        body.has-bg .tile .nm { text-shadow: 0 1px 4px rgba(0,0,0,0.9); }
+        body.has-bg .seg { background: rgba(23,23,23,0.35); backdrop-filter: blur(10px); border-color: rgba(42,42,42,0.3); }
+        body.has-bg .ann-bar { background: rgba(31,31,31,0.5); backdrop-filter: blur(12px); border-color: rgba(42,42,42,0.3); }
+        body.has-bg .g-ann { background: rgba(31,31,31,0.5); backdrop-filter: blur(12px); border-color: rgba(42,42,42,0.3); }
+        body.has-bg footer { background: transparent; border-color: rgba(255,255,255,0.08); backdrop-filter: none; }
+        body.has-bg .coming-soon { background: rgba(23,23,23,0.45); backdrop-filter: blur(12px); border-color: rgba(32,32,32,0.3); }
+        body.has-bg .proxy-frame { background: rgba(0,0,0,0.35); backdrop-filter: blur(6px); border-color: rgba(42,42,42,0.3); }
+        body.has-bg .home-search input { background: rgba(17,17,17,0.5); backdrop-filter: blur(8px); }
+        body.has-bg .splash h2 { text-shadow: 0 2px 8px rgba(0,0,0,0.7); }
+        body.has-bg .card-box h3 { text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
+        body.has-bg .head h1 { text-shadow: 0 2px 6px rgba(0,0,0,0.7); }
+        body.has-bg .count { text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
+
+        /* light background override */
+        body.bg-light { --text: #1a1a1a; --text-2: #333; --text-3: #555; --text-4: #888; --panel: rgba(255,255,255,0.7); --panel-2: rgba(255,255,255,0.8); --bg-1: rgba(255,255,255,0.5); --line: rgba(0,0,0,0.12); --line-soft: rgba(0,0,0,0.06); }
+        body.bg-light .banner-ad { border-color: rgba(0,0,0,0.1); }
+        body.bg-light .tile .nm { text-shadow: none; }
+        body.bg-light .splash h2 { text-shadow: none; }
+        body.bg-light .card-box h3 { text-shadow: none; }
+        body.bg-light .head h1 { text-shadow: none; }
+
         .ann-bar.pinned { box-shadow: var(--shadow); }
         .ann-bar.pinned::after { content: ''; }
 
@@ -411,6 +467,24 @@
                     <h3><i class="ico fas fa-database"></i> local data</h3>
                     <p>wipe all cookies, cached data, and saved settings on this device, then reload.</p>
                     <button class="btn ghost" onclick="clearData()">clear everything</button>
+                </div>
+                <div class="card-box">
+                    <h3><i class="ico fas fa-image"></i> background</h3>
+                    <p>upload a custom background that shows on every page with a blur effect.</p>
+                    <input type="file" class="field" id="bgInput" accept="image/*" style="padding:6px;font-size:.78rem">
+                    <div style="display:flex;gap:8px;margin-top:9px">
+                        <button class="btn ghost" style="flex:1" onclick="uploadBg()">upload</button>
+                        <button class="btn ghost" style="flex:1" onclick="resetBg()">reset</button>
+                    </div>
+                </div>
+                <div class="card-box">
+                    <h3><i class="ico fas fa-user"></i> account</h3>
+                    <p id="accountStatus">not logged in.</p>
+                    <div id="accountLoggedIn" style="display:none">
+                        <div class="row"><span class="lbl"><i class="fas fa-user"></i> logged in as</span><span id="accountName" style="font-family:var(--mono);font-size:.8rem">—</span></div>
+                        <button class="btn ghost" style="width:100%;margin-top:6px;" onclick="authLogout()"><i class="fas fa-sign-out-alt"></i> log out</button>
+                    </div>
+                    <div id="accountLoggedOut"></div>
                 </div>
                 <div class="card-box">
                     <h3><i class="ico fas fa-lock"></i> admin access</h3>
@@ -597,6 +671,30 @@
       })();
     </script>
 
+    <!-- auth gate (login/signup) -->
+    <div class="auth-gate" id="authGate">
+        <div class="auth-gate-card">
+            <h2>welcome to elixer</h2>
+            <p class="sub">sign in to sync your settings across devices.</p>
+            <div class="auth-tabs" id="authTabs">
+                <button class="on" data-tab="login">login</button>
+                <button data-tab="signup">sign up</button>
+            </div>
+            <div id="authLogin">
+                <input type="text" class="field" id="loginUser" placeholder="username" autocomplete="username">
+                <input type="password" class="field" id="loginPass" placeholder="password" autocomplete="current-password">
+                <div class="err" id="loginErr"></div>
+                <button class="btn" onclick="authLogin()">log in</button>
+            </div>
+            <div id="authSignup" style="display:none">
+                <input type="text" class="field" id="signupUser" placeholder="username" autocomplete="off">
+                <input type="password" class="field" id="signupPass" placeholder="password" autocomplete="new-password">
+                <div class="err" id="signupErr"></div>
+                <button class="btn" onclick="authSignup()">sign up</button>
+            </div>
+        </div>
+    </div>
+
     <!-- dev-only overlay -->
     <div class="devonly" id="devOnly">
         <div class="devonly-card">
@@ -614,20 +712,6 @@
         <div class="doc-win">
             <div class="top"><div class="t" id="docTitle">—</div><button class="x" onclick="closeDoc()"><i class="fas fa-xmark"></i></button></div>
             <div class="doc-body" id="docBody"></div>
-        </div>
-    </div>
-
-    <div class="modal" id="gmodal">
-        <div class="win">
-            <div class="top">
-                <div class="t" id="gTitle">—</div>
-                <div class="acts">
-                    <button onclick="toggleFs()" title="fullscreen"><i class="fas fa-expand"></i></button>
-                    <button class="x" onclick="closeGame()" title="close"><i class="fas fa-xmark"></i></button>
-                </div>
-            </div>
-            <div class="g-ann" id="gAnnBar"></div>
-            <iframe id="gFrame" src="" allow="autoplay; fullscreen"></iframe>
         </div>
     </div>
 
@@ -717,21 +801,11 @@
             if (curCat === 'fav') renderGames();
         }
 
-        /* ---- game modal ---- */
+        /* ---- game launch (opens play.html in the same tab) ---- */
         function play(url, title) {
             url = initial(url);
-            document.getElementById('gTitle').textContent = title || 'game';
-            document.getElementById('gFrame').src = url;
-            const m = document.getElementById('gmodal');
-            m.classList.add('show'); document.body.style.overflow = 'hidden';
+            window.location.href = 'play.html?url=' + encodeURIComponent(url) + '&title=' + encodeURIComponent(title || 'game');
         }
-        function closeGame() {
-            const m = document.getElementById('gmodal');
-            m.classList.remove('show'); document.getElementById('gFrame').src = '';
-            document.body.style.overflow = '';
-        }
-        function toggleFs() { const w = document.querySelector('#gmodal .win'); if (w && w.requestFullscreen) w.requestFullscreen(); else if (w && w.webkitRequestFullscreen) w.webkitRequestFullscreen(); }
-        document.getElementById('gmodal').addEventListener('click', e => { if (e.target.id === 'gmodal') closeGame(); });
 
         /* ---- search ---- */
         const q = document.getElementById('q'), dd = document.getElementById('dd');
@@ -750,7 +824,7 @@
         document.addEventListener('click', e => { if (!e.target.closest('.search')) dd.classList.remove('show'); });
         document.addEventListener('keydown', e => {
             if (e.key === '/' && document.activeElement !== q) { e.preventDefault(); q.focus(); }
-            if (e.key === 'Escape') { dd.classList.remove('show'); if (document.getElementById('gmodal').classList.contains('show')) closeGame(); }
+            if (e.key === 'Escape') { dd.classList.remove('show'); }
         });
 
         /* ---- filters ---- */
@@ -771,13 +845,14 @@
             else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
         }
         // show active wisp
-        (function renderWispStatus(){
+        function renderWispStatus(){
             const el = document.getElementById('wispStatus');
             if (!el) return;
             const u = localStorage.getItem('proxServer') || DEFAULT_WISP;
             el.textContent = 'wisp: ' + u.replace(/^wss?:\/\//,'').replace(/\/$/,'');
             el.title = u;
-        })();
+        }
+        renderWispStatus();
 
         /* ---- cloak ---- */
         const CLOAKS = {
@@ -814,13 +889,11 @@
         function enableAboutBlank() {
             const w = window.open('about:blank', '_blank');
             if (!w) return toast('pop-ups blocked', 'err');
-            const page = '<!doctype html><html><head><meta charset="utf-8"><title>elixer</title><style>html,body{margin:0;height:100%}iframe{width:100%;height:100%;border:0}</style></head><body><iframe src="' + location.href + '"></iframe></body></html>';
-            const pageUrl = URL.createObjectURL(new Blob([page], { type: 'text/html' }));
-            const shell = '<!doctype html><html><head><meta charset="utf-8"><title>elixer</title><style>html,body{margin:0;height:100%}iframe{width:100%;height:100%;border:0;display:block}</style></head><body><iframe src="' + pageUrl + '"></iframe></body></html>';
-            const shellUrl = URL.createObjectURL(new Blob([shell], { type: 'text/html' }));
+            const html = '<!doctype html><html><head><meta charset="utf-8"><title>elixer</title><style>html,body{margin:0;height:100%}iframe{width:100%;height:100%;border:0;display:block}</style></head><body><iframe src="' + location.protocol + '//' + location.host + '/"></iframe></body></html>';
+            const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
             const doc = w.document;
             doc.open();
-            doc.write('<title>elixer</title><style>html,body{margin:0;height:100%}iframe{width:100%;height:100%;border:0;display:block}</style><iframe src="' + shellUrl + '"></iframe>');
+            doc.write('<!doctype html><html><head><meta charset="utf-8"><title>elixer</title><style>html,body{margin:0;height:100%}iframe{width:100%;height:100%;border:0;display:block}</style></head><body><iframe src="' + url + '"></iframe></body></html>');
             doc.close();
             toast('opened in blank tab', 'good');
         }
@@ -859,7 +932,7 @@
             const known = [...WISP_SERVERS, ...getWisps()];
             if (stored && !known.includes(stored)) { localStorage.setItem('proxServer', DEFAULT_WISP); }
         })();
-        function setWisp(url) { localStorage.setItem('proxServer', url); renderWisp(); }
+        function setWisp(url) { localStorage.setItem('proxServer', url); renderWisp(); renderWispStatus(); }
         function addWisp() {
             const v = document.getElementById('wispInput').value.trim();
             if (!v) return;
@@ -872,7 +945,7 @@
             const all = [...WISP_SERVERS, ...getWisps()];
             const seen = new Set(); const uniq = all.filter(u => u && !seen.has(u) && seen.add(u));
             document.getElementById('wispList').innerHTML = uniq.map(u =>
-                `<div class="wisp ${u===cur?'on':''}"><span>${u}</span>${u!==DEFAULT_WISP ? `<button onclick="removeWisp('${u}')">remove</button>`:''}</div>`
+                `<div class="wisp ${u===cur?'on':''}" onclick="setWisp('${u}')"><span>${u}</span>${u!==DEFAULT_WISP ? `<button onclick="event.stopPropagation();removeWisp('${u}')">remove</button>`:''}</div>`
             ).join('');
         }
         function removeWisp(u) {
@@ -894,6 +967,156 @@
             const p = JSON.parse(localStorage.getItem('elixer_panic') || '{}');
             if (e.key === p.key && p.url) window.location.href = p.url;
         });
+        /* ---- auth ---- */
+        let AUTH_USER = null;
+        function authCheck() {
+            return Promise.race([
+                fetch('/api/user').then(r => r.json()).then(function(res) {
+                    console.log('[sync] /api/user response:', res);
+                    if (res && res.user) { AUTH_USER = res.user; return true; }
+                    AUTH_USER = null; return false;
+                }),
+                new Promise(function(resolve) { setTimeout(function() { resolve(false); }, 8000); })
+            ]).catch(function() { AUTH_USER = null; return false; });
+        }
+        function showAuthGate(loggedIn) {
+            if (loggedIn) { renderAccount(); return; }
+            if (!navigator.onLine) return;
+            var gate = document.getElementById('authGate');
+            if (!gate) return;
+            gate.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+        document.getElementById('authTabs').addEventListener('click', function(e) {
+            var b = e.target.closest('button'); if (!b) return;
+            document.querySelectorAll('#authTabs button').forEach(function(x) { x.classList.remove('on'); });
+            b.classList.add('on');
+            document.getElementById('authLogin').style.display = b.dataset.tab === 'login' ? '' : 'none';
+            document.getElementById('authSignup').style.display = b.dataset.tab === 'signup' ? '' : 'none';
+        });
+        function authLogout() {
+            fetch('/api/logout', { method: 'POST' }).then(function() {
+                AUTH_USER = null; renderAccount(); toast('logged out', 'warn');
+            }).catch(function() { toast('logout failed', 'err'); });
+        }
+        function authLogin() {
+            var u = document.getElementById('loginUser').value.trim();
+            var p = document.getElementById('loginPass').value;
+            var err = document.getElementById('loginErr');
+            err.textContent = '';
+            fetch('/api/login', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({username: u, password: p}) })
+                .then(function(r) { return r.json(); })
+                .then(function(res) {
+                    if (res.ok) {
+                        AUTH_USER = res.user;
+                        document.getElementById('authGate').classList.remove('show');
+                        document.body.style.overflow = '';
+                        renderAccount();
+                        syncUserData(); startPeriodicSync(); toast('logged in as ' + res.user, 'good');
+                    } else { err.textContent = res.error || 'login failed'; }
+                }).catch(function() { err.textContent = 'server unreachable'; });
+        }
+        function authSignup() {
+            var u = document.getElementById('signupUser').value.trim();
+            var p = document.getElementById('signupPass').value;
+            var err = document.getElementById('signupErr');
+            err.textContent = '';
+            if (u.length < 3) { err.textContent = 'username must be 3+ characters'; return; }
+            if (p.length < 4) { err.textContent = 'password must be 4+ characters'; return; }
+            fetch('/api/register', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({username: u, password: p}) })
+                .then(function(r) { return r.json(); })
+                .then(function(res) {
+                    if (res.ok) {
+                        AUTH_USER = res.user;
+                        document.getElementById('authGate').classList.remove('show');
+                        document.body.style.overflow = '';
+                        renderAccount();
+                        syncUserData(); startPeriodicSync(); toast('signed up as ' + res.user, 'good');
+                    } else { err.textContent = res.error || 'registration failed'; }
+                }).catch(function() { err.textContent = 'server unreachable'; });
+        }
+        function authLogout() {
+            fetch('/api/logout', { method: 'POST' }).then(function() {
+                AUTH_USER = null;
+                renderAccount();
+                toast('logged out', 'warn');
+            }).catch(function() { toast('logout failed', 'err'); });
+        }
+        function renderAccount() {
+            var s = document.getElementById('accountStatus');
+            var li = document.getElementById('accountLoggedIn');
+            var lo = document.getElementById('accountLoggedOut');
+            var nm = document.getElementById('accountName');
+            if (AUTH_USER) {
+                s.textContent = 'logged in as ' + AUTH_USER + '.';
+                if (nm) nm.textContent = AUTH_USER;
+                if (li) li.style.display = '';
+                if (lo) lo.style.display = 'none';
+            } else {
+                s.textContent = 'not logged in.';
+                if (li) li.style.display = 'none';
+                if (lo) lo.style.display = '';
+            }
+        }
+        function syncUserData() {
+            if (!AUTH_USER) return;
+            var data = {};
+            try { data.elixer_fav = localStorage.getItem('elixer_fav') || '[]'; } catch(e) {}
+            try { data.elixer_bg = localStorage.getItem('elixer_bg') || ''; } catch(e) {}
+            try { data.tabCloak = JSON.stringify(JSON.parse(localStorage.getItem('tabCloak') || '{}')); } catch(e) {}
+            try { data.elixer_panic = localStorage.getItem('elixer_panic') || '{}'; } catch(e) {}
+            try { data.proxServer = localStorage.getItem('proxServer') || ''; } catch(e) {}
+            try { data.customWisps = localStorage.getItem('customWisps') || '[]'; } catch(e) {}
+            fetch('/api/user/data', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data: data}) }).catch(function() {});
+        }
+        function loadUserData() {
+            if (!AUTH_USER) return;
+            fetch('/api/user/data').then(function(r) { return r.json(); }).then(function(res) {
+                if (!res || !res.data) return;
+                for (var k in res.data) {
+                    if (!res.data.hasOwnProperty(k)) continue;
+                    try { localStorage.setItem(k, res.data[k]); } catch(e) {}
+                }
+                renderGames(); renderCloak(); renderWispStatus(); renderWisp();
+            }).catch(function() {});
+        }
+
+        /* ---- periodic live sync (active saving) ---- */
+        var _syncInterval = null;
+        function startPeriodicSync() {
+            if (_syncInterval) clearInterval(_syncInterval);
+            if (!AUTH_USER) return;
+            syncAllToServer();
+            _syncInterval = setInterval(syncAllToServer, 5000);
+            window.addEventListener('beforeunload', syncAllToServer);
+        }
+        function syncAllToServer() {
+            if (!AUTH_USER) return;
+            var data = {};
+            for (var i = 0; i < localStorage.length; i++) {
+                var k = localStorage.key(i);
+                if (k) { try { data[k] = localStorage.getItem(k); } catch(e) {} }
+            }
+            fetch('/api/user/data', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data: data}) }).catch(function() {});
+        }
+
+        /* ---- brightness detection ---- */
+        function detectBgBrightness(dataUrl) {
+            var img = new Image();
+            img.onload = function() {
+                var c = document.createElement('canvas');
+                c.width = 32; c.height = 32;
+                var ctx = c.getContext('2d');
+                ctx.drawImage(img, 0, 0, 32, 32);
+                var p = ctx.getImageData(0, 0, 32, 32).data;
+                var sum = 0, n = p.length / 4;
+                for (var i = 0; i < p.length; i += 4) { sum += p[i] * 0.299 + p[i+1] * 0.587 + p[i+2] * 0.114; }
+                var avg = sum / n;
+                document.body.classList.toggle('bg-light', avg > 160);
+            };
+            img.src = dataUrl;
+        }
+
         function clearData() {
             try { localStorage.clear(); } catch (e) {}
             try { sessionStorage.clear(); } catch (e) {}
@@ -909,6 +1132,52 @@
             if (navigator.serviceWorker) { navigator.serviceWorker.getRegistrations().then(rs => rs.forEach(r => r.unregister())); }
             toast('all local data cleared', 'warn');
             setTimeout(() => location.reload(true), 600);
+        }
+
+        /* ---- custom background ---- */
+        function uploadBg() {
+            const input = document.getElementById('bgInput');
+            const file = input.files[0];
+            if (!file) { toast('select an image first', 'warn'); return; }
+            if (file.size > 15 * 1024 * 1024) { toast('image too large (max 15 MB)', 'err'); return; }
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                var img = new Image();
+                img.onload = function() {
+                    var max = 1920, w = img.width, h = img.height;
+                    if (w > max || h > max) { var r = Math.min(max / w, max / h); w = Math.round(w * r); h = Math.round(h * r); }
+                    var c = document.createElement('canvas');
+                    c.width = w; c.height = h;
+                    c.getContext('2d').drawImage(img, 0, 0, w, h);
+                    var data = c.toDataURL('image/jpeg', 0.8);
+                    try { localStorage.setItem('elixer_bg', data); } catch (err) { toast('failed to save — localStorage full', 'err'); return; }
+                    applyBg();
+                    toast('background saved', 'good');
+                };
+                img.onerror = function() { toast('failed to decode image', 'err'); };
+                img.src = e.target.result;
+            };
+            reader.onerror = function() { toast('failed to read file', 'err'); };
+            reader.readAsDataURL(file);
+        }
+        function resetBg() {
+            try { localStorage.removeItem('elixer_bg'); } catch (e) {}
+            document.body.classList.remove('has-bg');
+            document.body.style.removeProperty('--custom-bg');
+            document.getElementById('bgInput').value = '';
+            toast('background reset', 'warn');
+        }
+        function applyBg() {
+            var bgData = localStorage.getItem('elixer_bg');
+            if (bgData) {
+                document.body.classList.add('has-bg');
+                document.body.style.setProperty('--custom-bg', 'url(' + bgData + ')');
+                detectBgBrightness(bgData);
+            } else {
+                document.body.classList.remove('has-bg');
+                document.body.classList.remove('bg-light');
+                document.body.style.removeProperty('--custom-bg');
+            }
         }
 
         /* ---- clock + battery ---- */
@@ -931,6 +1200,8 @@
 
         /* ---- boot ---- */
         document.getElementById('yr').textContent = new Date().getFullYear();
+        applyBg();
+        authCheck().then(function(loggedIn) { if (loggedIn) { loadUserData(); renderAccount(); } showAuthGate(loggedIn); });
         const savedPanic = JSON.parse(localStorage.getItem('elixer_panic') || '{}');
         if (savedPanic.key) document.getElementById('panicBtn').textContent = savedPanic.key === ' ' ? 'space' : savedPanic.key;
         if (savedPanic.url) document.getElementById('panicUrl').value = savedPanic.url;
@@ -944,19 +1215,23 @@
             terms: {
                 title: 'terms of service',
                 html: `<h4>1. acceptance</h4><p>by using elixer you agree to these terms. if you do not agree, do not use the site.</p>
-                <h4>2. use of the proxy</h4><p>the built-in proxy is provided for general browsing. you are responsible for what you access through it. do not use it for anything illegal in your jurisdiction.</p>
-                <h4>3. games</h4><p>games are loaded through third-party embed frames. elixer does not host the games and is not affiliated with their owners.</p>
-                <h4>4. school and institutional use</h4><p>elixer is a personal project and is not affiliated with, endorsed by, or operated by any school, employer, or institution. if you use this site on a network, device, or account that belongs to a school or employer, you alone are responsible for following that organization's rules. the creators of elixer are not responsible for any disciplinary action, suspension, termination, or other consequences that a school, employer, or any third party may take against you as a result of your use of this site. use it at your own risk.</p>
-                <h4>5. no warranty</h4><p>elixer is provided "as is" with no warranties of any kind. we are not liable for any damages or consequences arising from use of the site.</p>
-                <h4>6. changes</h4><p>we may update these terms at any time. continued use after changes means you accept the new terms.</p>`
+                <h4>2. accounts</h4><p>you may create an account with a username and password. passwords are encrypted with sha256 before storage — we never store plaintext passwords. you are responsible for keeping your login credentials secure. we are not liable for any loss or damage caused by unauthorized access to your account.</p>
+                <h4>3. use of the proxy</h4><p>the built-in proxy is provided for general browsing. you are responsible for what you access through it. do not use it for anything illegal in your jurisdiction.</p>
+                <h4>4. games</h4><p>games are loaded through third-party embed frames. elixer does not host the games and is not affiliated with their owners. game progress saved through your account is stored on the server and synced across devices.</p>
+                <h4>5. school and institutional use</h4><p>elixer is a personal project and is not affiliated with, endorsed by, or operated by any school, employer, or institution. if you use this site on a network, device, or account that belongs to a school or employer, you alone are responsible for following that organization's rules. the creators of elixer are not responsible for any disciplinary action, suspension, termination, or other consequences that a school, employer, or any third party may take against you as a result of your use of this site. use it at your own risk.</p>
+                <h4>6. user data</h4><p>if you create an account, your settings, favorites, game progress, and custom background are stored on the server to sync across devices. you may delete your data at any time by contacting us or clearing your account through the settings panel.</p>
+                <h4>7. no warranty</h4><p>elixer is provided "as is" with no warranties of any kind. we are not liable for any damages or consequences arising from use of the site.</p>
+                <h4>8. changes</h4><p>we may update these terms at any time. continued use after changes means you accept the new terms.</p>`
             },
             privacy: {
                 title: 'privacy policy',
-                html: `<h4>1. what we store</h4><p>elixer runs entirely in your browser. we do not operate a server that collects your data. anything saved (favorites, cloak settings, proxy server choice, panic key) is kept in your device's local storage only.</p>
-                <h4>2. proxy traffic</h4><p>when you use the proxy, requests are routed through a third-party wisp transport server you select. those operators may log connection metadata. we do not control and are not responsible for third-party servers.</p>
-                <h4>3. cookies</h4><p>we use a single local flag to remember that you accepted these policies, so you are not asked again. no tracking cookies are set.</p>
-                <h4>4. children</h4><p>elixer is not directed at children under 13. if you are under 13, do not use the proxy or enter personal information.</p>
-                <h4>5. contact</h4><p>this is a personal project with no commercial operator. use at your own discretion.</p>`
+                html: `<h4>1. what we store locally</h4><p>on your device, elixer stores favorites, cloak settings, proxy server choice, panic key, and custom background in your browser's local storage. this data never leaves your device unless you create an account.</p>
+                <h4>2. what we store on the server</h4><p>if you create an account, we store your username and a sha256-hashed password (never plaintext). we also store your settings, favorites, game progress, and custom background so they can sync across your devices. this data is stored in a json file on the server and is not shared with any third party.</p>
+                <h4>3. proxy traffic</h4><p>when you use the proxy, requests are routed through a third-party wisp transport server you select. those operators may log connection metadata. we do not control and are not responsible for third-party servers.</p>
+                <h4>4. cookies</h4><p>we use a session cookie to keep you logged in. no tracking cookies are set. if you do not create an account, only a local flag is stored to remember you accepted these policies.</p>
+                <h4>5. children</h4><p>elixer is not directed at children under 13. if you are under 13, do not create an account or enter personal information.</p>
+                <h4>6. data deletion</h4><p>you can delete your account and all associated server data by logging out and clearing your data in settings, or by contacting the operator.</p>
+                <h4>7. contact</h4><p>this is a personal project with no commercial operator. use at your own discretion.</p>`
             }
         };
         function openDoc(kind) {
@@ -1128,7 +1403,7 @@
             toast(on ? 'removed from favorites' : 'saved to favorites', on ? 'warn' : 'good');
         }
         function copyLink(url) {
-            const full = location.origin + '/' + (url || '').replace(/^\/+/, '');
+            const full = location.origin + '/play.html?url=' + encodeURIComponent(initial(url));
             navigator.clipboard.writeText(full).then(() => toast('link copied', 'good')).catch(() => toast('copy failed', 'err'));
         }
         function adminRemoveAnnounce(i) {
@@ -1277,8 +1552,6 @@
             else if (document.webkitFullscreenElement) { try { document.webkitExitFullscreen(); } catch (e) {} }
             const d = document.getElementById('devOnly');
             d.classList.add('show');
-            const m = document.getElementById('gmodal');
-            if (m) m.classList.remove('show');
             document.body.style.overflow = 'hidden';
         }
         function hideDevOnly() {
