@@ -1,5 +1,3 @@
-const SIZE = 613083429
-const DRM = 0;
-const SPLIT = 24;
-const CHUNKSIZE = 25165824;
-const splits = ["dataaa.data","dataab.data","dataac.data","dataad.data","dataae.data","dataaf.data","dataag.data","dataah.data","dataai.data","dataaj.data","dataak.data","dataal.data","dataam.data","dataan.data","dataao.data","dataap.data","dataaq.data","dataar.data","dataas.data","dataat.data","dataau.data","dataav.data","dataaw.data","dataax.data","dataay.data",];
+version https://git-lfs.github.com/spec/v1
+oid sha256:c5c1020b3d1fb258fbb7d2a5714ea244594775d114b940ed595aecda207f0f1f
+size 453
