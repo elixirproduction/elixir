@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>elixer</title>
-    <meta name="description" content="elixer — a quiet games hub with a built-in proxy.">
+    <title>elixir</title>
+    <meta name="description" content="elixir — a quiet games hub with a built-in proxy.">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%236e6e6e'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='18' font-weight='700' text-anchor='middle' fill='%23ffffff'%3Ee%3C/text%3E%3C/svg%3E">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
@@ -368,7 +368,7 @@
 
     <header>
         <div class="bar">
-            <div class="logo"><svg width="76" height="20" viewBox="0 0 76 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="20" rx="5" fill="#6e6e6e"/><text x="10" y="14" text-anchor="middle" fill="#fff" font-family="'JetBrains Mono',monospace" font-size="11" font-weight="700">e</text><text x="26" y="15" fill="currentColor" font-family="'Inter',system-ui,-apple-system,sans-serif" font-size="13" font-weight="550" letter-spacing="-0.3">elixer</text></svg></div>
+            <div class="logo"><svg width="76" height="20" viewBox="0 0 76 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="20" height="20" rx="5" fill="#6e6e6e"/><text x="10" y="14" text-anchor="middle" fill="#fff" font-family="'JetBrains Mono',monospace" font-size="11" font-weight="700">e</text><text x="26" y="15" fill="currentColor" font-family="'Inter',system-ui,-apple-system,sans-serif" font-size="13" font-weight="550" letter-spacing="-0.3">elixir</text></svg></div>
             <nav class="tabs">
                 <a class="active" data-view="games">games</a>
                 <a data-view="apps">apps</a>
@@ -392,7 +392,7 @@
         <section class="view active" data-view="games">
             <div class="splash">
                 <div>
-                    <h2>elixer</h2>
+                    <h2>elixir</h2>
                     <p class="sub">a games hub with a built-in proxy. pick a game to play, or open the proxy to run anything.</p>
                 </div>
                 <div class="widgets">
@@ -437,7 +437,7 @@
             <div class="settings">
                 <div class="card-box">
                     <h3><i class="ico fas fa-arrow-up-right-from-square"></i> blank tab</h3>
-                    <p>open elixer inside an about:blank tab — the address bar just shows about:blank, so it won't show up in your history.</p>
+                    <p>open elixir inside an about:blank tab — the address bar just shows about:blank, so it won't show up in your history.</p>
                     <button class="btn" onclick="enableAboutBlank()">open blank tab</button>
                 </div>
                 <div class="card-box">
@@ -520,7 +520,7 @@
                 <div class="card-box">
                     <h3><i class="ico fas fa-palette"></i> site branding</h3>
                     <p>change the site name shown in the tab and top-left logo for everyone.</p>
-                    <input type="text" class="field" id="titleInput" placeholder="elixer">
+                    <input type="text" class="field" id="titleInput" placeholder="elixir">
                     <button class="btn" style="width:100%;margin-top:9px;" onclick="adminSetTitle()">save name</button>
                 </div>
                 <div class="card-box">
@@ -624,14 +624,14 @@
     </main>
 
     <footer>
-        <div>© <span id="yr"></span> elixer. <span id="footerMsg">built quiet.</span></div>
+        <div>© <span id="yr"></span> elixir. <span id="footerMsg">built quiet.</span></div>
         <div class="links"><a onclick="openDoc('terms')">terms of service</a><a onclick="openDoc('privacy')">privacy policy</a><a onclick="go('games')">games</a><a onclick="go('proxy')">proxy</a><a onclick="go('settings')">settings</a></div>
     </footer>
 
     <!-- consent gate -->
     <div class="gate" id="gate">
         <div class="gate-card">
-            <div class="gate-logo"><svg width="80" height="22" viewBox="0 0 80 22" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="22" height="22" rx="6" fill="#6e6e6e"/><text x="11" y="15" text-anchor="middle" fill="#fff" font-family="'JetBrains Mono',monospace" font-size="12" font-weight="700">e</text><text x="28" y="16" fill="currentColor" font-family="'Inter',system-ui,-apple-system,sans-serif" font-size="14" font-weight="600" letter-spacing="-0.3">elixer</text></svg></div>
+            <div class="gate-logo"><svg width="80" height="22" viewBox="0 0 80 22" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="22" height="22" rx="6" fill="#6e6e6e"/><text x="11" y="15" text-anchor="middle" fill="#fff" font-family="'JetBrains Mono',monospace" font-size="12" font-weight="700">e</text><text x="28" y="16" fill="currentColor" font-family="'Inter',system-ui,-apple-system,sans-serif" font-size="14" font-weight="600" letter-spacing="-0.3">elixir</text></svg></div>
             <p class="gate-sub">read the docs, then you're in.</p>
             <div class="gate-docs">
                 <button class="doc-btn" onclick="openDoc('terms')"><span>terms of service</span><i class="fas fa-chevron-right"></i></button>
@@ -645,7 +645,7 @@
     <!-- consent gate: runs standalone so it always shows on first boot (independent of other scripts) -->
     <script>
       (function () {
-        var AGREE_KEY = 'elixer_agreed';
+        var AGREE_KEY = 'elixir_agreed';
         var gate = document.getElementById('gate');
         var enterBtn = document.getElementById('enterBtn');
         var agreeBox = document.getElementById('agreeBox');
@@ -674,7 +674,7 @@
     <!-- auth gate (login/signup) -->
     <div class="auth-gate" id="authGate">
         <div class="auth-gate-card">
-            <h2>welcome to elixer</h2>
+            <h2>welcome to elixir</h2>
             <p class="sub">sign in to sync your settings across devices.</p>
             <div class="auth-tabs" id="authTabs">
                 <button class="on" data-tab="login">login</button>
@@ -698,7 +698,7 @@
     <!-- dev-only overlay -->
     <div class="devonly" id="devOnly">
         <div class="devonly-card">
-            <h2>elixer is in dev-only mode</h2>
+            <h2>elixir is in dev-only mode</h2>
             <p id="devMotd" style="display:none"></p>
             <p>we'll be back shortly. thanks for your patience. if you're the owner, enter the dev bypass password to continue.</p>
             <input type="password" class="field" id="devBypass" placeholder="dev bypass password">
@@ -719,7 +719,7 @@
 
     <script src="data/games.js"></script>
     <script>
-        const LS_FAV = 'elixer_fav';
+        const LS_FAV = 'elixir_fav';
         const getFav = () => { try { return JSON.parse(localStorage.getItem(LS_FAV)) || []; } catch { return []; } };
         const setFav = a => localStorage.setItem(LS_FAV, JSON.stringify(a));
 
@@ -874,7 +874,7 @@
             renderCloak(); toast('cloaked as ' + p.t, 'good');
         }
         function resetCloak() {
-            localStorage.removeItem('tabCloak'); document.title = 'elixer';
+            localStorage.removeItem('tabCloak'); document.title = 'elixir';
             setFavicon("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%236e6e6e'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='18' font-weight='700' text-anchor='middle' fill='%23ffffff'%3Ee%3C/text%3E%3C/svg%3E");
             renderCloak(); toast('cloak reset', 'warn');
         }
@@ -889,11 +889,11 @@
         function enableAboutBlank() {
             const w = window.open('about:blank', '_blank');
             if (!w) return toast('pop-ups blocked', 'err');
-            const html = '<!doctype html><html><head><meta charset="utf-8"><title>elixer</title><style>html,body{margin:0;height:100%}iframe{width:100%;height:100%;border:0;display:block}</style></head><body><iframe src="' + location.protocol + '//' + location.host + '/"></iframe></body></html>';
+            const html = '<!doctype html><html><head><meta charset="utf-8"><title>elixir</title><style>html,body{margin:0;height:100%}iframe{width:100%;height:100%;border:0;display:block}</style></head><body><iframe src="' + location.protocol + '//' + location.host + '/"></iframe></body></html>';
             const url = URL.createObjectURL(new Blob([html], { type: 'text/html' }));
             const doc = w.document;
             doc.open();
-            doc.write('<!doctype html><html><head><meta charset="utf-8"><title>elixer</title><style>html,body{margin:0;height:100%}iframe{width:100%;height:100%;border:0;display:block}</style></head><body><iframe src="' + url + '"></iframe></body></html>');
+            doc.write('<!doctype html><html><head><meta charset="utf-8"><title>elixir</title><style>html,body{margin:0;height:100%}iframe{width:100%;height:100%;border:0;display:block}</style></head><body><iframe src="' + url + '"></iframe></body></html>');
             doc.close();
             toast('opened in blank tab', 'good');
         }
@@ -960,11 +960,11 @@
             if (binding) {
                 e.preventDefault();
                 const url = document.getElementById('panicUrl').value || 'https://google.com';
-                localStorage.setItem('elixer_panic', JSON.stringify({ key: e.key, url }));
+                localStorage.setItem('elixir_panic', JSON.stringify({ key: e.key, url }));
                 document.getElementById('panicBtn').textContent = e.key === ' ' ? 'space' : e.key;
                 binding = false; toast('panic key set', 'good'); return;
             }
-            const p = JSON.parse(localStorage.getItem('elixer_panic') || '{}');
+            const p = JSON.parse(localStorage.getItem('elixir_panic') || '{}');
             if (e.key === p.key && p.url) window.location.href = p.url;
         });
         /* ---- auth ---- */
@@ -1061,10 +1061,10 @@
         function syncUserData() {
             if (!AUTH_USER) return;
             var data = {};
-            try { data.elixer_fav = localStorage.getItem('elixer_fav') || '[]'; } catch(e) {}
-            try { data.elixer_bg = localStorage.getItem('elixer_bg') || ''; } catch(e) {}
+            try { data.elixir_fav = localStorage.getItem('elixir_fav') || '[]'; } catch(e) {}
+            try { data.elixir_bg = localStorage.getItem('elixir_bg') || ''; } catch(e) {}
             try { data.tabCloak = JSON.stringify(JSON.parse(localStorage.getItem('tabCloak') || '{}')); } catch(e) {}
-            try { data.elixer_panic = localStorage.getItem('elixer_panic') || '{}'; } catch(e) {}
+            try { data.elixir_panic = localStorage.getItem('elixir_panic') || '{}'; } catch(e) {}
             try { data.proxServer = localStorage.getItem('proxServer') || ''; } catch(e) {}
             try { data.customWisps = localStorage.getItem('customWisps') || '[]'; } catch(e) {}
             fetch('/api/user/data', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data: data}) }).catch(function() {});
@@ -1150,7 +1150,7 @@
                     c.width = w; c.height = h;
                     c.getContext('2d').drawImage(img, 0, 0, w, h);
                     var data = c.toDataURL('image/jpeg', 0.8);
-                    try { localStorage.setItem('elixer_bg', data); } catch (err) { toast('failed to save — localStorage full', 'err'); return; }
+                    try { localStorage.setItem('elixir_bg', data); } catch (err) { toast('failed to save — localStorage full', 'err'); return; }
                     applyBg();
                     toast('background saved', 'good');
                 };
@@ -1161,14 +1161,14 @@
             reader.readAsDataURL(file);
         }
         function resetBg() {
-            try { localStorage.removeItem('elixer_bg'); } catch (e) {}
+            try { localStorage.removeItem('elixir_bg'); } catch (e) {}
             document.body.classList.remove('has-bg');
             document.body.style.removeProperty('--custom-bg');
             document.getElementById('bgInput').value = '';
             toast('background reset', 'warn');
         }
         function applyBg() {
-            var bgData = localStorage.getItem('elixer_bg');
+            var bgData = localStorage.getItem('elixir_bg');
             if (bgData) {
                 document.body.classList.add('has-bg');
                 document.body.style.setProperty('--custom-bg', 'url(' + bgData + ')');
@@ -1202,7 +1202,7 @@
         document.getElementById('yr').textContent = new Date().getFullYear();
         applyBg();
         authCheck().then(function(loggedIn) { if (loggedIn) { loadUserData(); renderAccount(); } showAuthGate(loggedIn); });
-        const savedPanic = JSON.parse(localStorage.getItem('elixer_panic') || '{}');
+        const savedPanic = JSON.parse(localStorage.getItem('elixir_panic') || '{}');
         if (savedPanic.key) document.getElementById('panicBtn').textContent = savedPanic.key === ' ' ? 'space' : savedPanic.key;
         if (savedPanic.url) document.getElementById('panicUrl').value = savedPanic.url;
         const savedCloak = JSON.parse(localStorage.getItem('tabCloak') || '{}');
@@ -1214,22 +1214,22 @@
         const DOCS = {
             terms: {
                 title: 'terms of service',
-                html: `<h4>1. acceptance</h4><p>by using elixer you agree to these terms. if you do not agree, do not use the site.</p>
+                html: `<h4>1. acceptance</h4><p>by using elixir you agree to these terms. if you do not agree, do not use the site.</p>
                 <h4>2. accounts</h4><p>you may create an account with a username and password. passwords are encrypted with sha256 before storage — we never store plaintext passwords. you are responsible for keeping your login credentials secure. we are not liable for any loss or damage caused by unauthorized access to your account.</p>
                 <h4>3. use of the proxy</h4><p>the built-in proxy is provided for general browsing. you are responsible for what you access through it. do not use it for anything illegal in your jurisdiction.</p>
-                <h4>4. games</h4><p>games are loaded through third-party embed frames. elixer does not host the games and is not affiliated with their owners. game progress saved through your account is stored on the server and synced across devices.</p>
-                <h4>5. school and institutional use</h4><p>elixer is a personal project and is not affiliated with, endorsed by, or operated by any school, employer, or institution. if you use this site on a network, device, or account that belongs to a school or employer, you alone are responsible for following that organization's rules. the creators of elixer are not responsible for any disciplinary action, suspension, termination, or other consequences that a school, employer, or any third party may take against you as a result of your use of this site. use it at your own risk.</p>
+                <h4>4. games</h4><p>games are loaded through third-party embed frames. elixir does not host the games and is not affiliated with their owners. game progress saved through your account is stored on the server and synced across devices.</p>
+                <h4>5. school and institutional use</h4><p>elixir is a personal project and is not affiliated with, endorsed by, or operated by any school, employer, or institution. if you use this site on a network, device, or account that belongs to a school or employer, you alone are responsible for following that organization's rules. the creators of elixir are not responsible for any disciplinary action, suspension, termination, or other consequences that a school, employer, or any third party may take against you as a result of your use of this site. use it at your own risk.</p>
                 <h4>6. user data</h4><p>if you create an account, your settings, favorites, game progress, and custom background are stored on the server to sync across devices. you may delete your data at any time by contacting us or clearing your account through the settings panel.</p>
-                <h4>7. no warranty</h4><p>elixer is provided "as is" with no warranties of any kind. we are not liable for any damages or consequences arising from use of the site.</p>
+                <h4>7. no warranty</h4><p>elixir is provided "as is" with no warranties of any kind. we are not liable for any damages or consequences arising from use of the site.</p>
                 <h4>8. changes</h4><p>we may update these terms at any time. continued use after changes means you accept the new terms.</p>`
             },
             privacy: {
                 title: 'privacy policy',
-                html: `<h4>1. what we store locally</h4><p>on your device, elixer stores favorites, cloak settings, proxy server choice, panic key, and custom background in your browser's local storage. this data never leaves your device unless you create an account.</p>
+                html: `<h4>1. what we store locally</h4><p>on your device, elixir stores favorites, cloak settings, proxy server choice, panic key, and custom background in your browser's local storage. this data never leaves your device unless you create an account.</p>
                 <h4>2. what we store on the server</h4><p>if you create an account, we store your username and a sha256-hashed password (never plaintext). we also store your settings, favorites, game progress, and custom background so they can sync across your devices. this data is stored in a json file on the server and is not shared with any third party.</p>
                 <h4>3. proxy traffic</h4><p>when you use the proxy, requests are routed through a third-party wisp transport server you select. those operators may log connection metadata. we do not control and are not responsible for third-party servers.</p>
                 <h4>4. cookies</h4><p>we use a session cookie to keep you logged in. no tracking cookies are set. if you do not create an account, only a local flag is stored to remember you accepted these policies.</p>
-                <h4>5. children</h4><p>elixer is not directed at children under 13. if you are under 13, do not create an account or enter personal information.</p>
+                <h4>5. children</h4><p>elixir is not directed at children under 13. if you are under 13, do not create an account or enter personal information.</p>
                 <h4>6. data deletion</h4><p>you can delete your account and all associated server data by logging out and clearing your data in settings, or by contacting the operator.</p>
                 <h4>7. contact</h4><p>this is a personal project with no commercial operator. use at your own discretion.</p>`
             }
@@ -1248,8 +1248,8 @@
         document.getElementById('docmodal').addEventListener('click', e => { if (e.target.id === 'docmodal') closeDoc(); });
 
         /* ---- admin + dev-only (live) ---- */
-        const ADMIN_KEY = 'elixer_admin';
-        const DEVBYPASS_KEY = 'elixer_devbypass';
+        const ADMIN_KEY = 'elixir_admin';
+        const DEVBYPASS_KEY = 'elixir_devbypass';
         let ADMIN_STATE = { devOnly: false, maintenance: false, announcements: [] };
         let ADMIN_SESSION_PASS = '';   // kept in memory so actions don't re-prompt
         let lastAnnounceTs = 0;
@@ -1263,12 +1263,12 @@
             if (isAdmin()) document.body.classList.add('admin-on');
             else document.body.classList.remove('admin-on');
             // red theme: follows server default unless this device overrode it
-            const override = localStorage.getItem('elixer_redtheme');
+            const override = localStorage.getItem('elixir_redtheme');
             const want = (override === null) ? (ADMIN_STATE.redTheme !== false) : (override === '1');
             document.body.classList.toggle('admin-red', isAdmin() && want);
         }
         function setRedTheme(on) {
-            try { localStorage.setItem('elixer_redtheme', on ? '1' : '0'); } catch (e) {}
+            try { localStorage.setItem('elixir_redtheme', on ? '1' : '0'); } catch (e) {}
             document.body.classList.toggle('admin-red', isAdmin() && on);
         }
 
@@ -1322,15 +1322,15 @@
         }
         function saveAnnDefault() {
             try {
-                localStorage.setItem('elixer_ann_tone', document.getElementById('annColorDefault').value);
-                localStorage.setItem('elixer_ann_dur', document.getElementById('annDurDefault').value);
+                localStorage.setItem('elixir_ann_tone', document.getElementById('annColorDefault').value);
+                localStorage.setItem('elixir_ann_dur', document.getElementById('annDurDefault').value);
             } catch (e) {}
             toast('announcement defaults saved', 'good');
         }
         function loadAnnDefault() {
             try {
-                const t = localStorage.getItem('elixer_ann_tone');
-                const d = localStorage.getItem('elixer_ann_dur');
+                const t = localStorage.getItem('elixir_ann_tone');
+                const d = localStorage.getItem('elixir_ann_dur');
                 if (t) document.getElementById('annColor').value = t;
                 if (d) document.getElementById('annDur').value = d;
             } catch (e) {}
@@ -1422,7 +1422,7 @@
             const p = needPass(); if (p === null) return;
             const msg = 'favorites were reset by the admin.';
             adminApi('/api/admin?pass=' + encodeURIComponent(p) + '&announce=' + encodeURIComponent(msg)).then(res => {
-                if (res) { try { localStorage.removeItem('elixer_fav'); } catch (e) {} ADMIN_STATE = res; toast('favorites reset + announced', 'good'); renderAdmin(); }
+                if (res) { try { localStorage.removeItem('elixir_fav'); } catch (e) {} ADMIN_STATE = res; toast('favorites reset + announced', 'good'); renderAdmin(); }
             });
         }
         function adminGetState() {
@@ -1431,7 +1431,7 @@
                 if (!res) return;
                 const blob = JSON.stringify(res, null, 2);
                 const url = URL.createObjectURL(new Blob([blob], { type: 'application/json' }));
-                const a = document.createElement('a'); a.href = url; a.download = 'elixer-state.json'; a.click();
+                const a = document.createElement('a'); a.href = url; a.download = 'elixir-state.json'; a.click();
                 URL.revokeObjectURL(url);
                 toast('state exported', 'good');
             });
@@ -1499,10 +1499,10 @@
             document.getElementById('devOnlyToggle').checked = !!ADMIN_STATE.devOnly;
             const all = [...(Array.isArray(window.games) ? window.games : []), ...(Array.isArray(window.more) ? window.more : [])];
             document.getElementById('gameCount').textContent = all.length;
-            const fav = (function(){ try { return JSON.parse(localStorage.getItem('elixer_fav') || '[]'); } catch { return []; } })();
+            const fav = (function(){ try { return JSON.parse(localStorage.getItem('elixir_fav') || '[]'); } catch { return []; } })();
             document.getElementById('favCount').textContent = fav.length;
             document.getElementById('motdInput').value = ADMIN_STATE.motd || '';
-            document.getElementById('titleInput').value = ADMIN_STATE.title || 'elixer';
+            document.getElementById('titleInput').value = ADMIN_STATE.title || 'elixir';
             document.getElementById('footerInput').value = ADMIN_STATE.footer || '';
             const rt = document.getElementById('redThemeToggle');
             if (rt) rt.checked = ADMIN_STATE.redTheme !== false;
@@ -1518,8 +1518,8 @@
             const ds = document.getElementById('devState2'); if (ds) { ds.textContent = ADMIN_STATE.devOnly ? 'yes' : 'no'; ds.style.color = ADMIN_STATE.devOnly ? '#ff6b81' : 'var(--text-2)'; }
             const pc = document.getElementById('pinCount2'); if (pc) pc.textContent = (ADMIN_STATE.announcements || []).filter(a => a.sticky).length;
             // announcement defaults
-            const cd = document.getElementById('annColorDefault'); if (cd) cd.value = localStorage.getItem('elixer_ann_tone') || 'good';
-            const dd = document.getElementById('annDurDefault'); if (dd) dd.value = localStorage.getItem('elixer_ann_dur') || '5';
+            const cd = document.getElementById('annColorDefault'); if (cd) cd.value = localStorage.getItem('elixir_ann_tone') || 'good';
+            const dd = document.getElementById('annDurDefault'); if (dd) dd.value = localStorage.getItem('elixir_ann_dur') || '5';
             loadAnnDefault();
             const list = document.getElementById('annList');
             const anns = ADMIN_STATE.announcements || [];
@@ -1657,3 +1657,4 @@
     </script>
 </body>
 </html>
+

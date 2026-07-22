@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""elixer server: static host + live admin state + auto games data generation."""
+"""elixir server: static host + live admin state + auto games data generation."""
 import os, re, json, http.server, socketserver, urllib.parse, threading, time, functools, queue, hashlib, secrets
 
 def _bv(v):
@@ -46,7 +46,7 @@ def load_state():
             return s
         except Exception:
             pass
-    return {"devOnly": False, "announcements": [], "motd": "", "started": int(time.time()), "title": "elixer", "reloadSignal": 0, "announceColor": "good", "redTheme": True, "footer": "", "dark": False}
+    return {"devOnly": False, "announcements": [], "motd": "", "started": int(time.time()), "title": "elixir", "reloadSignal": 0, "announceColor": "good", "redTheme": True, "footer": "", "dark": False}
 
 def save_state(s):
     with open(STATE_PATH, "w", encoding="utf-8") as f:
@@ -99,7 +99,7 @@ def get_session_user(headers):
     cookie = headers.get("Cookie", "")
     for part in cookie.split(";"):
         part = part.strip()
-        if part.startswith("elixer_session="):
+        if part.startswith("elixir_session="):
             token = part.split("=", 1)[1]
             data = load_users()
             return data["sessions"].get(token)
@@ -536,7 +536,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 data["users"][username] = {"password": hash_password(password), "data": {}}
                 save_users(data)
             token = make_session(username)
-            self.json_reply_with_cookie(200, {"ok": True, "user": username}, "elixer_session", token)
+            self.json_reply_with_cookie(200, {"ok": True, "user": username}, "elixir_session", token)
             return
 
         if u.path == "/api/login":
@@ -549,19 +549,19 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                 self.json_reply(401, {"error": "invalid username or password"})
                 return
             token = make_session(username)
-            self.json_reply_with_cookie(200, {"ok": True, "user": username}, "elixer_session", token)
+            self.json_reply_with_cookie(200, {"ok": True, "user": username}, "elixir_session", token)
             return
 
         if u.path == "/api/logout":
             cookie = self.headers.get("Cookie", "")
             for part in cookie.split(";"):
                 part = part.strip()
-                if part.startswith("elixer_session="):
+                if part.startswith("elixir_session="):
                     token = part.split("=", 1)[1]
                     clear_session(token)
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
-            self.send_header("Set-Cookie", "elixer_session=; Path=/; Max-Age=0; SameSite=Lax; HttpOnly")
+            self.send_header("Set-Cookie", "elixir_session=; Path=/; Max-Age=0; SameSite=Lax; HttpOnly")
             self.end_headers()
             self.wfile.write(json.dumps({"ok": True}).encode())
             return
@@ -647,7 +647,7 @@ def main():
     socketserver.TCPServer.allow_reuse_address = True
     with socketserver.ThreadingTCPServer(("", port), Handler) as httpd:
         print("""\n========================================
-  elixer - starting server...
+  elixir - starting server...
   open:  http://localhost:%d
   (proxy only works over http, not file://)
 ========================================""" % port)
@@ -661,3 +661,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

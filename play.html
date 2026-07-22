@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>elixer — play</title>
-    <meta name="description" content="elixer — play a game.">
+    <title>elixir — play</title>
+    <meta name="description" content="elixir — play a game.">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%236e6e6e'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='18' font-weight='700' text-anchor='middle' fill='%23ffffff'%3Ee%3C/text%3E%3C/svg%3E">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
@@ -266,7 +266,7 @@
 
     <header>
         <div class="bar">
-            <div class="logo"><span style="font-size:1.3rem;font-weight:600;letter-spacing:-0.03em">elixer</span></div>
+            <div class="logo"><span style="font-size:1.3rem;font-weight:600;letter-spacing:-0.03em">elixir</span></div>
             <nav class="tabs">
                 <a onclick="goHome()">games</a>
                 <a onclick="goHome()">apps</a>
@@ -320,14 +320,14 @@
     </main>
 
     <footer>
-        <div>&copy; <span id="yr"></span> elixer. <span id="footerMsg">built quiet.</span></div>
+        <div>&copy; <span id="yr"></span> elixir. <span id="footerMsg">built quiet.</span></div>
         <div class="links"><a onclick="openDoc('terms')">terms of service</a><a onclick="openDoc('privacy')">privacy policy</a><a onclick="goHome()">games</a><a onclick="goHome()">settings</a></div>
     </footer>
 
     <!-- consent gate -->
     <div class="gate" id="gate">
         <div class="gate-card">
-            <div class="gate-logo"><svg width="80" height="22" viewBox="0 0 80 22" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="22" height="22" rx="6" fill="#6e6e6e"/><text x="11" y="15" text-anchor="middle" fill="#fff" font-family="'JetBrains Mono',monospace" font-size="12" font-weight="700">e</text><text x="28" y="16" fill="currentColor" font-family="'Inter',system-ui,-apple-system,sans-serif" font-size="14" font-weight="600" letter-spacing="-0.3">elixer</text></svg></div>
+            <div class="gate-logo"><svg width="80" height="22" viewBox="0 0 80 22" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="22" height="22" rx="6" fill="#6e6e6e"/><text x="11" y="15" text-anchor="middle" fill="#fff" font-family="'JetBrains Mono',monospace" font-size="12" font-weight="700">e</text><text x="28" y="16" fill="currentColor" font-family="'Inter',system-ui,-apple-system,sans-serif" font-size="14" font-weight="600" letter-spacing="-0.3">elixir</text></svg></div>
             <p class="gate-sub">read the docs, then you're in.</p>
             <div class="gate-docs">
                 <button class="doc-btn" onclick="openDoc('terms')"><span>terms of service</span><i class="fas fa-chevron-right"></i></button>
@@ -341,7 +341,7 @@
     <!-- consent gate script -->
     <script>
       (function () {
-        var AGREE_KEY = 'elixer_agreed';
+        var AGREE_KEY = 'elixir_agreed';
         var gate = document.getElementById('gate');
         var enterBtn = document.getElementById('enterBtn');
         var agreeBox = document.getElementById('agreeBox');
@@ -371,7 +371,7 @@
     <div class="devonly" id="devOnly">
         <div class="devonly-card">
             <div class="tag">dev-only mode</div>
-            <h2>elixer is in dev-only mode</h2>
+            <h2>elixir is in dev-only mode</h2>
             <p id="devMotd" style="display:none"></p>
             <p>we'll be back shortly. thanks for your patience. if you're the owner, enter the dev bypass password to continue.</p>
             <input type="password" class="field" id="devBypass" placeholder="dev bypass password">
@@ -393,9 +393,9 @@
     <script src="data/games.js"></script>
     <script>
         /* ---- constants ---- */
-        const LS_FAV = 'elixer_fav';
-        const ADMIN_KEY = 'elixer_admin';
-        const DEVBYPASS_KEY = 'elixer_devbypass';
+        const LS_FAV = 'elixir_fav';
+        const ADMIN_KEY = 'elixir_admin';
+        const DEVBYPASS_KEY = 'elixir_devbypass';
         const DEFAULT_WISP = 'wss://wisp.mercurywork.shop/wisp/';
         const WISP_SERVERS = [
             'wss://wisp.mercurywork.shop/wisp/',
@@ -681,7 +681,7 @@
         function applyAdminTheme() {
             if (isAdmin()) document.body.classList.add('admin-on');
             else document.body.classList.remove('admin-on');
-            const override = localStorage.getItem('elixer_redtheme');
+            const override = localStorage.getItem('elixir_redtheme');
             const want = (override === null) ? (ADMIN_STATE.redTheme !== false) : (override === '1');
             document.body.classList.toggle('admin-red', isAdmin() && want);
         }
@@ -700,7 +700,7 @@
         let binding = false;
         document.addEventListener('keydown', e => {
             if (binding) { return; }
-            const p = JSON.parse(localStorage.getItem('elixer_panic') || '{}');
+            const p = JSON.parse(localStorage.getItem('elixir_panic') || '{}');
             if (e.key === p.key && p.url) window.location.href = p.url;
         });
 
@@ -708,22 +708,22 @@
         const DOCS = {
             terms: {
                 title: 'terms of service',
-                html: `<h4>1. acceptance</h4><p>by using elixer you agree to these terms. if you do not agree, do not use the site.</p>
+                html: `<h4>1. acceptance</h4><p>by using elixir you agree to these terms. if you do not agree, do not use the site.</p>
                 <h4>2. accounts</h4><p>you may create an account with a username and password. passwords are encrypted with sha256 before storage — we never store plaintext passwords. you are responsible for keeping your login credentials secure.</p>
                 <h4>3. use of the proxy</h4><p>the built-in proxy is provided for general browsing. you are responsible for what you access through it. do not use it for anything illegal in your jurisdiction.</p>
-                <h4>4. games</h4><p>games are loaded through third-party embed frames. elixer does not host the games and is not affiliated with their owners. game progress saved through your account is stored on the server and synced across devices.</p>
-                <h4>5. school and institutional use</h4><p>elixer is a personal project and is not affiliated with, endorsed by, or operated by any school, employer, or institution. if you use this site on a network, device, or account that belongs to a school or employer, you alone are responsible for following that organization's rules. the creators of elixer are not responsible for any disciplinary action, suspension, termination, or other consequences that a school, employer, or any third party may take against you as a result of your use of this site. use it at your own risk.</p>
+                <h4>4. games</h4><p>games are loaded through third-party embed frames. elixir does not host the games and is not affiliated with their owners. game progress saved through your account is stored on the server and synced across devices.</p>
+                <h4>5. school and institutional use</h4><p>elixir is a personal project and is not affiliated with, endorsed by, or operated by any school, employer, or institution. if you use this site on a network, device, or account that belongs to a school or employer, you alone are responsible for following that organization's rules. the creators of elixir are not responsible for any disciplinary action, suspension, termination, or other consequences that a school, employer, or any third party may take against you as a result of your use of this site. use it at your own risk.</p>
                 <h4>6. user data</h4><p>if you create an account, your settings, favorites, game progress, and custom background are stored on the server to sync across devices.</p>
-                <h4>7. no warranty</h4><p>elixer is provided "as is" with no warranties of any kind. we are not liable for any damages or consequences arising from use of the site.</p>
+                <h4>7. no warranty</h4><p>elixir is provided "as is" with no warranties of any kind. we are not liable for any damages or consequences arising from use of the site.</p>
                 <h4>8. changes</h4><p>we may update these terms at any time. continued use after changes means you accept the new terms.</p>`
             },
             privacy: {
                 title: 'privacy policy',
-                html: `<h4>1. what we store locally</h4><p>on your device, elixer stores favorites, cloak settings, proxy server choice, panic key, and custom background in your browser's local storage.</p>
+                html: `<h4>1. what we store locally</h4><p>on your device, elixir stores favorites, cloak settings, proxy server choice, panic key, and custom background in your browser's local storage.</p>
                 <h4>2. what we store on the server</h4><p>if you create an account, we store your username and a sha256-hashed password (never plaintext). we also store your settings, favorites, game progress, and custom background so they can sync across your devices.</p>
                 <h4>3. proxy traffic</h4><p>when you use the proxy, requests are routed through a third-party wisp transport server you select. those operators may log connection metadata. we do not control and are not responsible for third-party servers.</p>
                 <h4>4. cookies</h4><p>we use a session cookie to keep you logged in. no tracking cookies are set.</p>
-                <h4>5. children</h4><p>elixer is not directed at children under 13. if you are under 13, do not create an account or enter personal information.</p>
+                <h4>5. children</h4><p>elixir is not directed at children under 13. if you are under 13, do not create an account or enter personal information.</p>
                 <h4>6. data deletion</h4><p>you can delete your account and all associated server data by contacting the operator.</p>
                 <h4>7. contact</h4><p>this is a personal project with no commercial operator. use at your own discretion.</p>`
             }
@@ -749,7 +749,7 @@
         if (savedCloak.t) { document.title = savedCloak.t; setFavicon(savedCloak.i); }
 
         // apply custom background if set
-        const bgData = localStorage.getItem('elixer_bg');
+        const bgData = localStorage.getItem('elixir_bg');
         if (bgData) {
             document.body.classList.add('has-bg');
             document.body.style.setProperty('--custom-bg', 'url(' + bgData + ')');
@@ -810,9 +810,8 @@
 
         /* ---------- ads (configurable — PNG only) ---------- */
         var SIDEBAR_ADS = [
-            'builtinads/ad-1.png',
-            'builtinads/ad-2.png',
-            'builtinads/ad-3.png',
+            'builtinads/welcome.png',
+            'builtinads/credits.png',
         ];
 
         function setupAd(containerId, images) {
@@ -866,7 +865,7 @@
                 return false;
             }).then(function() {
                 // re-apply bg after potential server sync
-                var bd = localStorage.getItem('elixer_bg');
+                var bd = localStorage.getItem('elixir_bg');
                 if (bd) {
                     document.body.classList.add('has-bg');
                     document.body.style.setProperty('--custom-bg', 'url(' + bd + ')');
@@ -883,3 +882,4 @@
     </script>
 </body>
 </html>
+
