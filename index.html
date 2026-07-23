@@ -411,13 +411,6 @@
         </div>
     </div>
 
-    <!-- COI service worker: register immediately for Cross-Origin Isolation -->
-    <script>
-      if ('serviceWorker' in navigator) {
-          navigator.serviceWorker.register('coi-sw.js', { scope: '/' }).catch(function() {});
-      }
-    </script>
-
     <!-- consent gate: runs standalone so it always shows on first boot (independent of other scripts) -->
     <script>
       (function () {

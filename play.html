@@ -526,11 +526,6 @@ let ALL_GAMES = Array.isArray(window.games) ? window.games.filter(g => g.app !==
         }
         document.getElementById('docmodal').addEventListener('click', e => { if (e.target.id === 'docmodal') closeDoc(); });
 
-        /* ---- COI service worker (Cross-Origin Isolation for SharedArrayBuffer) ---- */
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('coi-sw.js', { scope: '/' }).catch(function() {});
-        }
-
         /* ---- boot ---- */
         document.getElementById('yr').textContent = new Date().getFullYear();
 
