@@ -10,7 +10,7 @@ window.apps = [
     "name": "Youtube",
     "img": "/images/youtube.png",
     "url": "https://youtube.com",
-    "identifier": "tiktok",
+    "identifier": "youtube",
     "cat": "media"
   }
 ];

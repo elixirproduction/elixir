@@ -8,6 +8,8 @@
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%236e6e6e'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='18' font-weight='700' text-anchor='middle' fill='%23ffffff'%3Ee%3C/text%3E%3C/svg%3E">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
+    <link rel="preload" href="data/games.js" as="script">
+    <link rel="preload" href="data/apps.js" as="script">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" crossorigin="anonymous">
@@ -60,7 +62,7 @@
             max-width: 1600px; margin: 0 auto; height: 60px;
             display: flex; align-items: center; gap: 28px; padding: 0 28px;
         }
-        .logo { display: flex; align-items: center; gap: 6px; }
+        nav.tabs a.logo-link { color: var(--text); font-weight: 500; }
         nav.tabs { display: flex; gap: 4px; }
         nav.tabs a { font-size: 0.875rem; color: var(--text-3); padding: 6px 10px; border-radius: 6px; cursor: pointer; transition: color .15s; font-weight: 400; }
         nav.tabs a:hover { color: var(--text); }
@@ -127,11 +129,6 @@
         }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* in-game announcement bar */
-        .g-ann { display: none; align-items: center; gap: 8px; background: var(--panel-2); border: 1px solid var(--line); color: var(--text); padding: 8px 14px; font-size: .8rem; font-weight: 500; border-radius: 8px; margin-bottom: 10px; }
-        .g-ann.show { display: flex; }
-        .g-ann .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-3); flex: none; }
-
         /* ---------- banner ads ---------- */
         .banner-ad {
             background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius);
@@ -187,32 +184,6 @@
         .doc-body p { margin-bottom: 10px; }
         .doc-body a { color: var(--blue-hi); text-decoration: underline; text-underline-offset: 2px; }
 
-        /* ---------- announcement banner ---------- */
-        .ann-bar { display: none; align-items: center; gap: 11px; background: var(--panel-2); border: 1px solid var(--line); color: var(--text); padding: 10px 14px 10px 16px; font-size: .84rem; font-weight: 500; position: sticky; top: 0; z-index: 120; border-radius: 8px; margin-bottom: 16px; }
-        .ann-bar.show { display: flex; animation: rise .25s both; }
-        .ann-bar .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-3); flex: none; animation: pulse 1.4s infinite; }
-        .ann-bar .txt { flex: 1; line-height: 1.4; }
-        .ann-bar .ann-x { background: var(--bg-1); border: 0; color: var(--text-3); cursor: pointer; width: 26px; height: 26px; border-radius: 7px; display: grid; place-items: center; transition: background .15s; }
-        .ann-bar .ann-x:hover { background: var(--panel); }
-        .ann-bar.ann-ok { background: var(--green); }
-        .ann-bar.ann-warn { background: var(--text-3); }
-        .ann-bar.ann-err { background: var(--danger); }
-        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .35; } }
-
-        /* ---------- dev-only overlay ---------- */
-        .devonly { position: fixed; inset: 0; z-index: 900; display: none; align-items: center; justify-content: center; padding: 24px; background: var(--bg); }
-        .devonly.show { display: flex; animation: rise .3s both; }
-        .devonly-card { width: 100%; max-width: 420px; background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 32px 30px; text-align: center; box-shadow: var(--shadow); }
-        .devonly-card .tag { display: inline-block; color: var(--text-2); font-size: .68rem; letter-spacing: .24em; text-transform: uppercase; background: var(--bg-1); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; margin-bottom: 14px; }
-        .devonly-card h2 { margin: 4px 0 8px; font-size: 1.25rem; font-weight: 600; }
-        .devonly-card p { color: var(--text-3); font-size: .84rem; line-height: 1.55; margin-bottom: 20px; }
-        .devonly-card input { width: 100%; margin-bottom: 10px; }
-        .devonly-card .err { color: #ff6b81; font-size: .78rem; min-height: 18px; margin-bottom: 6px; }
-        .devonly-card .field { width: 100%; background: var(--bg-1); border: 1px solid var(--line); color: var(--text); padding: 9px 12px; border-radius: 9px; outline: none; font-size: 0.8rem; font-family: inherit; margin-bottom: 10px; transition: border-color .15s, box-shadow .15s; }
-        .devonly-card .field:focus { border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-soft); }
-        .devonly-card .btn { width: 100%; background: var(--blue); color: #fff; border: none; border-radius: 9px; padding: 10px; font-weight: 550; cursor: pointer; font-family: inherit; transition: background .15s; }
-        .devonly-card .btn:hover { background: var(--blue-2); }
-
         @media (max-width: 720px) {
             nav.tabs { display: none; }
             .search { width: 150px; }
@@ -222,16 +193,7 @@
 
         @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
-        /* admin red theme */
-        body.admin-red {
-            --blue: #c0c0c0; --blue-2: #a0a0a0; --blue-hi: #d0d0d0; --blue-soft: rgba(255,255,255,.08);
-            --bg: #0a0a0a; --bg-1: #111111; --panel: #171717; --panel-2: #1f1f1f;
-            --line: #333333; --line-soft: #252525;
-            background: var(--bg);
-        }
-        body.admin-red header { background: var(--bg); border-bottom: 1px solid var(--line-soft); backdrop-filter: saturate(180%) blur(12px); }
         body.extra-dark { --bg: #050505; --bg-1: #080808; --panel: #0a0a0a; --panel-2: #0f0f0f; --line: #181818; --line-soft: #101010; }
-        body.extra-dark:not(.admin-red) { background: var(--bg); }
 
         /* ---------- custom background (blurred) ---------- */
         body.has-bg {
@@ -245,8 +207,6 @@
         body.has-bg header { background: rgba(10,10,10,0.4); }
         body.has-bg .play-frame-wrap { background: rgba(0,0,0,0.35); backdrop-filter: blur(6px); border-color: rgba(42,42,42,0.3); }
         body.has-bg .game-loading { background: rgba(23,23,23,0.4); backdrop-filter: blur(12px); }
-        body.has-bg .ann-bar { background: rgba(31,31,31,0.5); backdrop-filter: blur(12px); border-color: rgba(42,42,42,0.3); }
-        body.has-bg .g-ann { background: rgba(31,31,31,0.5); backdrop-filter: blur(12px); border-color: rgba(42,42,42,0.3); }
         body.has-bg footer { background: transparent; border-color: rgba(255,255,255,0.08); backdrop-filter: none; }
         body.has-bg .play-head h1 { text-shadow: 0 2px 8px rgba(0,0,0,0.7); }
         body.has-bg .logo { text-shadow: 0 1px 4px rgba(0,0,0,0.6); }
@@ -258,17 +218,10 @@
 </head>
 <body>
 
-    <!-- live announcement banner -->
-    <div class="ann-bar" id="annBar">
-        <span class="dot"></span>
-        <span class="txt" id="annBarTxt"></span>
-        <button class="ann-x" onclick="document.getElementById('annBar').classList.remove('show')" title="dismiss"><i class="fas fa-xmark"></i></button>
-    </div>
-
     <header>
         <div class="bar">
-            <div class="logo"><span style="font-size:1.3rem;font-weight:600;letter-spacing:-0.03em">elixir</span></div>
             <nav class="tabs">
+                <a class="logo-link" onclick="window.location.href='index.html'">elixir</a>
                 <a onclick="goHome()">games</a>
                 <a onclick="goHome()">apps</a>
                 <a onclick="goHome()">proxy</a>
@@ -286,11 +239,6 @@
     </header>
 
     <main>
-        <div class="g-ann" id="gAnnBar">
-            <span class="dot"></span>
-            <span id="gAnnTxt"></span>
-        </div>
-
         <div class="play-head">
             <h1 id="gameName">game</h1>
             <div style="display:flex;align-items:center;gap:14px;font-size:0.82rem;color:var(--text-3)">
@@ -311,7 +259,7 @@
                         <div class="spinner"></div>
                         <span style="font-size:0.8rem;color:var(--text-3)">loading game…</span>
                     </div>
-                    <iframe id="playFrame" src="" allow="autoplay; fullscreen"></iframe>
+                    <iframe id="playFrame" src="" allow="autoplay; fullscreen; cross-origin-isolated"></iframe>
                 </div>
             </div>
             <div class="play-sidebar">
@@ -368,19 +316,6 @@
       })();
     </script>
 
-    <!-- dev-only overlay -->
-    <div class="devonly" id="devOnly">
-        <div class="devonly-card">
-            <div class="tag">dev-only mode</div>
-            <h2>elixir is in dev-only mode</h2>
-            <p id="devMotd" style="display:none"></p>
-            <p>we'll be back shortly. thanks for your patience. if you're the owner, enter the dev bypass password to continue.</p>
-            <input type="password" class="field" id="devBypass" placeholder="dev bypass password">
-            <div class="err" id="devErr"></div>
-            <button class="btn" onclick="devBypassSubmit()">enter</button>
-        </div>
-    </div>
-
     <!-- document modal -->
     <div class="docmodal" id="docmodal">
         <div class="doc-win">
@@ -396,8 +331,6 @@
     <script>
         /* ---- constants ---- */
         const LS_FAV = 'elixir_fav';
-        const ADMIN_KEY = 'elixir_admin';
-        const DEVBYPASS_KEY = 'elixir_devbypass';
         const DEFAULT_WISP = 'wss://wisp.mercurywork.shop/wisp/';
         const WISP_SERVERS = [
             'wss://wisp.mercurywork.shop/wisp/',
@@ -405,11 +338,6 @@
             'wss://wisp.rhw.one/wisp/',
             'wss://wisp.sanitarium.tech/wisp/'
         ];
-
-        let ADMIN_STATE = { devOnly: false, maintenance: false, announcements: [] };
-        let ADMIN_SESSION_PASS = '';
-        let lastAnnounceTs = 0;
-        let lastReload = 0;
 
         /* ---- utils ---- */
         function toast(msg, kind = '') {
@@ -424,11 +352,6 @@
 
         function getFav() { try { return JSON.parse(localStorage.getItem(LS_FAV)) || []; } catch { return []; } }
         function setFav(a) { localStorage.setItem(LS_FAV, JSON.stringify(a)); }
-
-        function setCookie(k, v, days) { try { const d = new Date(); d.setTime(d.getTime() + (days||30)*864e5); document.cookie = k + '=' + encodeURIComponent(v) + ';path=/;expires=' + d.toUTCString(); } catch (e) {} }
-        function getCookie(k) { try { const m = document.cookie.match(new RegExp('(?:^|; )' + k + '=([^;]*)')); return m ? decodeURIComponent(m[1]) : null; } catch (e) { return null; } }
-        function isAdmin() { return ADMIN_SESSION_PASS !== '' || localStorage.getItem(ADMIN_KEY) === '1' || getCookie(ADMIN_KEY) === '1'; }
-        function isDevBypassed() { return ADMIN_SESSION_PASS !== '' || localStorage.getItem(DEVBYPASS_KEY) === '1' || getCookie(DEVBYPASS_KEY) === '1'; }
 
         function setFavicon(href) { let l = document.querySelector("link[rel~='icon']"); if (!l) { l = document.createElement('link'); l.rel = 'icon'; document.head.appendChild(l); } l.href = href; }
 
@@ -508,20 +431,22 @@ let ALL_GAMES = Array.isArray(window.games) ? window.games.filter(g => g.app !==
     url: u, id: g.identifier || (g.name||'g').toLowerCase().replace(/\s+/g,'-'),
     pinned: g.pin === true, proxied: /^https?:\/\//i.test(u) };
 }) : [];
-        let AUTH_USER = null;
-
         q.addEventListener('input', () => {
             const v = q.value.toLowerCase().trim();
             if (!v) { dd.classList.remove('show'); return; }
             const hit = ALL_GAMES.filter(g => (g.title || '').toLowerCase().includes(v)).slice(0, 10);
             if (!hit.length) { dd.innerHTML = `<div class="none">no matches</div>`; dd.classList.add('show'); return; }
-            dd.innerHTML = hit.map(g => `<div class="item" onclick="openGame('${g.url.replace(/'/g,"\\'")}','${(g.title||'').replace(/'/g,"\\'")}');dd.classList.remove('show');q.value=''">
+            dd.innerHTML = hit.map(g => `<div class="item" data-url="${g.url.replace(/'/g,"\\'")}" data-title="${(g.title||'').replace(/'/g,"\\'")}">
                 ${g.img ? `<img src="${g.img}" onerror="this.style.visibility='hidden'">` : `<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E">`}
                 <span>${g.title}${g.proxied?'<span class="proxy-note">slow load</span>':''}</span><span class="kind">game</span>
             </div>`).join('');
             dd.classList.add('show');
         });
-        document.addEventListener('click', e => { if (!e.target.closest('.search')) dd.classList.remove('show'); });
+        document.addEventListener('click', e => {
+            const item = e.target.closest('.search-dd .item');
+            if (item) { openGame(item.dataset.url, item.dataset.title); dd.classList.remove('show'); q.value = ''; return; }
+            if (!e.target.closest('.search')) dd.classList.remove('show');
+        });
         document.addEventListener('keydown', e => {
             if (e.key === '/' && document.activeElement !== q) { e.preventDefault(); q.focus(); }
             if (e.key === 'Escape') { dd.classList.remove('show'); }
@@ -558,142 +483,6 @@ let ALL_GAMES = Array.isArray(window.games) ? window.games.filter(g => g.app !==
             }).catch(() => { const e = document.getElementById('bat'); if (e) e.textContent = 'n/a'; });
         } else { const e = document.getElementById('bat'); if (e) e.textContent = 'n/a'; }
 
-        /* ---- dev-only overlay ---- */
-        function devBypassSubmit() {
-            const v = document.getElementById('devBypass').value;
-            const err = document.getElementById('devErr');
-            fetch('/api/admin?checkBypass=1&bypass=' + encodeURIComponent(v)).then(r => r.json()).then(res => {
-                if (res && res.ok) {
-                    ADMIN_SESSION_PASS = ADMIN_SESSION_PASS || '';
-                    try { localStorage.setItem(DEVBYPASS_KEY, '1'); } catch (e) {}
-                    setCookie(DEVBYPASS_KEY, '1', 30);
-                    document.getElementById('devOnly').classList.remove('show');
-                    document.body.style.overflow = '';
-                    toast('dev-only bypassed', 'good');
-                } else {
-                    err.textContent = 'incorrect bypass password.';
-                }
-            }).catch(() => { err.textContent = 'could not reach server.'; });
-        }
-
-        function showDevOnly() {
-            if (isDevBypassed()) return;
-            if (document.fullscreenElement) { try { document.exitFullscreen(); } catch (e) {} }
-            else if (document.webkitFullscreenElement) { try { document.webkitExitFullscreen(); } catch (e) {} }
-            const d = document.getElementById('devOnly');
-            d.classList.add('show');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function hideDevOnly() {
-            document.getElementById('devOnly').classList.remove('show');
-            if (!isDevBypassed()) document.body.style.overflow = '';
-        }
-
-        /* ---- announcements ---- */
-        function chime(tone) {
-            try {
-                window._chimeCtx = window._chimeCtx || new (window.AudioContext || window.webkitAudioContext)();
-                const ctx = window._chimeCtx;
-                if (ctx.state === 'suspended') ctx.resume();
-                const notes = tone === 'err' ? [440, 330] : tone === 'warn' ? [520, 660] : [660, 880];
-                const now = ctx.currentTime;
-                notes.forEach((f, i) => {
-                    const o = ctx.createOscillator();
-                    const g = ctx.createGain();
-                    o.type = 'sine'; o.frequency.value = f;
-                    const t = now + i * 0.12;
-                    g.gain.setValueAtTime(0.0001, t);
-                    g.gain.exponentialRampToValueAtTime(0.06, t + 0.02);
-                    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
-                    o.connect(g).connect(ctx.destination);
-                    o.start(t); o.stop(t + 0.2);
-                });
-            } catch (e) {}
-        }
-
-        function pushAnnouncement(a) {
-            const msg = (typeof a === 'string') ? a : a.msg;
-            const color = (a && a.color) || (ADMIN_STATE && ADMIN_STATE.announceColor) || 'good';
-            const dur = (a && a.dur) || 5;
-            const sticky = (a && a.sticky);
-            chime(color);
-            toast('📢 ' + msg, color);
-            const bar = document.getElementById('annBar');
-            document.getElementById('annBarTxt').textContent = msg;
-            bar.classList.remove('ann-ok', 'ann-warn', 'ann-err');
-            bar.classList.add('ann-' + (color === 'good' ? 'ok' : color === 'warn' ? 'warn' : 'err'));
-            bar.classList.add('show');
-            bar.classList.toggle('pinned', !!sticky);
-            clearTimeout(bar._t);
-            if (!sticky && dur > 0) bar._t = setTimeout(() => bar.classList.remove('show'), dur * 1000);
-            const gbar = document.getElementById('gAnnBar');
-            if (gbar) {
-                gbar.textContent = msg;
-                gbar.classList.add('show');
-                gbar.classList.toggle('pinned', !!sticky);
-                clearTimeout(gbar._t);
-                if (!sticky && dur > 0) gbar._t = setTimeout(() => gbar.classList.remove('show'), dur * 1000);
-            }
-        }
-
-        /* ---- server state (SSE + polling) ---- */
-        function adminApi(path, opts) { return fetch(path, opts).then(r => r.json()).catch(() => null); }
-
-        function applyState(s) {
-            ADMIN_STATE = s;
-            applyAdminTheme();
-            if (s.title) {
-                const cloak = JSON.parse(localStorage.getItem('tabCloak') || '{}');
-                if (!cloak.t) document.title = s.title;
-                const logo = document.querySelector('header .logo');
-                if (logo && !cloak.t) logo.textContent = s.title;
-            }
-            if (typeof s.footer === 'string') {
-                const f = document.getElementById('footerMsg');
-                if (f) f.textContent = s.footer || 'built quiet.';
-            }
-            if (typeof s.dark === 'boolean') {
-                document.body.classList.toggle('extra-dark', s.dark);
-            }
-            if (isAdmin()) { /* admin view not shown on play page */ }
-            const motd = document.getElementById('devMotd');
-            if (motd) {
-                if (s.motd) { motd.textContent = s.motd; motd.style.display = 'block'; }
-                else motd.style.display = 'none';
-            }
-            if (s.reloadSignal && lastReload && s.reloadSignal !== lastReload) {
-                toast('admin pushed a reload', 'warn');
-                setTimeout(() => location.reload(), 600);
-            }
-            if (s.reloadSignal) lastReload = s.reloadSignal;
-            const anns = s.announcements || [];
-            const latest = anns[0];
-            if (latest && latest.t > lastAnnounceTs) {
-                lastAnnounceTs = latest.t;
-                pushAnnouncement({ msg: latest.msg, color: s.announceColor, dur: latest.dur, sticky: latest.sticky });
-            }
-            if (s.devOnly) showDevOnly(); else hideDevOnly();
-        }
-
-        function applyAdminTheme() {
-            if (isAdmin()) document.body.classList.add('admin-on');
-            else document.body.classList.remove('admin-on');
-            const override = localStorage.getItem('elixir_redtheme');
-            const want = (override === null) ? (ADMIN_STATE.redTheme !== false) : (override === '1');
-            document.body.classList.toggle('admin-red', isAdmin() && want);
-        }
-
-        function pollState() { adminApi('/api/state').then(res => { if (res) applyState(res); }); }
-        pollState();
-        try {
-            const es = new EventSource('/api/stream');
-            es.onmessage = e => { try { applyState(JSON.parse(e.data)); } catch (_) {} };
-            es.onerror = () => { setInterval(pollState, 3000); };
-        } catch (_) {
-            setInterval(pollState, 3000);
-        }
-
         /* ---- panic key ---- */
         let binding = false;
         document.addEventListener('keydown', e => {
@@ -703,33 +492,31 @@ let ALL_GAMES = Array.isArray(window.games) ? window.games.filter(g => g.app !==
         });
 
         /* ---- terms / privacy ---- */
+        const DOCS_EFFECTIVE = '2026-07-22';
         const DOCS = {
             terms: {
                 title: 'terms of service',
                 html: `<h4>1. acceptance</h4><p>by using elixir you agree to these terms. if you do not agree, do not use the site.</p>
-                <h4>2. accounts</h4><p>you may create an account with a username and password. passwords are encrypted with sha256 before storage — we never store plaintext passwords. you are responsible for keeping your login credentials secure.</p>
-                <h4>3. use of the proxy</h4><p>the built-in proxy is provided for general browsing. you are responsible for what you access through it. do not use it for anything illegal in your jurisdiction.</p>
-                <h4>4. games</h4><p>games are loaded through third-party embed frames. elixir does not host the games and is not affiliated with their owners. game progress saved through your account is stored on the server and synced across devices.</p>
-                <h4>5. school and institutional use</h4><p>elixir is a personal project and is not affiliated with, endorsed by, or operated by any school, employer, or institution. if you use this site on a network, device, or account that belongs to a school or employer, you alone are responsible for following that organization's rules. the creators of elixir are not responsible for any disciplinary action, suspension, termination, or other consequences that a school, employer, or any third party may take against you as a result of your use of this site. use it at your own risk.</p>
-                <h4>6. user data</h4><p>if you create an account, your settings, favorites, game progress, and custom background are stored on the server to sync across devices.</p>
-                <h4>7. no warranty</h4><p>elixir is provided "as is" with no warranties of any kind. we are not liable for any damages or consequences arising from use of the site.</p>
-                <h4>8. changes</h4><p>we may update these terms at any time. continued use after changes means you accept the new terms.</p>`
+                <h4>2. use of the proxy</h4><p>the built-in proxy is provided for general browsing. you are responsible for what you access through it. do not use it for anything illegal in your jurisdiction.</p>
+                <h4>3. games</h4><p>games are loaded through third-party embed frames or proxied iframes. elixir does not host the games and is not affiliated with their owners. all game progress is saved locally on your device.</p>
+                <h4>4. school and institutional use</h4><p>elixir is a personal project and is not affiliated with any school, employer, or institution. you alone are responsible for following your organization's rules. the creators of elixir are not responsible for any disciplinary action taken against you as a result of your use of this site. use at your own risk.</p>
+                <h4>5. user data</h4><p>all data (favorites, settings, game progress, custom background) is stored in your browser's local storage. no data is sent to any server. elixir is fully static — there is no backend, no database, and no user accounts.</p>
+                <h4>6. no warranty</h4><p>elixir is provided "as is" with no warranties of any kind. we are not liable for any damages or consequences arising from use of the site.</p>
+                <h4>7. changes</h4><p>we may update these terms at any time. continued use after changes means you accept the new terms.</p>`
             },
             privacy: {
                 title: 'privacy policy',
-                html: `<h4>1. what we store locally</h4><p>on your device, elixir stores favorites, cloak settings, proxy server choice, panic key, and custom background in your browser's local storage.</p>
-                <h4>2. what we store on the server</h4><p>if you create an account, we store your username and a sha256-hashed password (never plaintext). we also store your settings, favorites, game progress, and custom background so they can sync across your devices.</p>
-                <h4>3. proxy traffic</h4><p>when you use the proxy, requests are routed through a third-party wisp transport server you select. those operators may log connection metadata. we do not control and are not responsible for third-party servers.</p>
-                <h4>4. cookies</h4><p>we use a session cookie to keep you logged in. no tracking cookies are set.</p>
-                <h4>5. children</h4><p>elixir is not directed at children under 13. if you are under 13, do not create an account or enter personal information.</p>
-                <h4>6. data deletion</h4><p>you can delete your account and all associated server data by contacting the operator.</p>
-                <h4>7. contact</h4><p>this is a personal project with no commercial operator. use at your own discretion. email is obsessivemoney@duck.com</p>`
+                html: `<h4>1. what we store locally</h4><p>on your device, elixir stores favorites, cloak settings, proxy server choice, panic key, and custom background in your browser's local storage. this data never leaves your device because there is no server to send it to.</p>
+                <h4>2. proxy traffic</h4><p>when you use the proxy, requests are routed through a third-party wisp transport server you select. those operators may log connection metadata. we do not control and are not responsible for third-party servers.</p>
+                <h4>3. cookies</h4><p>no tracking cookies are set. a local flag is stored to remember you accepted these policies.</p>
+                <h4>4. children</h4><p>elixir is not directed at children under 13.</p>
+                <h4>5. contact</h4><p>this is a personal project with no commercial operator. use at your own discretion.</p>`
             }
         };
         function openDoc(kind) {
             const d = DOCS[kind]; if (!d) return;
             document.getElementById('docTitle').textContent = d.title;
-            document.getElementById('docBody').innerHTML = d.html;
+            document.getElementById('docBody').innerHTML = '<p style="color:var(--text-4);font-size:.75rem;margin-bottom:14px">effective ' + DOCS_EFFECTIVE + '</p>' + d.html;
             document.getElementById('docmodal').classList.add('show');
             document.body.style.overflow = 'hidden';
         }
@@ -738,6 +525,11 @@ let ALL_GAMES = Array.isArray(window.games) ? window.games.filter(g => g.app !==
             document.body.style.overflow = (document.getElementById('gate').classList.contains('show') ? 'hidden' : '');
         }
         document.getElementById('docmodal').addEventListener('click', e => { if (e.target.id === 'docmodal') closeDoc(); });
+
+        /* ---- COI service worker (Cross-Origin Isolation for SharedArrayBuffer) ---- */
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('coi-sw.js', { scope: '/' }).catch(function() {});
+        }
 
         /* ---- boot ---- */
         document.getElementById('yr').textContent = new Date().getFullYear();
@@ -752,58 +544,6 @@ let ALL_GAMES = Array.isArray(window.games) ? window.games.filter(g => g.app !==
             document.body.classList.add('has-bg');
             document.body.style.setProperty('--custom-bg', 'url(' + bgData + ')');
             detectBgBrightness(bgData);
-        }
-
-        // auth check — if logged in, fetch user data before loading game
-        function authCheck() {
-            return Promise.race([
-                fetch('/api/user').then(function(r) { return r.json(); }).then(function(res) { console.log('[sync] /api/user response:', res); return res && res.user ? res.user : null; }),
-                new Promise(function(resolve) { setTimeout(function() { console.log('[sync] authCheck timed out'); resolve(null); }, 8000); })
-            ]).catch(function(e) { console.log('[sync] authCheck error:', e); return null; });
-        }
-        function loadUserData() {
-            return fetch('/api/user/data').then(function(r) { return r.json(); }).then(function(res) {
-                if (!res || !res.data) { console.log('[sync] no data from server'); return; }
-                var count = 0;
-                for (var k in res.data) {
-                    if (!res.data.hasOwnProperty(k)) continue;
-                    try { localStorage.setItem(k, res.data[k]); count++; } catch(e) {}
-                }
-                console.log('[sync] loaded', count, 'keys from server (live pull)');
-                if (count > 0) {
-                    console.log('[sync] keys:', Object.keys(res.data));
-                    // log game-specific save data sizes to compare across devices
-                    if (res.data['com.martinmagni.drivemad/data/sandbox/db'])
-                        console.log('[sync] GAME DB size:', res.data['com.martinmagni.drivemad/data/sandbox/db'].length, 'chars');
-                    if (res.data['com.martinmagni.drivemad/version'])
-                        console.log('[sync] GAME version:', res.data['com.martinmagni.drivemad/version']);
-                }
-            }).catch(function(e) { console.log('[sync] loadUserData error:', e); });
-        }
-        function syncAllToServer() {
-            var user = null;
-            try { user = AUTH_USER; } catch(e) {}
-            if (!user) return;
-            var data = {};
-            for (var i = 0; i < localStorage.length; i++) {
-                var k = localStorage.key(i);
-                if (k) { try { data[k] = localStorage.getItem(k); } catch(e) {} }
-            }
-            console.log('[sync] localStorage has', localStorage.length, 'keys:', Object.keys(data));
-            console.log('[sync] GAME db size (local):', (data['com.martinmagni.drivemad/data/sandbox/db'] || '').length, 'chars');
-            console.log('[sync] GAME version (local):', data['com.martinmagni.drivemad/version']);
-            console.log('[sync] syncing', Object.keys(data).length, 'keys to server');
-            fetch('/api/user/data', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({data: data}) }).catch(function(e) { console.log('[sync] sync error:', e); });
-        }
-        var _syncInt = null;
-        var _livePull = null;
-        function startPeriodicSync() {
-            if (_syncInt) clearInterval(_syncInt);
-            if (_livePull) clearInterval(_livePull);
-            if (!AUTH_USER) return;
-            syncAllToServer();
-            _syncInt = setInterval(syncAllToServer, 5000);
-            window.addEventListener('beforeunload', syncAllToServer);
         }
 
         /* ---------- ads (configurable — PNG only) ---------- */
@@ -835,48 +575,14 @@ let ALL_GAMES = Array.isArray(window.games) ? window.games.filter(g => g.app !==
 
         setupAd('sidebarAd', SIDEBAR_ADS);
 
-        // load game from URL params — first check auth and sync data
+        // load game from URL params
         const params = new URLSearchParams(window.location.search);
         const gameUrl = params.get('url') || '';
         const gameTitle = params.get('title') || 'game';
         const gameKind = params.get('kind') || 'game';
         
-        // show pre-load status
-        var statusEl = document.createElement('div');
-        statusEl.style.cssText = 'position:absolute;inset:0;z-index:6;background:var(--panel);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;';
-        statusEl.innerHTML = '<div class="spinner"></div><span id="preloadStatus" style="font-size:0.8rem;color:var(--text-3)">connecting…</span>';
-        document.getElementById('playFrameWrap').appendChild(statusEl);
-        
-        function updatePreload(msg) {
-            var el = document.getElementById('preloadStatus');
-            if (el) el.textContent = msg;
-        }
-        
         if (gameUrl) {
-            authCheck().then(function(user) {
-                console.log('[sync] authCheck returned:', user);
-                if (user) {
-                    AUTH_USER = user;
-                    updatePreload('syncing game data…');
-                    return loadUserData().then(function() { console.log('[sync] loadUserData done, starting periodic sync'); startPeriodicSync(); return true; });
-                }
-                console.log('[sync] not logged in, skipping data load');
-                return false;
-            }).then(function() {
-                // re-apply bg after potential server sync
-                var bd = localStorage.getItem('elixir_bg');
-                if (bd) {
-                    document.body.classList.add('has-bg');
-                    document.body.style.setProperty('--custom-bg', 'url(' + bd + ')');
-                    detectBgBrightness(bd);
-                }
-                updatePreload('loading game…');
-                statusEl.remove();
-                loadGame(gameUrl, gameTitle, gameKind);
-            });
-        } else {
-            statusEl.innerHTML = '<div style="font-size:0.82rem;color:var(--text-4);text-align:center">no game specified<br><span style="font-size:0.74rem">going home…</span></div>';
-            setTimeout(goHome, 1500);
+            loadGame(gameUrl, gameTitle, gameKind);
         }
     </script>
 </body>

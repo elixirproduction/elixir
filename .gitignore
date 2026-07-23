@@ -1,5 +1,0 @@
-.env
-__pycache__/
-*.pyc
-# bulk game HTML files are added locally (not tracked); generated data lives in data/
-# g/ and n/ tracked via git LFS

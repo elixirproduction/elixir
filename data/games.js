@@ -18,7 +18,7 @@ window.games = [
     "name": "sonic robo blast 2 kart",
     "img": "/",
     "iframe": "games/srb2kart/index.html",
-    "identifier": "srb2",
+    "identifier": "srb2kart",
     "pin": true,
     "cat": "featured"
   },
