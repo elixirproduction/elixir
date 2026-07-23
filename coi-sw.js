@@ -1,15 +1,18 @@
 /* coi-sw.js — Cross-Origin Isolation service worker
-   Standard pattern: adds COOP + COEP + CORP headers to all same-origin responses.
-   This makes crossOriginIsolated = true on every page, enabling SharedArrayBuffer. */
+   Adds COOP + COEP + CORP headers to same-origin responses for SharedArrayBuffer.
+   Registered from index.html/play.html. Does NOT use clients.claim() to avoid
+   stealing control from the proxy SW at /reactive/. */
 
 self.addEventListener("install", () => self.skipWaiting());
-self.addEventListener("activate", (e) => e.waitUntil(self.clients.claim()));
+self.addEventListener("activate", (e) => e.waitUntil(Promise.resolve()));
 
 self.addEventListener("fetch", (e) => {
   const r = e.request;
   if (r.method !== "GET" && r.method !== "HEAD") return;
 
   const u = new URL(r.url);
+
+  // Only intercept same-origin requests
   if (u.origin !== self.location.origin) return;
 
   e.respondWith(

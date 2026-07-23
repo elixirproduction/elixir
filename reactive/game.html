@@ -44,7 +44,7 @@ await sj.init()
 if('serviceWorker'in navigator){
 var reg=await navigator.serviceWorker.register(bp+'sw.js',{scope:bp})
 await navigator.serviceWorker.ready
-var wu=localStorage.getItem('proxServer')||'wss://wisp.rhw.one/wisp/'
+var wu=localStorage.getItem('proxServer')||'wss://wisp.mercurywork.shop/wisp/'
 var sw=reg.active||navigator.serviceWorker.controller
 if(sw)sw.postMessage({type:'config',wispurl:wu})
 if(navigator.serviceWorker.controller&&navigator.serviceWorker.controller!==sw)
