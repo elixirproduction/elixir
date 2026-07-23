@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>loading...</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;background:#000;overflow:hidden}
+#ld{position:fixed;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#111;color:#ccc;font-family:system-ui,sans-serif;gap:16px}
+.sp{border:2px solid #333;border-top-color:#888;border-radius:50%;width:32px;height:32px;animation:s .8s linear infinite}
+@keyframes s{to{transform:rotate(360deg)}}
+#er{position:fixed;inset:0;z-index:10;display:none;flex-direction:column;align-items:center;justify-content:center;background:#111;color:#f88;font-family:system-ui,sans-serif;padding:24px;text-align:center}
+#ct{position:absolute;inset:0}
+</style>
+<script>
+(function(){var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/gh/Destroyed12121/Staticsj@main/JS/scramjet.all.js';document.head.appendChild(s)})()
+</script>
+<script type="module">
+import * as BareMux from "https://cdn.jsdelivr.net/npm/@mercuryworkshop/bare-mux@2.1.2/dist/index.mjs";
+window.BareMux = BareMux;
+</script>
+</head>
+<body>
+<div id="ld"><div class="sp"></div><span id="st">loading proxy...</span></div>
+<div id="er"></div>
+<div id="ct"></div>
+<script>
+(function(){
+var ld=document.getElementById('ld'),er=document.getElementById('er'),ct=document.getElementById('ct')
+var u=new URLSearchParams(location.search).get('url')
+if(!u){er.textContent='no url specified';er.style.display='flex';ld.style.display='none';return}
+var bp=location.pathname.replace(/[^/]*$/,'')
+;(async()=>{
+try{
+var sjl=window.$scramjetLoadController
+if(!sjl){
+var to=setTimeout(function(){er.textContent='proxy error: timed out loading scramjet';er.style.display='flex';ld.style.display='none'},15000)
+await new Promise(function(r){(function p(){if(window.$scramjetLoadController){clearTimeout(to);r();return}setTimeout(p,50)})()})
+sjl=window.$scramjetLoadController
+}
+var{ScramjetController}=sjl()
+var sj=new ScramjetController({prefix:bp+'scramjet/',files:{wasm:'https://cdn.jsdelivr.net/gh/Destroyed12121/Staticsj@main/JS/scramjet.wasm.wasm',all:'https://cdn.jsdelivr.net/gh/Destroyed12121/Staticsj@main/JS/scramjet.all.js',sync:'https://cdn.jsdelivr.net/gh/Destroyed12121/Staticsj@main/JS/scramjet.sync.js'}})
+await sj.init()
+if('serviceWorker'in navigator){
+var reg=await navigator.serviceWorker.register(bp+'sw.js',{scope:bp})
+await navigator.serviceWorker.ready
+var wu=localStorage.getItem('proxServer')||'wss://wisp.rhw.one/wisp/'
+var sw=reg.active||navigator.serviceWorker.controller
+if(sw)sw.postMessage({type:'config',wispurl:wu})
+if(navigator.serviceWorker.controller&&navigator.serviceWorker.controller!==sw)
+navigator.serviceWorker.controller.postMessage({type:'config',wispurl:wu})
+var cn=new BareMux.BareMuxConnection(bp+'bareworker.js')
+await cn.setTransport('https://cdn.jsdelivr.net/npm/@mercuryworkshop/epoxy-transport@2.1.28/dist/index.mjs',[{wisp:wu}])
+}
+var fr=sj.createFrame()
+fr.frame.style.cssText='width:100%;height:100%;border:0;display:block;background:#000'
+fr.frame.style.visibility='hidden'
+ct.appendChild(fr.frame)
+var to2=setTimeout(function(){ld.style.display='none';fr.frame.style.visibility='visible'},10000)
+fr.frame.addEventListener('load',function(){clearTimeout(to2);ld.style.display='none';fr.frame.style.visibility='visible'})
+fr.go(u)
+}catch(e){er.textContent='proxy error: '+e.message;er.style.display='flex';ld.style.display='none'}
+})()
+})()
+</script>
+</body>
+</html>

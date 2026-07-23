@@ -6,11 +6,11 @@
     <title>elixir — play</title>
     <meta name="description" content="elixir — play a game.">
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%236e6e6e'/%3E%3Ctext x='16' y='22' font-family='monospace' font-size='18' font-weight='700' text-anchor='middle' fill='%23ffffff'%3Ee%3C/text%3E%3C/svg%3E">
-    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" as="style" crossorigin="anonymous" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></noscript>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" crossorigin="anonymous">
     <style>
         :root {
             --bg: #0a0a0a;
@@ -79,6 +79,7 @@
         .search-dd .item:hover { background: var(--panel-2); }
         .search-dd .item img { width: 22px; height: 22px; border-radius: 5px; object-fit: cover; }
         .search-dd .item .kind { margin-left: auto; font-family: var(--mono); font-size: 0.6rem; color: var(--text-4); text-transform: uppercase; }
+        .proxy-note { display: inline-block; font-size: .55rem; color: #eab308; background: rgba(234,179,8,0.15); padding: 1px 5px; border-radius: 3px; margin-left: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; vertical-align: middle; white-space: nowrap; }
         .search-dd .none { padding: 12px; font-size: 0.82rem; color: var(--text-4); text-align: center; }
 
         /* ---------- layout ---------- */
@@ -391,6 +392,7 @@
     <div class="toasts" id="toasts"></div>
 
     <script src="data/games.js"></script>
+    <script src="data/apps.js"></script>
     <script>
         /* ---- constants ---- */
         const LS_FAV = 'elixir_fav';
@@ -440,20 +442,30 @@
             return url.replace(/^\/+/, '');
         }
 
-        function loadGame(url, title) {
+        function loadGame(url, title, kind) {
             url = initial(url);
-            document.getElementById('gameName').textContent = title || 'game';
+            var isExternal = /^https?:\/\//i.test(url);
+            document.getElementById('gameName').innerHTML = (title || 'game') + (isExternal && kind !== 'app' ? '<span class="proxy-note">slow load</span>' : '');
             const frame = document.getElementById('playFrame');
             const loading = document.getElementById('gameLoading');
+            if (isExternal) {
+                url = 'reactive/game.html?url=' + encodeURIComponent(url);
+            }
             frame.style.visibility = 'hidden';
             frame.style.position = 'absolute';
             loading.style.display = 'flex';
-            frame.onload = function() {
+            var loaded = false;
+            function done() {
+                if (loaded) return;
+                loaded = true;
                 loading.style.display = 'none';
                 frame.style.visibility = 'visible';
                 frame.style.position = '';
-            };
-            frame.src = url;
+            }
+            frame.onload = done;
+            frame.onerror = done;
+            setTimeout(done, 8000);
+            try { frame.src = url; } catch(e) { setTimeout(done, 100); }
         }
 
         function detectBgBrightness(dataUrl) {
@@ -490,27 +502,13 @@
 
         /* ---- search ---- */
         const q = document.getElementById('q'), dd = document.getElementById('dd');
-        let ALL_GAMES = Array.isArray(window.games) ? window.games.filter(g => g.app !== true).map(g => ({
-            title: g.name || 'game', img: g.img ? (g.img.startsWith('/') ? g.img : '/' + g.img.replace(/^\/+/,'')) : '',
-            url: g.iframe || '', id: g.identifier || (g.name||'g').toLowerCase().replace(/\s+/g,'-'),
-            pinned: g.pin === true
-        })) : [];
+let ALL_GAMES = Array.isArray(window.games) ? window.games.filter(g => g.app !== true).map(g => {
+    var u = g.url || g.iframe || '';
+    return { title: g.name || 'game', img: g.img ? (g.img.startsWith('/') ? g.img : '/' + g.img.replace(/^\/+/,'')) : '',
+    url: u, id: g.identifier || (g.name||'g').toLowerCase().replace(/\s+/g,'-'),
+    pinned: g.pin === true, proxied: /^https?:\/\//i.test(u) };
+}) : [];
         let AUTH_USER = null;
-
-        if (document.querySelector('script[src*="more.js"]') === null) {
-            var ms = document.createElement('script');
-            ms.src = 'data/more.js';
-            ms.onload = function() {
-                if (Array.isArray(window.more)) {
-                    ALL_GAMES.push.apply(ALL_GAMES, window.more.map(g => ({
-                        title: g.name || 'game', img: g.img ? (g.img.startsWith('/') ? g.img : '/' + g.img.replace(/^\/+/,'')) : '',
-                        url: g.iframe || '', id: g.identifier || (g.name||'g').toLowerCase().replace(/\s+/g,'-'),
-                        pinned: g.pin === true
-                    })));
-                }
-            };
-            document.head.appendChild(ms);
-        }
 
         q.addEventListener('input', () => {
             const v = q.value.toLowerCase().trim();
@@ -519,7 +517,7 @@
             if (!hit.length) { dd.innerHTML = `<div class="none">no matches</div>`; dd.classList.add('show'); return; }
             dd.innerHTML = hit.map(g => `<div class="item" onclick="openGame('${g.url.replace(/'/g,"\\'")}','${(g.title||'').replace(/'/g,"\\'")}');dd.classList.remove('show');q.value=''">
                 ${g.img ? `<img src="${g.img}" onerror="this.style.visibility='hidden'">` : `<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E">`}
-                <span>${g.title}</span><span class="kind">game</span>
+                <span>${g.title}${g.proxied?'<span class="proxy-note">slow load</span>':''}</span><span class="kind">game</span>
             </div>`).join('');
             dd.classList.add('show');
         });
@@ -841,6 +839,7 @@
         const params = new URLSearchParams(window.location.search);
         const gameUrl = params.get('url') || '';
         const gameTitle = params.get('title') || 'game';
+        const gameKind = params.get('kind') || 'game';
         
         // show pre-load status
         var statusEl = document.createElement('div');
@@ -873,7 +872,7 @@
                 }
                 updatePreload('loading game…');
                 statusEl.remove();
-                loadGame(gameUrl, gameTitle);
+                loadGame(gameUrl, gameTitle, gameKind);
             });
         } else {
             statusEl.innerHTML = '<div style="font-size:0.82rem;color:var(--text-4);text-align:center">no game specified<br><span style="font-size:0.74rem">going home…</span></div>';

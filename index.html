@@ -125,6 +125,8 @@
         .tile .ic .star:hover { color: var(--text); border-color: var(--blue); }
         .tile .ic .star.on { color: #fbbf24; border-color: rgba(251,191,36,0.5); background: rgba(251,191,36,0.14); }
         .tile .nm { font-size: 0.75rem; font-weight: 500; letter-spacing: -0.01em; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .proxy-note { display: inline-block; font-size: .55rem; color: #eab308; background: rgba(234,179,8,0.15); padding: 1px 5px; border-radius: 3px; margin-left: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: .03em; vertical-align: middle; white-space: nowrap; }
+        .tile .proxy-note { display: block; margin: 3px 0 0; }
         .empty { grid-column: 1/-1; padding: 44px 0; text-align: center; color: var(--text-4); font-size: 0.86rem; }
 
         /* ---------- coming soon ---------- */
@@ -418,11 +420,7 @@
         <!-- APPS -->
         <section class="view" data-view="apps">
             <div class="head"><h1>apps</h1></div>
-            <div class="coming-soon">
-                <i class="fas fa-wrench"></i>
-                <h3>apps coming soon</h3>
-                <p>use the <a onclick="go('proxy')">proxy</a> for now — it runs anything in-browser.</p>
-            </div>
+            <div class="grid" id="appGrid"></div>
         </section>
 
         <!-- PROXY -->
@@ -718,6 +716,7 @@
     <div class="toasts" id="toasts"></div>
 
     <script src="data/games.js"></script>
+    <script src="data/apps.js"></script>
     <script>
         const LS_FAV = 'elixir_fav';
         const getFav = () => { try { return JSON.parse(localStorage.getItem(LS_FAV)) || []; } catch { return []; } };
@@ -740,29 +739,17 @@
             document.getElementById('q').value = '';
             document.getElementById('dd').classList.remove('show');
             if (view === 'games') renderGames();
+            if (view === 'apps') renderApps();
             if (view === 'admin') renderAdmin();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
         document.querySelectorAll('nav.tabs a').forEach(a => a.addEventListener('click', () => go(a.dataset.view)));
 
         /* ---- normalize game data ---- */
-        function mapGame(g) { return { title: g.name || 'game', img: g.img ? (g.img.startsWith('/') ? g.img : '/' + g.img.replace(/^\/+/,'')) : '', url: g.iframe || '', id: g.identifier || (g.name||'g').toLowerCase().replace(/\s+/g,'-'), pinned: g.pin === true }; }
+        function mapGame(g) { var u = g.url || g.iframe || ''; return { title: g.name || 'game', img: g.img ? (g.img.startsWith('/') ? g.img : '/' + g.img.replace(/^\/+/,'')) : '', url: u, id: g.identifier || (g.name||'g').toLowerCase().replace(/\s+/g,'-'), pinned: g.pin === true, proxied: /^https?:\/\//i.test(u), kind: 'game' }; }
         var ALL_GAMES = Array.isArray(window.games) ? window.games.filter(g => g.app !== true).map(mapGame) : [];
-        var DYNAMIC_APPS = Array.isArray(window.games) ? window.games.filter(g => g.app === true).map(g => ({ title: g.name || 'app', img: g.img ? (g.img.startsWith('/') ? g.img : '/' + g.img.replace(/^\/+/,'')) : '', url: g.iframe || g.iframe2 || '' })) : [];
-
-        /* ---- lazy-load full game list ---- */
-        if (document.querySelector('script[src*="more.js"]') === null) {
-            var ms = document.createElement('script');
-            ms.src = 'data/more.js';
-            ms.onload = function() {
-                if (Array.isArray(window.more)) {
-                    ALL_GAMES.push.apply(ALL_GAMES, window.more.map(mapGame));
-                    if (document.querySelector('.view[data-view=games].active')) renderGames();
-                    if (document.querySelector('.view[data-view=admin].active')) renderAdmin();
-                }
-            };
-            document.head.appendChild(ms);
-        }
+        var ALL_APPS = Array.isArray(window.apps) ? window.apps.map(g => { var u = g.url || g.iframe || ''; return { title: g.name || 'app', img: g.img ? (g.img.startsWith('/') ? g.img : '/' + g.img.replace(/^\/+/,'')) : '', url: u, id: g.identifier || (g.name||'app').toLowerCase().replace(/\s+/g,'-'), kind: 'app' }; }) : [];
+        var DYNAMIC_APPS = Array.isArray(window.games) ? window.games.filter(g => g.app === true).map(g => ({ title: g.name || 'app', img: g.img ? (g.img.startsWith('/') ? g.img : '/' + g.img.replace(/^\/+/,'')) : '', url: g.url || g.iframe || g.iframe2 || '', proxied: /^https?:\/\//i.test(g.url || ''), kind: 'app' })) : [];
 
         function initial(url) {
             if (!url) return 'about:blank';
@@ -786,10 +773,23 @@
                 return `<button class="tile" onclick="play('${g.url.replace(/'/g,"\\'")}','${(g.title||'').replace(/'/g,"\\'")}')">
                     <div class="ic">${img}<div class="star ${on?'on':''}" onclick="event.stopPropagation();fav('${g.url.replace(/'/g,"\\'")}',this)"><i class="fa${on?'s':'r'} fa-star"></i></div></div>
                     <div class="nm">${g.title}</div>
+                    ${g.proxied?'<span class="proxy-note">slow load</span>':''}
                 </button>`;
             }).join('');
         }
-        function renderApps() { /* apps coming soon */ }
+        function renderApps() {
+            const grid = document.getElementById('appGrid');
+            const list = ALL_APPS.slice();
+            if (!list.length) { grid.innerHTML = '<div class="empty">no apps yet.</div>'; return; }
+            grid.innerHTML = list.map(g => {
+                const ph = (g.title[0] || 'A').toUpperCase();
+                const img = g.img ? `<img src="${g.img}" loading="lazy" onerror="this.remove();const p=this.parentNode&&this.parentNode.querySelector('.ph');if(p)p.style.display='grid'"><div class="ph" style="display:none">${ph}</div>` : `<div class="ph">${ph}</div>`;
+                return `<button class="tile" onclick="play('${g.url.replace(/'/g,"\\'")}','${(g.title||'').replace(/'/g,"\\'")}','app')">
+                    <div class="ic">${img}</div>
+                    <div class="nm">${g.title}</div>
+                </button>`;
+            }).join('');
+        }
         function fav(url, el) {
             let f = getFav();
             const on = f.includes(url);
@@ -801,10 +801,10 @@
             if (curCat === 'fav') renderGames();
         }
 
-        /* ---- game launch (opens play.html in the same tab) ---- */
-        function play(url, title) {
+        /* ---- game/app launch (opens play.html in the same tab) ---- */
+        function play(url, title, kind) {
             url = initial(url);
-            window.location.href = 'play.html?url=' + encodeURIComponent(url) + '&title=' + encodeURIComponent(title || 'game');
+            window.location.href = 'play.html?url=' + encodeURIComponent(url) + '&title=' + encodeURIComponent(title || 'game') + (kind ? '&kind=' + kind : '');
         }
 
         /* ---- search ---- */
@@ -812,12 +812,12 @@
         q.addEventListener('input', () => {
             const v = q.value.toLowerCase().trim();
             if (!v) { dd.classList.remove('show'); return; }
-            const all = [...ALL_GAMES, ...DYNAMIC_APPS];
+            const all = [...ALL_GAMES, ...ALL_APPS, ...DYNAMIC_APPS];
             const hit = all.filter(g => (g.title || '').toLowerCase().includes(v)).slice(0, 10);
             if (!hit.length) { dd.innerHTML = `<div class="none">no matches</div>`; dd.classList.add('show'); return; }
-            dd.innerHTML = hit.map(g => `<div class="item" onclick="play('${g.url.replace(/'/g,"\\'")}','${(g.title||'').replace(/'/g,"\\'")}');dd.classList.remove('show');q.value=''">
+            dd.innerHTML = hit.map(g => `<div class="item" onclick="play('${g.url.replace(/'/g,"\\'")}','${(g.title||'').replace(/'/g,"\\'")}','${g.kind||'game'}');dd.classList.remove('show');q.value=''">
                 ${g.img ? `<img src="${g.img}" onerror="this.style.visibility='hidden'">` : `<img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E">`}
-                <span>${g.title}</span><span class="kind">${DYNAMIC_APPS.includes(g)?'app':'game'}</span>
+                <span>${g.title}${g.proxied?'<span class="proxy-note">slow load</span>':''}</span><span class="kind">${g.kind||'game'}</span>
             </div>`).join('');
             dd.classList.add('show');
         });
@@ -1372,7 +1372,7 @@
         }
         function adminGameList() {
             const q = (document.getElementById('adminGameSearch').value || '').toLowerCase().trim();
-            const all = [...(window.games || []), ...(window.more || [])];
+            const all = window.games || [];
             const box = document.getElementById('adminGameResults');
             if (!q) { box.innerHTML = '<div style="color:var(--text-4);padding:8px">type to search ' + all.length + ' games.</div>'; return; }
             const favs = getFav();
@@ -1380,7 +1380,7 @@
                 || (g.identifier || '').toLowerCase().includes(q)).slice(0, 40);
             if (!hits.length) { box.innerHTML = '<div style="color:var(--text-4);padding:8px">no matches.</div>'; return; }
             box.innerHTML = hits.map(g => {
-                const url = g.iframe || '';
+                const url = g.url || g.iframe || '';
                 const safe = url.replace(/'/g, "\\'");
                 const nm = (g.name || g.identifier || 'untitled').replace(/'/g, "\\'");
                 const on = favs.includes(url);
@@ -1497,7 +1497,7 @@
         function renderAdmin() {
             if (!isAdmin()) return;
             document.getElementById('devOnlyToggle').checked = !!ADMIN_STATE.devOnly;
-            const all = [...(Array.isArray(window.games) ? window.games : []), ...(Array.isArray(window.more) ? window.more : [])];
+            const all = Array.isArray(window.games) ? window.games : [];
             document.getElementById('gameCount').textContent = all.length;
             const fav = (function(){ try { return JSON.parse(localStorage.getItem('elixir_fav') || '[]'); } catch { return []; } })();
             document.getElementById('favCount').textContent = fav.length;

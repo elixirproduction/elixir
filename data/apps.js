@@ -1,0 +1,16 @@
+window.apps = [
+  {
+    "name": "Tiktok",
+    "img": "/images/tiktok.png",
+    "url": "https://tiktok.com",
+    "identifier": "tiktok",
+    "cat": "media"
+  },
+  {
+    "name": "Youtube",
+    "img": "/images/youtube.png",
+    "url": "https://youtube.com",
+    "identifier": "tiktok",
+    "cat": "media"
+  }
+];

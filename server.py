@@ -29,7 +29,8 @@ ADMIN_BYPASS = ENV.get("ADMIN_BYPASS", "bypass")
 STATE_PATH = os.path.join(ROOT, "admin.json")
 DATA_DIR = os.path.join(ROOT, "data")
 GAMES_JS = os.path.join(DATA_DIR, "games.js")
-MORE_JS = os.path.join(DATA_DIR, "more.js")
+APPS_JS = os.path.join(DATA_DIR, "apps.js")
+
 USERS_PATH = os.path.join(ROOT, "users.json")
 
 # ----------------------------------------------------------------------------
@@ -368,6 +369,7 @@ NAME_FIXES = {
 }
 
 GAMES_JSON = os.path.join(ROOT, "games.json")
+APPS_JSON = os.path.join(ROOT, "apps.json")
 
 def load_games():
     if not os.path.exists(GAMES_JSON):
@@ -377,14 +379,27 @@ def load_games():
         return json.load(f)
 
 def regen_data():
-    """Generate data/more.js from games.json (exclude curated entries to avoid dupes)."""
-    curated_ids = {g.get("identifier") for g in parse_gamesdata(GAMES_JS)}
+    """Generate data/games.js from games.json (single source of truth)."""
     all_games = load_games()
-    more = [g for g in all_games if g.get("identifier") not in curated_ids]
     os.makedirs(DATA_DIR, exist_ok=True)
-    with open(MORE_JS, "w", encoding="utf-8") as out:
-        out.write("window.more = " + json.dumps(more, indent=2) + ";\n")
-    print(f"[games] data/more.js: {len(more)} entries (curated: {len(curated_ids)})")
+    with open(GAMES_JS, "w", encoding="utf-8") as out:
+        out.write("window.games = " + json.dumps(all_games, indent=2) + ";\n")
+    print(f"[games] data/games.js: {len(all_games)} entries written from games.json")
+
+def load_apps():
+    if not os.path.exists(APPS_JSON):
+        print("[apps] apps.json missing")
+        return []
+    with open(APPS_JSON, encoding="utf-8") as f:
+        return json.load(f)
+
+def regen_apps_data():
+    """Generate data/apps.js from apps.json."""
+    all_apps = load_apps()
+    os.makedirs(DATA_DIR, exist_ok=True)
+    with open(APPS_JS, "w", encoding="utf-8") as out:
+        out.write("window.apps = " + json.dumps(all_apps, indent=2) + ";\n")
+    print(f"[apps] data/apps.js: {len(all_apps)} entries written from apps.json")
 
 # ----------------------------------------------------------------------------
 # HTTP handler
@@ -392,6 +407,13 @@ def regen_data():
 class Handler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *a, **k):
         super().__init__(*a, directory=ROOT, **k)
+
+    def send_response(self, code, message=None):
+        super().send_response(code, message)
+        self.send_header("Cross-Origin-Opener-Policy", "same-origin")
+        self.send_header("Cross-Origin-Embedder-Policy", "require-corp")
+        self.send_header("Cross-Origin-Resource-Policy", "cross-origin")
+        self.send_header("Cache-Control", "no-store, must-revalidate")
 
     def _mutate(self, devOnly=None, announce=None, announceDur=5, announceSticky=False, clearAnnounce=False, removeAnnounce=None, motd=None, title=None, reloadSignal=None, announceColor=None, redTheme=None, footer=None, dark=None):
         changed = False
@@ -643,6 +665,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
 def main():
     regen_data()
+    regen_apps_data()
     port = int(os.environ.get("PORT", "80"))
     socketserver.TCPServer.allow_reuse_address = True
     with socketserver.ThreadingTCPServer(("", port), Handler) as httpd:

@@ -1,5 +1,12 @@
 [
   {
+    "name": "example proxied game",
+    "img": "/",
+    "url": "https://example.com",
+    "identifier": "example-proxied",
+    "cat": "featured"
+  },
+  {
     "name": "sonic robo blast 2",
     "img": "/",
     "iframe": "games/srb2/index.html",
@@ -26,7 +33,7 @@
   {
     "name": "celeste",
     "img": "/",
-    "iframe": "games/celeste/index.html",
+    "iframe": "games/celeste/",
     "identifier": "celeste",
     "pin": true,
     "cat": "featured"
@@ -10745,8 +10752,8 @@
   {
     "name": "Portal",
     "img": "",
-    "iframe": "n/clportal.html",
-    "identifier": "clportal"
+    "iframe": "games/portal/",
+    "identifier": "portal"
   },
   {
     "name": "Portal 2D",
