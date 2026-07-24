@@ -30,20 +30,22 @@ self.addEventListener("fetch", (event) => {
         } else {
             response = await fetch(event.request);
         }
-        // Add COEP/COOP headers to HTML navigation responses for SharedArrayBuffer support
         const ct = response.headers.get('content-type') || '';
+        const h = new Headers(response.headers);
         if (event.request.mode === 'navigate' && ct.includes('text/html')) {
-            const h = new Headers(response.headers);
+            // Add COEP/COOP/CORP to HTML navigations for SharedArrayBuffer support
             h.set('Cross-Origin-Opener-Policy', 'same-origin');
             h.set('Cross-Origin-Embedder-Policy', 'credentialless');
             h.set('Cross-Origin-Resource-Policy', 'cross-origin');
-            return new Response(response.body, {
-                status: response.status,
-                statusText: response.statusText,
-                headers: h
-            });
+        } else {
+            // Add CORP to all other responses so COEP doesn't block them
+            h.set('Cross-Origin-Resource-Policy', 'cross-origin');
         }
-        return response;
+        return new Response(response.body, {
+            status: response.status,
+            statusText: response.statusText,
+            headers: h
+        });
     })());
 });
 
