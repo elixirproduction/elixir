@@ -24,28 +24,10 @@ self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
 self.addEventListener("fetch", (event) => {
     event.respondWith((async () => {
         await scramjet.loadConfig();
-        let response;
         if (scramjet.route(event)) {
-            response = await scramjet.fetch(event);
-        } else {
-            response = await fetch(event.request);
+            return scramjet.fetch(event);
         }
-        const ct = response.headers.get('content-type') || '';
-        const h = new Headers(response.headers);
-        if (event.request.mode === 'navigate' && ct.includes('text/html')) {
-            // Add COEP/COOP/CORP to HTML navigations for SharedArrayBuffer support
-            h.set('Cross-Origin-Opener-Policy', 'same-origin');
-            h.set('Cross-Origin-Embedder-Policy', 'credentialless');
-            h.set('Cross-Origin-Resource-Policy', 'cross-origin');
-        } else {
-            // Add CORP to all other responses so COEP doesn't block them
-            h.set('Cross-Origin-Resource-Policy', 'cross-origin');
-        }
-        return new Response(response.body, {
-            status: response.status,
-            statusText: response.statusText,
-            headers: h
-        });
+        return fetch(event.request);
     })());
 });
 

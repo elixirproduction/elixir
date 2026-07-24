@@ -558,7 +558,13 @@
         });
         function renderApps() {
             const grid = document.getElementById('appGrid');
-            const list = ALL_APPS.slice();
+            grid.innerHTML = '';
+            // Combine static apps and dynamic apps (from games with app:true), dedup by URL
+            const seen = new Set();
+            const list = [];
+            [...ALL_APPS, ...DYNAMIC_APPS].forEach(g => {
+                if (!seen.has(g.url)) { seen.add(g.url); list.push(g); }
+            });
             if (!list.length) { grid.innerHTML = '<div class="empty">no apps yet.</div>'; return; }
             const frag = document.createDocumentFragment();
             list.forEach(g => {
