@@ -1,4 +1,5 @@
 @echo off
 cd /d "%~dp0"
-python serve.py
+echo elixir running at http://localhost:8000
+python -m http.server 8000
 pause

@@ -450,6 +450,12 @@
 
     <div class="toasts" id="toasts"></div>
 
+    <script>
+      // Register COI service worker for SharedArrayBuffer support (skips proxy paths)
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('coi-sw.js', { scope: '/' }).catch(function() {});
+      }
+    </script>
     <script src="data/games.js"></script>
     <script src="data/apps.js"></script>
     <script>

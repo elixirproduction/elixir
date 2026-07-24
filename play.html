@@ -326,6 +326,19 @@
 
     <div class="toasts" id="toasts"></div>
 
+    <script>
+      // Register COI service worker for SharedArrayBuffer support (skips proxy paths)
+      if ('serviceWorker' in navigator) {
+        window._coiReady = navigator.serviceWorker.register('coi-sw.js', { scope: '/' }).then(function(reg) {
+          if (reg.active) return;
+          return new Promise(function(resolve) {
+            var sw = reg.installing || reg.waiting;
+            if (!sw) { resolve(); return; }
+            sw.addEventListener('statechange', function() { if (sw.state === 'activated') resolve(); });
+          });
+        }).catch(function() {});
+      }
+    </script>
     <script src="data/games.js"></script>
     <script src="data/apps.js"></script>
     <script>
@@ -577,7 +590,9 @@ let ALL_GAMES = Array.isArray(window.games) ? window.games.filter(g => g.app !==
         const gameKind = params.get('kind') || 'game';
         
         if (gameUrl) {
-            loadGame(gameUrl, gameTitle, gameKind);
+            (window._coiReady || Promise.resolve()).then(function() {
+                loadGame(gameUrl, gameTitle, gameKind);
+            });
         }
     </script>
 </body>

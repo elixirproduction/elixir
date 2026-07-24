@@ -21,13 +21,33 @@ const scramjet = new ScramjetServiceWorker({
 self.addEventListener('install', (e) => self.skipWaiting());
 self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()));
 
+function stripCorp(response) {
+    const headers = new Headers(response.headers);
+    headers.delete("Cross-Origin-Resource-Policy");
+    return new Response(response.body, {
+        status: response.status,
+        statusText: response.statusText,
+        headers
+    });
+}
+
 self.addEventListener("fetch", (event) => {
     event.respondWith((async () => {
-        await scramjet.loadConfig();
-        if (scramjet.route(event)) {
-            return scramjet.fetch(event);
+        try {
+            await scramjet.loadConfig();
+            if (scramjet.route(event)) {
+                const response = await scramjet.fetch(event);
+                return stripCorp(response);
+            }
+        } catch (e) {
+            console.warn("SW: scramjet error, falling back:", e.message);
         }
-        return fetch(event.request);
+        try {
+            const response = await fetch(event.request);
+            return stripCorp(response);
+        } catch (e) {
+            return new Response("Network error: " + e.message, { status: 502, headers: { "Content-Type": "text/plain" } });
+        }
     })());
 });
 
